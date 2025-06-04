@@ -1,0 +1,129 @@
+import React from "react";
+import { Search } from "lucide-react";
+
+/**
+ * Luxe24 Marketplace Landing Page
+ * ------------------------------------------------------------
+ *  ░ Brand styling inspired by Chrono24 (dark‐green & warm gold)
+ *  ░ OAuth entry‑point for “Login with JunoMoney”
+ *  ░ TailwindCSS for layout & typography
+ *  ░ Framer Motion fade‑in for subtle delight
+ * ------------------------------------------------------------
+ */
+
+export default function App() {
+  // Redirect to the API route that starts the JunoMoney OAuth2.1 flow
+  const handleLogin = () => {
+    window.location.href = "/api/auth/juno/login"; // server will build PKCE & state
+  };
+
+  return (
+    <main className="min-h-screen flex flex-col bg-white text-gray-900 font-inter">
+      {/* ============================== Header / Top‑Bar ============================== */}
+      <header className="bg-[#0b3d2e] text-white shadow-md">
+        <div className="max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
+          {/* Brand logo */}
+          <a href="/" className="text-2xl md:text-3xl font-extrabold tracking-tight select-none">
+            luxe<span className="text-amber-400">24</span>
+          </a>
+
+          {/* Desktop navigation */}
+          <nav className="hidden md:flex space-x-8 text-sm font-medium uppercase tracking-wide">
+            <a href="#shop"        className="hover:text-amber-400 transition">Shop</a>
+            <a href="#sell"        className="hover:text-amber-400 transition">Sell</a>
+            <a href="#magazine"    className="hover:text-amber-400 transition">Magazine</a>
+            <a href="#security"    className="hover:text-amber-400 transition">Security</a>
+          </nav>
+
+          {/* Actions */}
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={handleLogin}
+              aria-label="Login with JunoMoney"
+              className="bg-amber-400 text-[#0b3d2e] font-semibold px-4 py-2 rounded-lg hover:bg-amber-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white transition"
+            >
+              Login with Juno
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* ============================== Hero Section ============================== */}
+      <section className="relative isolate overflow-hidden bg-gray-100">
+        {/* Illustration */}
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-15"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1549923746-c502d488b3ea?auto=format&fit=crop&q=80&w=1600')" }}
+        />
+        <div className="relative max-w-4xl mx-auto py-20 px-6 text-center">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6">
+            Find your dream <span className="text-amber-600">luxury</span> item on <span className="text-[#0b3d2e]">luxe24</span>
+          </h1>
+          <p className="text-lg md:text-xl text-gray-700 mb-10">
+            Search over <strong>500,000&nbsp;+</strong> authenticated luxury watches, handbags & fine jewellery – all with buyer protection.
+          </p>
+
+          {/* Search Bar */}
+          <div className="mx-auto w-full max-w-3xl relative">
+            <input
+              type="search"
+              placeholder="Search watches, bags, jewellery…"
+              className="w-full py-4 pl-6 pr-20 rounded-full shadow-lg bg-white/90 backdrop-blur placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
+            />
+            <button className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#0b3d2e] hover:bg-[#0d503b] text-white p-3 rounded-full focus-visible:ring-2 focus-visible:ring-amber-500">
+              <Search className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* Call‑to‑action */}
+          <div className="mt-12 flex justify-center gap-6">
+            <button
+              className="bg-[#0b3d2e] text-white font-medium px-6 py-3 rounded-lg hover:bg-[#0d503b] transition">
+              Start Browsing
+            </button>
+            <button
+              onClick={handleLogin}
+              aria-label="Login with JunoMoney"
+              className="bg-amber-400 text-[#0b3d2e] font-semibold px-6 py-3 rounded-lg hover:bg-amber-300 transition"
+            >
+              Login with Juno
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================== Footer ============================== */}
+      <footer className="mt-auto bg-[#0b3d2e] text-white">
+        <div className="max-w-7xl mx-auto py-8 px-6 grid md:grid-cols-3 gap-10 text-sm">
+          <div>
+            <h2 className="font-semibold mb-3">About luxe24</h2>
+            <p className="text-gray-300 leading-relaxed">
+              luxe24 is the premier marketplace for authenticated pre‑owned luxury goods. We connect thousands of
+              trusted sellers with discerning collectors worldwide.
+            </p>
+          </div>
+          <div>
+            <h2 className="font-semibold mb-3">Marketplace</h2>
+            <ul className="space-y-2">
+              <li><a href="#shop" className="hover:text-amber-400">Shop</a></li>
+              <li><a href="#sell" className="hover:text-amber-400">Sell</a></li>
+              <li><a href="#magazine" className="hover:text-amber-400">Magazine</a></li>
+            </ul>
+          </div>
+          <div>
+            <h2 className="font-semibold mb-3">Security</h2>
+            <ul className="space-y-2">
+              <li><a href="#security" className="hover:text-amber-400">Buyer Protection</a></li>
+              <li><a href="#security" className="hover:text-amber-400">Authentication Process</a></li>
+              <li><a href="#security" className="hover:text-amber-400">JunoMoney Wallet</a></li>
+            </ul>
+          </div>
+        </div>
+        <div className="border-t border-white/10 py-4 text-center text-xs text-gray-400">
+          © {new Date().getFullYear()} luxe24 Ltd. All rights reserved.
+        </div>
+      </footer>
+    </main>
+  );
+}
+
