@@ -1,0 +1,95 @@
+console.log("LoggedInPage loaded");
+
+import { useEffect, useState } from "react";
+import { motion } from 'framer-motion';
+
+/**
+ * Renders the dashboard for an authenticated user.
+ *
+ * ─ How it works ─────────────────────────────────────────────────────────────
+ * • On mount, it calls GET /api/me (implemented in your API to return
+ *   { name, email } when req.session.accessToken exists).
+ * • While the request is in‑flight it shows a tiny spinner.
+ * • If the API responds 401/403 it means the user is not logged in → we push
+ *   them back to the public landing page.
+ * • When the user object comes back we greet them by name and hide any
+ *   “Login” / “Sign in with Juno” buttons (Parent <App> can check
+ *   `isAuthenticated` via context or we can simply not render the buttons here).
+ *
+ * Tailwind + Shadcn/ui
+ * – Soft card with a welcome heading
+ * – Motion slide‑in (feels snappy)
+ */
+
+
+
+export default function LoggedInPage() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  console.log("LoggedInPage: loading", loading);
+
+  useEffect(() => {
+    async function fetchUser() {
+      try {
+        const res = await fetch("/api/me", { credentials: "include" });
+        console.log("LoggedInPage: /api/me", res);
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data);
+        } else {
+          // not authenticated – kick back to landing page
+          window.location.replace("/");
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchUser();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <svg className="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+        </svg>
+      </div>
+    );
+  }
+
+  return (
+    <main className="h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <motion.div
+          initial={{ y: 40, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4 }}
+          className="bg-white shadow-xl rounded-2xl p-8 text-center space-y-4"
+        >
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Welcome{user?.name ? `, ${user.name}` : "!"}
+          </h1>
+          <p className="text-gray-600">
+            You’re now signed in with your Juno account.
+          </p>
+          <div className="divide-y divide-gray-200">
+            <div className="py-4">
+              <span className="font-medium">Email:</span> {user?.email}
+            </div>
+          </div>
+          <button
+            className="mt-6 inline-flex items-center rounded-xl border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100"
+            onClick={async () => {
+              await fetch("/api/logout", { method: "POST", credentials: "include" });
+              window.location.replace("/");
+            }}
+          >
+            Sign out
+          </button>
+        </motion.div>
+      </div>
+    </main>
+  );
+}
