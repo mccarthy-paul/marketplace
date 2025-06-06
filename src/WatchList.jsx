@@ -28,7 +28,7 @@ const WatchList = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 font-sans">
+    <div className="min-h-screen bg-white font-sans">
       <div className="max-w-7xl mx-auto px-6 py-8">
         <h1 className="text-3xl lg:text-4xl font-bold text-center text-gray-800 mb-8">Watch Marketplace</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -50,6 +50,12 @@ const WatchList = () => {
                     <p className="text-sm text-gray-600">Ref: {watch.reference_number}</p>
                     {watch.price && (
                       <p className="text-lg font-bold text-gray-800 mt-2">${watch.price.toLocaleString()}</p>
+                    )}
+                    {watch.owner && (
+                      <>
+                        <p className="text-sm text-gray-700 mt-1">Owner: {watch.owner.name}</p>
+                        <p className="text-sm text-gray-700">Company: {watch.owner.company_name}</p>
+                      </>
                     )}
                     {/* Add more watch details here as needed */}
                   </div>

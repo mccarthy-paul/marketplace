@@ -6,6 +6,7 @@ import fetch from 'node-fetch'; // pnpm add node-fetch@3
 import qs from 'node:querystring';
 import crypto from 'node:crypto';
 import { v4 as uuidv4 } from 'uuid';
+import jwt from 'jsonwebtoken'; // Import jsonwebtoken
 import User from '../db/userModel.js';
 
 const router = express.Router();
@@ -23,6 +24,7 @@ console.log('authCallback.js loaded');
 // app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: true }));
 
 router.get('/callback', async (req, res, next) => {
+  console.log('--- Start of /auth/juno/callback ---');
   try {
     console.log('↪ callback hit',
   'query.state =', req.query.state,
@@ -37,6 +39,8 @@ router.get('/callback', async (req, res, next) => {
     //}
     // tidy up
     //res.clearCookie('oauth_state');
+
+    console.log('--- After state check ---');
 
     /* ---------- 2.  Exchange the code for tokens ---------- */
     const tokenEndpoint = 'http://localhost:8000/oidc/token';
@@ -73,6 +77,8 @@ router.get('/callback', async (req, res, next) => {
          access_token, id_token, refresh_token?, expires_in, token_type
        } */
 
+    console.log('--- After token exchange ---');
+
     /* ---------- 3.  Persist & redirect ---------- */
     req.session.accessToken  = tokenSet.access_token;
     req.session.idToken      = tokenSet.id_token;
@@ -83,27 +89,34 @@ router.get('/callback', async (req, res, next) => {
     console.log('Refresh token:', tokenSet.refresh_token);
     console.log('Token expires in:', tokenSet.expires_in, 'seconds');
 
-    // Hardcode user info for testing
-    const userInfo = {
-      sub: 'paul.mccarthy@badbeat.com', // Using email as sub for uniqueness
-      email: 'paul.mccarthy@badbeat.com',
-      name: 'Paul McCarthy',
-      company_name: 'big Picture Software', // Add company name
-    };
-    const juno_id = userInfo.sub; // Using sub as the unique Juno ID
-    const email = userInfo.email;
-    const name = userInfo.name;
-    const company_name = userInfo.company_name;
+    // Decode the ID token to get user information
+    const decodedIdToken = jwt.decode(tokenSet.id_token);
+    console.log('Decoded ID Token:', decodedIdToken);
+
+    const juno_id = decodedIdToken.sub; // Use 'sub' as the unique Juno ID
+    const email = decodedIdToken.email;
+    const name = decodedIdToken.name;
+    const company_name = decodedIdToken.company_name; // Assuming 'company_name' is a claim in the ID token
+
+console.log('Decoded ID Token juno_id:', juno_id);
+console.log('Decoded ID Token email:', email);
+console.log('Decoded ID Token:', name);
+console.log('Decoded ID Token:', company_name);
 
     // Check if user exists, create if not
     let user = await findUserByJunoId(juno_id);
     if (!user) {
+      // Log a warning if required fields are missing from the ID token
+      if (!email || !name || !company_name) {
+        console.warn(`Missing required fields in ID token for juno_id: ${juno_id}. Email: ${email}, Name: ${name}, Company Name: ${company_name}`);
+      }
       user = await createUser(juno_id, email, name, company_name); // Pass company_name
     }
 
     req.session.user = user; // Store user in session
 
-    res.redirect('http://localhost:5173/loggedin'); // front-end SPA route after login
+    // Redirect to the loggedin page, including the id_token as a query parameter
+    res.redirect(`http://localhost:5173/loggedin?id_token=${tokenSet.id_token}`); // front-end SPA route after login
   } catch (err) {
     console.error('Error in /auth/juno/callback:', err);
     next(err);
@@ -111,8 +124,25 @@ router.get('/callback', async (req, res, next) => {
 });
 
 // Helper functions for user creation and retrieval
-async function createUser(juno_id, email, name, company_name) { // Add company_name parameter
-  const newUser = new User({ juno_id, email, name, company_name, is_admin: false }); // Use company_name
+async function createUser(juno_id, email, name, company_name) {
+  // Add checks for required fields before creating the user
+  if (!email) {
+    console.warn(`Email is missing for user with juno_id: ${juno_id}. Using a placeholder.`);
+  }
+  if (!name) {
+    console.warn(`Name is missing for user with juno_id: ${juno_id}. Using a placeholder.`);
+  }
+  if (!company_name) {
+    console.warn(`Company name is missing for user with juno_id: ${juno_id}. Using a placeholder.`);
+  }
+
+  const newUser = new User({
+    juno_id,
+    email: juno_id || 'placeholder@example.com', // Provide a default or handle as needed
+    name: juno_id || 'Placeholder Name', // Provide a default or handle as needed
+    company_name: company_name || 'Placeholder Company', // Provide a default or handle as needed
+    is_admin: false
+  });
   await newUser.save();
   console.log('Creating user:', newUser);
   return newUser;

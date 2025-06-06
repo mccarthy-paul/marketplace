@@ -76,13 +76,20 @@ app.get('/auth/juno/callback', async (req, res) => {
   res.redirect('http://localhost:5173/dashboard'); // or wherever
 });
 
-//app.get('/api/me', isAuthenticated, (req, res) => {
-//  res.json({ user: req.session.user });
-//});
+app.get('/api/me', isAuthenticated, (req, res) => {
+  res.json({ user: req.session.user });
+});
 
 /* 2️⃣  logout  ──────────────────────────────────────────────────*/
 app.post('/auth/logout', (req, res) => {
-  req.session.destroy(() => res.redirect('/'));
+  // Clear server-side cookies
+  res.clearCookie('connect.sid', { path: '/' }); // Clear the session cookie (adjust name/path if needed)
+  res.clearCookie('oauth_state', { path: '/' }); // Clear the oauth_state cookie (adjust path if needed)
+
+  req.session.destroy(() => {
+    // Redirect to the home page after destroying the session
+    res.redirect('/');
+  });
 });
 
 // Sample route for testing
@@ -91,15 +98,14 @@ app.get('/api/test', (req, res) => {
 });
 
 // Middleware to check if user is authenticated
-// PMC comment out
-//function isAuthenticated(req, res, next) {
-//  console.log('isAuthenticated middleware: req.session.user:', req.session?.user);
-//  if (req.session && req.session.user) {
-//    next();
-//  } else {
-//    res.status(401).json({ message: 'Unauthorized' });
-//  }
-//}
+function isAuthenticated(req, res, next) {
+  console.log('isAuthenticated middleware: req.session.user:', req.session?.user);
+  if (req.session && req.session.user) {
+    next();
+  } else {
+    res.status(401).json({ message: 'Unauthorized' });
+  }
+}
 
 // Example protected route
 // PMC TEST COMMENT OUT
