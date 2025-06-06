@@ -15,6 +15,20 @@ const bidSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  ownerEmail: {
+    type: String,
+  },
+  bidderEmail: {
+    type: String,
+  },
+  bidderName: {
+    type: String,
+  },
+  status: {
+    type: String,
+    enum: ['offered', 'accepted', 'rejected', 'cancelled'], // Define possible status values
+    default: 'offered',
+  },
   created_at: {
     type: Date,
     default: Date.now,

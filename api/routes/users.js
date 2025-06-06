@@ -5,9 +5,13 @@ const router = express.Router();
 
 // Middleware to check if user is authenticated (assuming it's defined in api/index.js)
 function isAuthenticated(req, res, next) {
+  console.log('isAuthenticated middleware in users.js:');
+  console.log('req.session:', req.session);
+  console.log('req.session.user:', req.session?.user);
   if (req.session && req.session.user) {
     next();
   } else {
+    console.log('Authentication failed in users.js: req.session or req.session.user is missing.');
     res.status(401).json({ message: 'Unauthorized' });
   }
 }
@@ -28,6 +32,27 @@ router.get('/', isAuthenticated, isAdmin, async (req, res) => {
     res.json(users);
   } catch (err) {
     console.error('Error fetching users:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get the currently authenticated user
+router.get('/me', isAuthenticated, async (req, res) => {
+  try {
+    // The isAuthenticated middleware adds the user to req.session.user
+    const user = req.session.user;
+    // You might want to fetch the user from the database again here
+    // to ensure you have the latest data, but for now, we'll return
+    // the user object from the session.
+    // const user = await User.findById(req.session.user._id);
+    if (user) {
+      res.json({ user });
+    } else {
+      // This case should ideally not be reached if isAuthenticated works correctly
+      res.status(404).json({ message: 'User not found in session' });
+    }
+  } catch (err) {
+    console.error('Error fetching current user:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });

@@ -1,21 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 const AdminDashboard = () => {
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center min-h-screen">
       <h2>Admin Dashboard</h2>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/admin/users">User Admin</Link>
-          </li>
-          <li>
-            <Link to="/admin/watches">Watch Admin</Link>
-          </li>
-          {/* Add other menu options here later */}
-        </ul>
-      </nav>
+      <img src="/luxurywatches.jpg" alt="Luxury Watches" className="max-w-full h-auto" />
     </div>
   );
 };

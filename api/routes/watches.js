@@ -38,7 +38,7 @@ router.get('/', async (req, res) => {
 
   console.log('Inside api get all watches...');
   try {
-    const watches = await Watch.find();
+    const watches = await Watch.find().populate('owner', 'email name company_name'); // Populate owner with email, name, and company name
     res.json(watches);
   } catch (err) {
     console.error('Error fetching watches:', err);
@@ -50,7 +50,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const watchId = req.params.id;
-    const watch = await Watch.findById(watchId);
+    const watch = await Watch.findById(watchId).populate('owner', 'email name company_name'); // Populate owner with email, name, and company name
     if (watch) {
       res.json(watch);
     } else {
@@ -117,8 +117,8 @@ router.put('/:id', isAuthenticated, upload.single('watchImage'), async (req, res
   }
   try {
     const watchId = req.params.id;
-    const { brand, model, reference_number, description, year, condition, seller } = req.body; // Include seller
-    const updateData = { brand, model, reference_number, description, year, condition, seller, updated_at: new Date() }; // Include seller
+    const { brand, model, reference_number, description, year, condition, seller, owner } = req.body; // Include seller and owner
+    const updateData = { brand, model, reference_number, description, year, condition, seller, owner, updated_at: new Date() }; // Include seller and owner
 
     if (req.file) {
       updateData.imageUrl = `/uploads/watches/${req.file.filename}`; // Update image path if a new image is uploaded

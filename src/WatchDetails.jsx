@@ -7,6 +7,8 @@ const WatchDetails = () => {
   const [loading, setLoading] = useState(true);
   const [bidAmount, setBidAmount] = useState('');
 
+  
+
   useEffect(() => {
     fetch(`http://localhost:8001/api/watches/${id}`)
       .then(res => {
@@ -32,13 +34,14 @@ const handlePlaceBid = async () => {
   }
 
   try {
-    const response = await fetch(`/api/bids/${id}`, {
+    const response = await fetch(`http://localhost:8001/api/bids/${id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         // Add authorization header if needed
       },
       body: JSON.stringify({ amount: parseFloat(bidAmount) }),
+      credentials: 'include', // Include cookies
     });
 
     const data = await response.json();
@@ -124,6 +127,13 @@ if (loading) {
             <p className="text-gray-700 mb-2"><strong>Condition:</strong> {watch.condition}</p>
             {watch.price && (
               <p className="text-gray-700 mb-2"><strong>Price:</strong> ${watch.price.toLocaleString()}</p>
+            )}
+            {watch.owner && (
+              <>
+                <p className="text-gray-700 mb-2"><strong>Owner Email:</strong> {watch.owner.email}</p>
+                <p className="text-gray-700 mb-2"><strong>Owner Name:</strong> {watch.owner.name}</p>
+                <p className="text-gray-700 mb-2"><strong>Owner Company:</strong> {watch.owner.company_name}</p>
+              </>
             )}
             <p className="text-gray-700 mt-4"><strong>Description:</strong> {watch.description}</p>
             {/* Add more watch details here as needed */}

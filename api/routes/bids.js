@@ -1,15 +1,20 @@
 import express from 'express';
 import Bid from '../db/bidModel.js';
 import Watch from '../db/watchModel.js';
+import User from '../db/userModel.js'; // Import User model
 // Assuming authentication middleware
 
 const router = express.Router();
 
 // Middleware to check if user is authenticated (copied from watches.js)
 function isAuthenticated(req, res, next) {
+  console.log('isAuthenticated middleware in bids.js:');
+  console.log('req.session:', req.session);
+  console.log('req.session.user:', req.session?.user);
   if (req.session && req.session.user) {
     next();
   } else {
+    console.log('Authentication failed: req.session or req.session.user is missing.');
     res.status(401).json({ message: 'Unauthorized' });
   }
 }
@@ -21,10 +26,16 @@ function isAuthenticated(req, res, next) {
 router.post('/:watchId', isAuthenticated, async (req, res) => {
   const { amount } = req.body;
   const { watchId } = req.params;
-  const bidderId = req.user._id; // Assuming user ID is available from protect middleware
+  const bidderId = req.session.user._id; // Get user ID from session
 
   try {
-    const watch = await Watch.findById(watchId);
+    // Fetch the bidder's user document to get email and name
+    const bidderUser = await User.findById(bidderId);
+    if (!bidderUser) {
+      return res.status(404).json({ message: 'Bidder user not found' });
+    }
+
+    const watch = await Watch.findById(watchId).populate('owner', 'email'); // Populate owner to get email
 
     if (!watch) {
       return res.status(404).json({ message: 'Watch not found' });
@@ -40,18 +51,36 @@ router.post('/:watchId', isAuthenticated, async (req, res) => {
       watch: watchId,
       bidder: bidderId,
       amount,
+      ownerEmail: watch.owner ? watch.owner.email : null, // Populate owner email
+      bidderEmail: bidderUser.email, // Populate bidder email
+      bidderName: bidderUser.name, // Populate bidder name
+      status: 'offered', // Set initial status
     });
 
-    await bid.save();
+    try {
+      await bid.save();
+      console.log('Bid saved successfully:', bid);
+    } catch (saveError) {
+      console.error('Error saving bid:', saveError);
+      return res.status(500).json({ message: 'Error saving bid' });
+    }
+
 
     // Update the watch's current bid and buyer
     watch.currentBid = amount;
     watch.buyer = bidderId; // Temporarily set buyer to the highest bidder
-    await watch.save();
+    try {
+      await watch.save();
+      console.log('Watch updated successfully:', watch);
+    } catch (saveError) {
+      console.error('Error saving watch:', saveError);
+      return res.status(500).json({ message: 'Error saving watch' });
+    }
+
 
     res.status(201).json({ message: 'Bid placed successfully', bid });
   } catch (error) {
-    console.error(error);
+    console.error('Error in bid placement process:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -68,6 +97,89 @@ router.get('/:watchId', async (req, res) => {
     res.json(bids);
   } catch (error) {
     console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+// @desc    Get bids for watches owned by the logged-in user
+// @route   GET /api/bids/user/watches
+// @access  Private
+router.get('/user/watches', isAuthenticated, async (req, res) => {
+  const userId = req.session.user._id; // Assuming user ID is available from session
+  const userEmail = req.session.user.email; // Get user email from session
+  console.log('Fetching bids for user:', userId, 'with email:', userEmail);
+
+  try {
+    // Find bids where the user is the bidder or the owner of the watch
+    const query = {
+      $or: [
+        { bidder: userId },
+        { ownerEmail: userEmail } // Assuming ownerEmail is stored in bid and matches user's email
+      ]
+    };
+    console.log('Mongoose query:', JSON.stringify(query));
+
+    const bids = await Bid.find(query)
+      .populate('watch', 'model price') // Populate watch with model and price
+      .populate('bidder', 'email'); // Populate bidder with email
+
+    console.log('Fetched bids:', bids);
+
+    res.json(bids);
+  } catch (error) {
+    console.error('Error fetching user watches bids:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+// @desc    Update bid status
+// @route   PUT /api/bids/:bidId/status
+// @access  Private
+router.put('/:bidId/status', isAuthenticated, async (req, res) => {
+  const { status } = req.body;
+  const { bidId } = req.params;
+  const userId = req.session.user._id; // Logged-in user ID
+  const userEmail = req.session.user.email; // Logged-in user email
+
+  try {
+    const bid = await Bid.findById(bidId).populate('watch', 'owner'); // Populate watch to check owner
+
+    if (!bid) {
+      return res.status(404).json({ message: 'Bid not found' });
+    }
+
+    // Authorization check
+    const isOwner = bid.ownerEmail === userEmail;
+    const isBidder = bid.bidder.equals(userId);
+
+    if (!isOwner && !isBidder) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+
+    // Validate status change based on user type and current status
+    if (isOwner) {
+      // Owner can accept or reject offered bids
+      if (bid.status === 'offered' && (status === 'accepted' || status === 'rejected')) {
+        bid.status = status;
+      } else {
+        return res.status(400).json({ message: `Invalid status change for owner from ${bid.status}` });
+      }
+    } else if (isBidder) {
+      // Bidder can cancel offered bids
+      if (bid.status === 'offered' && status === 'cancelled') {
+        bid.status = status;
+      } else {
+        return res.status(400).json({ message: `Invalid status change for bidder from ${bid.status}` });
+      }
+    }
+
+    await bid.save();
+
+    res.json({ message: 'Bid status updated successfully', bid });
+  } catch (error) {
+    console.error('Error updating bid status:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

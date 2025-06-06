@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoggedInPage from './LoggedInPage.jsx';
 import HomePage from './HomePage.jsx'; // ⬅ create from the hero JSX
 import NavBar from './NavBar.jsx'; // ⬅ extract the header
@@ -19,7 +19,9 @@ import UserAdminList from './admin/UserAdminList.jsx'; // Import UserAdminList
 import UserAdminAdd from './admin/UserAdminAdd.jsx'; // Import UserAdminAdd
 import UserAdminEdit from './admin/UserAdminEdit.jsx'; // Import UserAdminEdit
 import AdminDashboard from './admin/AdminDashboard.jsx'; // Import AdminDashboard
+import UserWatchBids from './UserWatchBids.jsx'; // Import UserWatchBids
 import { Navigate } from 'react-router-dom'; // Import Navigate
+import NavigationHandler from './NavigationHandler.jsx'; // Import NavigationHandler
 import './index.css';
 import axios from 'axios'; // Import axios
 
@@ -88,7 +90,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <NavBar navOpen={navOpen} setNavOpen={setNavOpen} />
+      <NavigationHandler navOpen={navOpen} setNavOpen={setNavOpen} />
 
       <Routes>
         <Route path="/" element={<HomePage beginAuth={beginAuth} />} />
@@ -100,6 +102,7 @@ export default function App() {
         <Route path="/watches/:id" element={<WatchDetails />} />
         <Route path="/listings/:id" element={<ListingDetails />} />
         <Route path="/orders/:id" element={<OrderDetails />} />
+        <Route path="/my-watch-bids" element={<UserWatchBids />} /> {/* Route for user's watch bids */}
         {/* Admin Routes */}
         {/* Admin Login Route */}
         <Route path="/admin/login" element={<AdminLogin />} />

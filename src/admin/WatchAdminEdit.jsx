@@ -16,14 +16,14 @@ const WatchAdminEdit = () => {
     condition: '',
     watchImage: null, // For the new image file
     imageUrl: '', // To display the current image
-    seller: '', // Add seller field to form data
+    owner: '', // Add owner field to form data, will store user ID
   });
 
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('/api/users'); // Fetch users from backend
+        const response = await axios.get('http://localhost:8001/api/users'); // Fetch users from backend
         setUsers(response.data);
         setUsersLoading(false);
       } catch (err) {
@@ -45,7 +45,12 @@ const WatchAdminEdit = () => {
       try {
         // TODO: Use the admin specific endpoint once implemented and secured
         const response = await axios.get(`http://localhost:8001/api/watches/${id}`);
-        setFormData({ ...response.data, watchImage: null }); // Pre-fill form with existing data
+        const watchData = response.data;
+        setFormData({
+          ...watchData,
+          watchImage: null,
+          owner: watchData.owner ? watchData.owner._id : '', // Set owner to user ID if populated, otherwise empty string
+        });
         setLoading(false);
       } catch (err) {
         setError(err);
@@ -73,6 +78,10 @@ const WatchAdminEdit = () => {
 
     const data = new FormData();
     for (const key in formData) {
+      if (key === 'owner' && formData[key] === '') {
+        // Don't append owner if not selected
+        continue;
+      }
       if (formData[key] !== null) { // Don't append null values
         data.append(key, formData[key]);
       }
@@ -131,6 +140,21 @@ const WatchAdminEdit = () => {
         <div>
           <label htmlFor="condition">Condition:</label>
           <input type="text" id="condition" name="condition" value={formData.condition} onChange={handleInputChange} />
+        </div>
+        <div>
+          <label htmlFor="owner">Owner:</label>
+          {usersLoading ? (
+            <div>Loading users...</div>
+          ) : usersError ? (
+            <div>Error loading users: {usersError.message}</div>
+          ) : (
+            <select id="owner" name="owner" value={formData.owner} onChange={handleInputChange}>
+              <option value="">Select an owner</option>
+              {users.map(user => (
+                <option key={user._id} value={user._id}>{user.email}</option>
+              ))}
+            </select>
+          )}
         </div>
         <div>
           <label htmlFor="watchImage">Watch Image:</label>

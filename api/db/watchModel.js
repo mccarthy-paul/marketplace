@@ -9,6 +9,7 @@ const watchSchema = new mongoose.Schema({
   condition: { type: String },
   imageUrl: { type: String }, // Added imageUrl field
   seller: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Added seller field referencing User model
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Added owner field referencing User model
   currentBid: {
     type: Number,
     default: 0,

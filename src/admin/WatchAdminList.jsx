@@ -42,6 +42,9 @@ const WatchAdminList = () => {
             <th>Reference Number</th>
             <th>Year</th>
             <th>Condition</th>
+            <th>Owner Email</th>
+            <th>Owner Name</th>
+            <th>Owner Company</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -53,6 +56,9 @@ const WatchAdminList = () => {
               <td>{watch.reference_number}</td>
               <td>{watch.year}</td>
               <td>{watch.condition}</td>
+              <td>{watch.owner ? watch.owner.email : 'N/A'}</td>
+              <td>{watch.owner ? watch.owner.name : 'N/A'}</td>
+              <td>{watch.owner ? watch.owner.company_name : 'N/A'}</td>
               <td>
                 <Link to={`/admin/watches/edit/${watch._id}`}>Edit</Link>
                 <button onClick={() => handleDelete(watch._id)}>Delete</button>
