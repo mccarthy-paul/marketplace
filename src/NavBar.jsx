@@ -56,9 +56,16 @@ export default function NavBar({ navOpen, setNavOpen }) {
       // Clear local storage
       localStorage.clear();
 
-      // Attempt to clear cookies for localhost
-      document.cookie.split(";").forEach((c) => {
-        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      // Attempt to clear cookies for localhost for root path and current path
+      const cookies = document.cookie.split(";");
+      const expirationDate = new Date(0).toUTCString(); // Set expiration to a past date
+
+      cookies.forEach((c) => {
+        const cookieName = c.replace(/^ +/, "").split("=")[0];
+        // Clear for root path
+        document.cookie = cookieName + "=; expires=" + expirationDate + "; path=/";
+        // Clear for current path
+        document.cookie = cookieName + "=; expires=" + expirationDate + "; path=" + window.location.pathname;
       });
 
       // Call the logout API endpoint
