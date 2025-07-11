@@ -6,8 +6,8 @@ const WatchDetails = () => {
   const [watch, setWatch] = useState(null);
   const [loading, setLoading] = useState(true);
   const [bidAmount, setBidAmount] = useState('');
+  const [comment, setComment] = useState('');
 
-  
 
   useEffect(() => {
     fetch(`http://localhost:8001/api/watches/${id}`)
@@ -40,7 +40,7 @@ const handlePlaceBid = async () => {
         'Content-Type': 'application/json',
         // Add authorization header if needed
       },
-      body: JSON.stringify({ amount: parseFloat(bidAmount) }),
+      body: JSON.stringify({ amount: parseFloat(bidAmount), comment }),
       credentials: 'include', // Include cookies
     });
 
@@ -143,22 +143,28 @@ if (loading) {
               <p className="text-gray-700 mb-4"><strong>Status:</strong> {watch.status}</p>
 
               {watch.status === 'active' && (
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col gap-4">
                   <input
                     type="number"
                     placeholder="Enter your bid"
-                    className="px-4 py-2 border rounded-md w-1/2"
+                    className="px-4 py-2 border rounded-md w-full"
                     value={bidAmount}
                     onChange={(e) => setBidAmount(e.target.value)}
                   />
+                  <textarea
+                    placeholder="Add a comment (optional)"
+                    className="px-4 py-2 border rounded-md w-full"
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                  ></textarea>
                   <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 w-full"
                     onClick={handlePlaceBid}
                   >
                     Place Bid
                   </button>
                   <button
-                    className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+                    className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 w-full"
                     onClick={handleBuyNow}
                   >
                     Buy Now

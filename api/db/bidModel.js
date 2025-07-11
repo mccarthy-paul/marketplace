@@ -33,6 +33,23 @@ const bidSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  comments: [
+    {
+      text: {
+        type: String,
+        required: true,
+      },
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+      },
+      created_at: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
 });
 
 const Bid = mongoose.model('Bid', bidSchema);
