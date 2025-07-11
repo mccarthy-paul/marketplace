@@ -20,6 +20,8 @@ import UserAdminAdd from './admin/UserAdminAdd.jsx'; // Import UserAdminAdd
 import UserAdminEdit from './admin/UserAdminEdit.jsx'; // Import UserAdminEdit
 import AdminDashboard from './admin/AdminDashboard.jsx'; // Import AdminDashboard
 import UserWatchBids from './UserWatchBids.jsx'; // Import UserWatchBids
+import WatchBidsPage from './WatchBidsPage'; // Import WatchBidsPage
+import BidDetailsPage from './BidDetailsPage'; // Import BidDetailsPage
 import { Navigate } from 'react-router-dom'; // Import Navigate
 import NavigationHandler from './NavigationHandler.jsx'; // Import NavigationHandler
 import './index.css';
@@ -103,6 +105,8 @@ export default function App() {
         <Route path="/listings/:id" element={<ListingDetails />} />
         <Route path="/orders/:id" element={<OrderDetails />} />
         <Route path="/my-watch-bids" element={<UserWatchBids />} /> {/* Route for user's watch bids */}
+        <Route path="/watch-bids/:watchId" element={<WatchBidsPage />} /> {/* Route for watch-specific bids */}
+        <Route path="/bids/:bidId" element={<BidDetailsPage />} /> {/* Route for bid details */}
         {/* Admin Routes */}
         {/* Admin Login Route */}
         <Route path="/admin/login" element={<AdminLogin />} />

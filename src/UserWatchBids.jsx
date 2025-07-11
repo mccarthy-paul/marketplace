@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const UserWatchBids = () => {
@@ -6,6 +7,7 @@ const UserWatchBids = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentUser, setCurrentUser] = useState(null); // State to store logged-in user
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -75,6 +77,7 @@ const UserWatchBids = () => {
         <table>
           <thead>
             <tr>
+              <th>Bid ID</th>
               <th>Watch Model</th>
               <th>Watch Price</th>
               <th>Bid Amount</th>
@@ -85,6 +88,7 @@ const UserWatchBids = () => {
               <th>Owner Name</th>
               <th>Owner Company</th>
               <th>Bid Time</th>
+              <th>Comments</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -96,7 +100,10 @@ const UserWatchBids = () => {
 
               return (
                 <tr key={bid._id}>
-                  <td>{bid.watch ? bid.watch.model : 'N/A'}</td>
+                  <td>{bid._id}</td>
+                  <td onClick={() => navigate(`/watch-bids/${bid.watch?._id}`)} style={{ cursor: 'pointer', textDecoration: 'underline' }}>
+                    {bid.watch ? bid.watch.model : 'N/A'}
+                  </td>
                   <td>{bid.watch ? `$${bid.watch.price.toLocaleString()}` : 'N/A'}</td>
                   <td>${bid.amount.toLocaleString()}</td>
                   <td>{bid.bidder ? bid.bidder.email : 'N/A'}</td>
@@ -106,6 +113,17 @@ const UserWatchBids = () => {
                   <td>{bid.ownerName ? bid.ownerName : 'N/A'}</td>
                   <td>{bid.ownerCompany ? bid.ownerCompany : 'N/A'}</td>
                   <td>{new Date(bid.created_at).toLocaleString()}</td>
+                  <td>
+                    {bid.comments && bid.comments.length > 0 ? (
+                      <ul>
+                        {bid.comments.map((comment, index) => (
+                          <li key={index}>{comment.text}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      'No comments'
+                    )}
+                  </td>
                   <td>
                     {/* Buttons for bids received (user is owner) */}
                     {isOwner && bid.status === 'offered' && (
@@ -118,6 +136,8 @@ const UserWatchBids = () => {
                     {isBidder && bid.status === 'offered' && (
                       <button onClick={() => handleUpdateBidStatus(bid._id, 'cancelled')}>Cancel</button>
                     )}
+                    {/* Comment button */}
+                    <button onClick={() => navigate(`/bids/${bid._id}`)}>Comment</button>
                   </td>
                 </tr>
               );

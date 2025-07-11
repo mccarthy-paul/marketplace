@@ -24,7 +24,7 @@ function isAuthenticated(req, res, next) {
 // @route   POST /api/bids/:watchId
 // @access  Private
 router.post('/:watchId', isAuthenticated, async (req, res) => {
-  const { amount } = req.body;
+  const { amount, comment } = req.body;
   const { watchId } = req.params;
   const bidderId = req.session.user._id; // Get user ID from session
 
@@ -55,6 +55,7 @@ router.post('/:watchId', isAuthenticated, async (req, res) => {
       bidderEmail: bidderUser.email, // Populate bidder email
       bidderName: bidderUser.name, // Populate bidder name
       status: 'offered', // Set initial status
+      comments: comment ? [{ text: comment, user: bidderId, created_at: new Date() }] : [], // Add initial comment if provided
     });
 
     try {
@@ -102,6 +103,62 @@ router.get('/:watchId', async (req, res) => {
 });
 
 
+// @desc    Get a single bid by ID
+// @route   GET /api/bids/:bidId
+// @access  Public (or Private, depending on requirements - making it Public for now)
+router.get('/:bidId', async (req, res) => {
+  const { bidId } = req.params;
+
+  try {
+    const bid = await Bid.findById(bidId)
+      .populate('watch', 'model price') // Populate watch details
+      .populate('bidder', 'email name'); // Populate bidder details
+      // TODO: Populate comments once added to model
+
+    if (!bid) {
+      return res.status(404).json({ message: 'Bid not found' });
+    }
+
+    res.json(bid);
+  } catch (error) {
+    console.error('Error fetching bid details:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+// @desc    Add a comment to a bid
+// @route   POST /api/bids/:bidId/comments
+// @access  Private
+router.post('/:bidId/comments', isAuthenticated, async (req, res) => {
+  const { comment } = req.body;
+  const { bidId } = req.params;
+  const userId = req.session.user._id; // Logged-in user ID
+
+  try {
+    const bid = await Bid.findById(bidId);
+
+    if (!bid) {
+      return res.status(404).json({ message: 'Bid not found' });
+    }
+
+    // Add the comment to the bid's comments array
+    bid.comments.push({
+      text: comment,
+      user: userId, // Store the user who made the comment
+      created_at: new Date()
+    });
+
+    await bid.save();
+
+    res.status(201).json({ message: 'Comment added successfully', bid });
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
 // @desc    Get bids for watches owned by the logged-in user
 // @route   GET /api/bids/user/watches
 // @access  Private
@@ -122,7 +179,8 @@ router.get('/user/watches', isAuthenticated, async (req, res) => {
 
     const bids = await Bid.find(query)
       .populate('watch', 'model price') // Populate watch with model and price
-      .populate('bidder', 'email'); // Populate bidder with email
+      .populate('bidder', 'email') // Populate bidder with email
+      .populate('comments.user', 'email name'); // Populate the user who made the comment
 
     console.log('Fetched bids:', bids);
 
