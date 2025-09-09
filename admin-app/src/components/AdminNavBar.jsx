@@ -10,7 +10,7 @@ export default function AdminNavBar({ navOpen, setNavOpen }) {
   useEffect(() => {
     const checkAdminStatus = async () => {
       try {
-        const response = await axios.get('http://localhost:8001/api/admin/status');
+        const response = await axios.get('/api/admin/status');
         if (response.status === 200 && response.data.isAuthenticatedAdmin) {
           setIsAuthenticatedAdmin(true);
         } else {
@@ -28,8 +28,8 @@ export default function AdminNavBar({ navOpen, setNavOpen }) {
   }, []);
 
   const menuItems = [
-    { label: 'User Admin', href: '/admin/users' },
-    { label: 'Watch Admin', href: '/admin/watches' },
+    { label: 'User Admin', href: '/users' },
+    { label: 'Watch Admin', href: '/watches' },
   ];
 
   const handleSignOut = async () => {
@@ -43,10 +43,10 @@ export default function AdminNavBar({ navOpen, setNavOpen }) {
       });
 
       // Call the logout API endpoint
-      await fetch("http://localhost:8001/auth/logout", { method: "POST", credentials: "include" }); // Use fetch for logout
+      await fetch("/api/admin/logout", { method: "POST", credentials: "include" }); // Use fetch for logout
 
       // Redirect to the admin login page
-      window.location.replace("/admin/login");
+      window.location.replace("/login");
     } catch (error) {
       console.error('Error signing out:', error);
       alert('Error signing out. Please try again.');
@@ -61,7 +61,7 @@ export default function AdminNavBar({ navOpen, setNavOpen }) {
   return (
     <header className="bg-[#2a2a29] text-white sticky top-0 z-50 shadow-md">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-        <Link to="/admin/dashboard" className="text-2xl font-bold tracking-tight">Admin Dashboard</Link> {/* Link to Admin Dashboard */}
+        <Link to="/dashboard" className="text-2xl font-bold tracking-tight">Admin Dashboard</Link> {/* Link to Admin Dashboard */}
 
         {/* desktop menu */}
         {isAuthenticatedAdmin && (

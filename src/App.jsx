@@ -11,79 +11,26 @@ import OrderList from './OrderList.jsx';
 import WatchDetails from './WatchDetails.jsx';
 import ListingDetails from './ListingDetails.jsx';
 import OrderDetails from './OrderDetails.jsx';
-import WatchAdminList from './admin/WatchAdminList.jsx';
-import WatchAdminAdd from './admin/WatchAdminAdd.jsx';
-import WatchAdminEdit from './admin/WatchAdminEdit.jsx';
-import AdminLogin from './admin/AdminLogin.jsx'; // Import AdminLogin
-import UserAdminList from './admin/UserAdminList.jsx'; // Import UserAdminList
-import UserAdminAdd from './admin/UserAdminAdd.jsx'; // Import UserAdminAdd
-import UserAdminEdit from './admin/UserAdminEdit.jsx'; // Import UserAdminEdit
-import AdminDashboard from './admin/AdminDashboard.jsx'; // Import AdminDashboard
 import UserWatchBids from './UserWatchBids.jsx'; // Import UserWatchBids
 import WatchBidsPage from './WatchBidsPage'; // Import WatchBidsPage
 import BidDetailsPage from './BidDetailsPage'; // Import BidDetailsPage
+import ProfilePage from './ProfilePage.jsx'; // Import ProfilePage
+import AddWatch from './AddWatch.jsx'; // Import AddWatch
+import AdminOrdersPage from './AdminOrdersPage.jsx'; // Import AdminOrdersPage
+import AdminBidsPage from './AdminBidsPage.jsx'; // Import AdminBidsPage
+import AdminOrderDetailPage from './AdminOrderDetailPage.jsx'; // Import AdminOrderDetailPage
+import AdminBidDetailPage from './AdminBidDetailPage.jsx'; // Import AdminBidDetailPage
+import AdminLogin from './AdminLogin.jsx'; // Import AdminLogin
 import { Navigate } from 'react-router-dom'; // Import Navigate
 import NavigationHandler from './NavigationHandler.jsx'; // Import NavigationHandler
+import AssistantButton from './components/assistant/AssistantButton.jsx'; // Import AssistantButton
 import './index.css';
 import axios from 'axios'; // Import axios
 
 axios.defaults.withCredentials = true; // Configure axios to send cookies
 
-// Simple Admin Route Wrapper
-const AdminRoute = ({ children }) => {
-  const [isAuthenticatedAdmin, setIsAuthenticatedAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const checkAdminStatus = async () => {
-      try {
-        const response = await axios.get('http://localhost:8001/api/admin/status');
-        if (response.status === 200 && response.data.isAuthenticatedAdmin) {
-          setIsAuthenticatedAdmin(true);
-        } else {
-          setIsAuthenticatedAdmin(false);
-        }
-      } catch (err) {
-        setIsAuthenticatedAdmin(false);
-        console.error('Admin status check failed:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAdminStatus();
-  }, []);
-
-  if (loading) {
-    return <div>Loading authentication status...</div>; // Loading indicator
-  }
-
-  if (!isAuthenticatedAdmin) {
-    // Redirect to admin login if not authenticated or not admin
-    return <Navigate to="/admin/login" replace />;
-  }
-
-  return children; // Render the protected component if authenticated admin
-};
-
-function beginAuth() {
-  const state = generateRandomString(16);
-  const verifier = generateRandomString(64);
-  sessionStorage.setItem('pkce_state', state);
-  sessionStorage.setItem('pkce_verifier', verifier);
-  generateCodeChallenge(verifier).then(challenge => {
-    const params = new URLSearchParams({
-      response_type: 'code',
-      client_id: clientId,
-      redirect_uri: redirectUri,
-      scope,
-      state,
-      code_challenge: challenge,
-      code_challenge_method: 'S256'
-    });
-    window.location = `${authorizeUrl}?${params.toString()}`;
-  });
-}
+// Note: beginAuth function removed - login handled via /auth/junopay/login
 
 export default function App() {
   const [navOpen, setNavOpen] = useState(false);
@@ -95,7 +42,7 @@ export default function App() {
       <NavigationHandler navOpen={navOpen} setNavOpen={setNavOpen} />
 
       <Routes>
-        <Route path="/" element={<HomePage beginAuth={beginAuth} />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/loggedin" element={<LoggedInPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/watches" element={<WatchList />} />
@@ -107,74 +54,23 @@ export default function App() {
         <Route path="/my-watch-bids" element={<UserWatchBids />} /> {/* Route for user's watch bids */}
         <Route path="/watch-bids/:watchId" element={<WatchBidsPage />} /> {/* Route for watch-specific bids */}
         <Route path="/bids/:bidId" element={<BidDetailsPage />} /> {/* Route for bid details */}
+        <Route path="/profile" element={<ProfilePage />} /> {/* Route for user profile */}
+        <Route path="/add-watch" element={<AddWatch />} /> {/* Route for adding a watch */}
+        
         {/* Admin Routes */}
-        {/* Admin Login Route */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-
-        {/* Admin Dashboard Route */}
-        <Route
-          path="/admin/dashboard"
-          element={
-            <AdminRoute>
-              <AdminDashboard />
-            </AdminRoute>
-          }
-        />
-
-        {/* Protected Admin Routes */}
-        <Route
-          path="/admin/watches"
-          element={
-            <AdminRoute>
-              <WatchAdminList />
-            </AdminRoute>
-          }
-        />
-        <Route
-          path="/admin/watches/new"
-          element={
-            <AdminRoute>
-              <WatchAdminAdd />
-            </AdminRoute>
-          }
-        />
-        <Route
-          path="/admin/watches/edit/:id"
-          element={
-            <AdminRoute>
-              <WatchAdminEdit />
-            </AdminRoute>
-          }
-        />
-        {/* Admin User Routes */}
-        <Route
-          path="/admin/users"
-          element={
-            <AdminRoute>
-              <UserAdminList />
-            </AdminRoute>
-          }
-        />
-        <Route
-          path="/admin/users/new"
-          element={
-            <AdminRoute>
-              <UserAdminAdd />
-            </AdminRoute>
-          }
-        />
-        <Route
-          path="/admin/users/edit/:id"
-          element={
-            <AdminRoute>
-              <UserAdminEdit />
-            </AdminRoute>
-          }
-        />
+        <Route path="/admin/orders" element={<AdminOrdersPage />} /> {/* Admin orders management */}
+        <Route path="/admin/bids" element={<AdminBidsPage />} /> {/* Admin bids management */}
+        <Route path="/admin/orders/:orderId" element={<AdminOrderDetailPage />} /> {/* Admin order details */}
+        <Route path="/admin/bids/:bidId" element={<AdminBidDetailPage />} /> {/* Admin bid details */}
+        <Route path="/admin/login" element={<AdminLogin />} /> {/* Admin login */}
+        
         {/* add more routes here */}
       </Routes>
 
       <Footer />
+      
+      {/* AI Assistant - Available on all pages */}
+      <AssistantButton />
     </BrowserRouter>
   );
 }

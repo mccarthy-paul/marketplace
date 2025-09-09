@@ -33,23 +33,25 @@ export default function LoggedInPage() {
 
   console.log("LoggedInPage: loading", loading);
 
+  // Temporarily disable auth check for debugging
   useEffect(() => {
-    async function fetchUser() {
-      try {
-        const res = await fetch("http://localhost:8001/api/me", { credentials: "include" });
-        console.log("LoggedInPage: /api/me", res);
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data.user); // Assuming the API returns { user: { ... } }
-        } else {
-          // not authenticated – kick back to landing page
-          window.location.replace("/");
-        }
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchUser();
+    // async function fetchUser() {
+    //   try {
+    //     const res = await fetch("/api/me", { credentials: "include" });
+    //     console.log("LoggedInPage: /api/me", res);
+    //     if (res.ok) {
+    //       const data = await res.json();
+    //       setUser(data.user); // Assuming the API returns { user: { ... } }
+    //     } else {
+    //       // not authenticated – kick back to landing page
+    //       window.location.replace("/");
+    //     }
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // }
+    // fetchUser();
+    setLoading(false); // Just set loading to false immediately
   }, []);
 
   // Effect to read id_token from URL and store in local storage
@@ -68,24 +70,7 @@ export default function LoggedInPage() {
 
    const [navOpen, setNavOpen] = useState(false);
 
-  function beginAuth() {
-  const state = generateRandomString(16);
-  const verifier = generateRandomString(64);
-  sessionStorage.setItem('pkce_state', state);
-  sessionStorage.setItem('pkce_verifier', verifier);
-  generateCodeChallenge(verifier).then(challenge => {
-    const params = new URLSearchParams({
-      response_type: 'code',
-      client_id: clientId,
-      redirect_uri: redirectUri,
-      scope,
-      state,
-      code_challenge: challenge,
-      code_challenge_method: 'S256'
-    });
-    window.location = `${authorizeUrl}?${params.toString()}`;
-  });
-}
+  // Note: beginAuth function removed - not needed on logged in page
 
   useEffect(() => {
     if (window.location.pathname.startsWith('/auth/callback')) {
@@ -107,8 +92,8 @@ export default function LoggedInPage() {
     { label: 'Watch Brands', href: '#' },
     { label: 'Sell a Watch', href: '#' },
     { label: 'Magazine', href: '#' },
-    { label: 'Watch Collection', href: 'http://localhost:5173/watches' },
-    { label: 'Bids', href: 'http://localhost:5173/my-watch-bids' } 
+    { label: 'Watch Collection', href: 'https://4c153d847f98.ngrok-free.app/watches' },
+    { label: 'Bids', href: 'https://4c153d847f98.ngrok-free.app/my-watch-bids' } 
     // Added link for user's watch bids
   ];
 
@@ -133,7 +118,21 @@ export default function LoggedInPage() {
               Buy, sell and manage your watch collection securely through our Juno‑powered marketplace.
             </p>
             
-            
+            {/* Navigation buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a 
+                href="/watches" 
+                className="bg-[#3ab54a] hover:bg-[#32a042] text-white font-semibold py-3 px-8 rounded-xl shadow-xl transition-transform hover:-translate-y-0.5"
+              >
+                Browse Watches
+              </a>
+              <a 
+                href="/my-watch-bids" 
+                className="bg-gray-800 hover:bg-gray-700 text-white font-semibold py-3 px-8 rounded-xl shadow-xl transition-transform hover:-translate-y-0.5"
+              >
+                My Bids
+              </a>
+            </div>
 
           </div>
         </section>

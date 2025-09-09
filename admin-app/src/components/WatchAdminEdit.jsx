@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from 'react'; // Import useEffect
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useParams } from 'react-router-dom'; // Assuming react-router-dom is used for routing
 
-const WatchAdminAdd = () => {
+const WatchAdminEdit = () => {
+  const { id } = useParams(); // Get watch ID from URL
   const [users, setUsers] = useState([]); // State to store users for the dropdown
+  const [usersLoading, setUsersLoading] = useState(true); // Loading state for users
+  const [usersError, setUsersError] = useState(null); // Error state for users
   const [formData, setFormData] = useState({
     brand: '',
     model: '',
@@ -10,17 +14,16 @@ const WatchAdminAdd = () => {
     description: '',
     year: '',
     condition: '',
-    watchImage: null, // For the image file
-    seller: '', // Add seller field to form data
+    watchImage: null, // For the new image file
+    imageUrl: '', // To display the current image
+    owner: '', // Add owner field to form data, will store user ID
   });
 
-  const [usersLoading, setUsersLoading] = useState(true); // Loading state for users
-  const [usersError, setUsersError] = useState(null); // Error state for users
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('/api/users'); // Fetch users from backend
+        const response = await axios.get('/api/admin/users'); // Fetch users from backend
         setUsers(response.data);
         setUsersLoading(false);
       } catch (err) {
@@ -32,9 +35,31 @@ const WatchAdminAdd = () => {
     fetchUsers();
   }, []); // Empty dependency array means this runs once on mount
 
+  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchWatch = async () => {
+      try {
+        // TODO: Use the admin specific endpoint once implemented and secured
+        const response = await axios.get(`/api/admin/watches/${id}`);
+        const watchData = response.data;
+        setFormData({
+          ...watchData,
+          watchImage: null,
+          owner: watchData.owner ? watchData.owner._id : '', // Set owner to user ID if populated, otherwise empty string
+        });
+        setLoading(false);
+      } catch (err) {
+        setError(err);
+        setLoading(false);
+      }
+    };
+
+    fetchWatch();
+  }, [id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -53,12 +78,18 @@ const WatchAdminAdd = () => {
 
     const data = new FormData();
     for (const key in formData) {
-      data.append(key, formData[key]);
+      if (key === 'owner' && formData[key] === '') {
+        // Don't append owner if not selected
+        continue;
+      }
+      if (formData[key] !== null) { // Don't append null values
+        data.append(key, formData[key]);
+      }
     }
 
     try {
       // TODO: Use the admin specific endpoint once implemented and secured
-      await axios.post('/api/watches', data, {
+      await axios.put(`/api/admin/watches/${id}`, data, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -72,11 +103,19 @@ const WatchAdminAdd = () => {
     }
   };
 
+  if (loading) {
+    return <div>Loading watch data...</div>;
+  }
+
+  if (error && !formData.brand) { // Show error only if initial fetch failed
+    return <div>Error loading watch: {error.message}</div>;
+  }
+
   return (
     <div>
-      <h2>Add New Watch</h2>
-      {success && <div style={{ color: 'green' }}>Watch added successfully!</div>}
-      {error && <div style={{ color: 'red' }}>Error adding watch: {error.message}</div>}
+      <h2>Edit Watch</h2>
+      {success && <div style={{ color: 'green' }}>Watch updated successfully!</div>}
+      {error && <div style={{ color: 'red' }}>Error updating watch: {error.message}</div>}
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="brand">Brand:</label>
@@ -103,18 +142,16 @@ const WatchAdminAdd = () => {
           <input type="text" id="condition" name="condition" value={formData.condition} onChange={handleInputChange} />
         </div>
         <div>
-          <label htmlFor="seller">Seller:</label>
+          <label htmlFor="owner">Owner:</label>
           {usersLoading ? (
-            <div>Loading sellers...</div>
+            <div>Loading users...</div>
           ) : usersError ? (
-            <div>Error loading sellers: {usersError.message}</div>
+            <div>Error loading users: {usersError.message}</div>
           ) : (
-            <select id="seller" name="seller" value={formData.seller} onChange={handleInputChange} required>
-              <option value="">Select a Seller</option>
-              {users.map((user) => (
-                <option key={user._id} value={user._id}>
-                  {user.email} ({user.name})
-                </option>
+            <select id="owner" name="owner" value={formData.owner} onChange={handleInputChange}>
+              <option value="">Select an owner</option>
+              {users.map(user => (
+                <option key={user._id} value={user._id}>{user.email}</option>
               ))}
             </select>
           )}
@@ -122,11 +159,17 @@ const WatchAdminAdd = () => {
         <div>
           <label htmlFor="watchImage">Watch Image:</label>
           <input type="file" id="watchImage" name="watchImage" accept="image/*" onChange={handleFileChange} />
+          {formData.imageUrl && (
+            <div>
+              <p>Current Image:</p>
+              <img src={formData.imageUrl} alt="Current Watch Image" style={{ maxWidth: '200px' }} />
+            </div>
+          )}
         </div>
-        <button type="submit" disabled={submitting}>{submitting ? 'Adding...' : 'Add Watch'}</button>
+        <button type="submit" disabled={submitting}>{submitting ? 'Updating...' : 'Update Watch'}</button>
       </form>
     </div>
   );
 };
 
-export default WatchAdminAdd;
+export default WatchAdminEdit;

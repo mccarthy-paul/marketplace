@@ -23,12 +23,12 @@ const AdminLogin = () => {
 
     try {
       // TODO: Implement backend admin login endpoint
-      const response = await axios.post('http://localhost:8001/api/admin/login', credentials);
+      const response = await axios.post('/api/admin/login', credentials);
       // Assuming the backend returns a success status and potentially user info
       if (response.status === 200) {
         // TODO: Handle successful login (e.g., store token/session info, redirect)
         console.log('Admin login successful:', response.data);
-        navigate('/admin/dashboard'); // Redirect to admin dashboard on success
+        navigate('/dashboard'); // Redirect to admin dashboard on success
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');

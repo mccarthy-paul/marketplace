@@ -136,6 +136,13 @@ const AssistantPopup = ({ isOpen, onClose }) => {
             speechResponse: response.data.speechResponse
           };
           setMessages(prev => [...prev, assistantMessage]);
+
+          // Auto-play voice response if available
+          if (response.data.speechResponse) {
+            setTimeout(() => {
+              playAudioResponse(response.data.speechResponse);
+            }, 500); // Small delay to ensure message is rendered
+          }
         }
       } else {
         // Handle text message
@@ -153,9 +160,17 @@ const AssistantPopup = ({ isOpen, onClose }) => {
             content: response.data.response,
             timestamp: new Date(),
             messageType: 'text',
-            functionResults: response.data.functionResults
+            functionResults: response.data.functionResults,
+            speechResponse: response.data.speechResponse
           };
           setMessages(prev => [...prev, assistantMessage]);
+
+          // Auto-play voice response if available
+          if (response.data.speechResponse) {
+            setTimeout(() => {
+              playAudioResponse(response.data.speechResponse);
+            }, 500); // Small delay to ensure message is rendered
+          }
         }
       }
 
@@ -170,6 +185,23 @@ const AssistantPopup = ({ isOpen, onClose }) => {
       setMessages(prev => prev.slice(0, -1));
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const playAudioResponse = (base64Audio) => {
+    try {
+      const audioBlob = new Blob([
+        Uint8Array.from(atob(base64Audio), c => c.charCodeAt(0))
+      ], { type: 'audio/mpeg' });
+      
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audio = new Audio(audioUrl);
+      audio.play();
+      
+      // Clean up URL after playing
+      audio.onended = () => URL.revokeObjectURL(audioUrl);
+    } catch (error) {
+      console.error('Failed to play audio:', error);
     }
   };
 

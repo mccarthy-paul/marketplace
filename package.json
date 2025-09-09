@@ -20,6 +20,7 @@
     "vite": "^6.3.5"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@shadcn/ui": "^0.0.4",
     "axios": "^1.9.0",
     "framer-motion": "^12.10.5",

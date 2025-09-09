@@ -23,7 +23,7 @@ const UserAdminEdit = () => {
     const fetchUser = async () => {
       try {
         // Fetch user data from the backend (admin endpoint)
-        const response = await axios.get(`http://localhost:8001/api/users/${id}`);
+        const response = await axios.get(`/api/admin/users/${id}`);
         // Pre-fill form with existing data, but not the password
         setFormData({ ...response.data, password: '' });
         setLoading(false);
@@ -55,7 +55,7 @@ const UserAdminEdit = () => {
 
     try {
       // Put updated user data to the backend (admin endpoint)
-      await axios.put(`http://localhost:8001/api/users/${id}`, dataToUpdate);
+      await axios.put(`/api/admin/users/${id}`, dataToUpdate);
       setSuccess(true);
       setSubmitting(false);
       // TODO: Optionally redirect to user list or show success message and stay

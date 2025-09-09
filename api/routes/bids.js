@@ -243,4 +243,46 @@ router.put('/:bidId/status', isAuthenticated, async (req, res) => {
 });
 
 
+// @desc    Get all bids placed by the current user
+// @route   GET /api/bids/user/placed
+// @access  Private
+router.get('/user/placed', isAuthenticated, async (req, res) => {
+  const userId = req.session.user._id;
+
+  try {
+    const bids = await Bid.find({ bidder: userId })
+      .populate('watch', 'brand model reference_number imageUrl price status')
+      .populate('bidder', 'name email')
+      .sort({ created_at: -1 }); // Sort by newest first
+
+    console.log(`Found ${bids.length} bids placed by user ${userId}`);
+    res.json(bids);
+  } catch (error) {
+    console.error('Error fetching user placed bids:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// @desc    Get all bids received on the current user's watches
+// @route   GET /api/bids/user/received
+// @access  Private
+router.get('/user/received', isAuthenticated, async (req, res) => {
+  const userId = req.session.user._id;
+  const userEmail = req.session.user.email;
+
+  try {
+    // Find bids on watches owned by the user (using ownerEmail)
+    const bids = await Bid.find({ ownerEmail: userEmail })
+      .populate('watch', 'brand model reference_number imageUrl price status')
+      .populate('bidder', 'name email')
+      .sort({ created_at: -1 }); // Sort by newest first
+
+    console.log(`Found ${bids.length} bids received by user ${userId} (${userEmail})`);
+    res.json(bids);
+  } catch (error) {
+    console.error('Error fetching user received bids:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 export default router;

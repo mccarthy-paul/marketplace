@@ -197,10 +197,20 @@ router.post('/message', getUserContext, async (req, res) => {
 
     await chatSession.save();
 
+    // Generate speech response for text messages
+    let speechResponse = null;
+    try {
+      const speechBuffer = await openaiService.generateSpeech(responseContent);
+      speechResponse = speechBuffer.toString('base64');
+    } catch (speechError) {
+      console.warn('Failed to generate speech response:', speechError.message);
+    }
+
     res.json({
       success: true,
       response: responseContent,
-      functionResults: functionResults.length > 0 ? functionResults : null
+      functionResults: functionResults.length > 0 ? functionResults : null,
+      speechResponse
     });
 
   } catch (error) {
@@ -295,9 +305,15 @@ router.post('/voice', getUserContext, upload.single('audio'), async (req, res) =
     }
 
     // Transcribe audio
+    console.log('Voice file info:', {
+      originalname: req.file.originalname,
+      mimetype: req.file.mimetype,
+      size: req.file.size
+    });
+    
     const transcription = await openaiService.transcribeAudio(
       req.file.buffer,
-      req.file.originalname
+      req.file.originalname || 'audio.webm'
     );
 
     // Add user message with transcription

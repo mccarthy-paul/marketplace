@@ -31,7 +31,7 @@ function isAuthenticated(req, res, next) {
 
 // Get all watches
 router.get('/', async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173'); // Manually add CORS header
+  res.setHeader('Access-Control-Allow-Origin', 'https://4c153d847f98.ngrok-free.app'); // Manually add CORS header
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Add allowed methods
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Add allowed headers
   res.setHeader('Access-Control-Allow-Credentials', 'true'); // Allow credentials
@@ -50,7 +50,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const watchId = req.params.id;
-    const watch = await Watch.findById(watchId).populate('owner', 'email name company_name'); // Populate owner with email, name, and company name
+    const watch = await Watch.findById(watchId).populate('owner', 'email name company_name junopay_client_id'); // Populate owner with email, name, company name and junopay_client_id
     if (watch) {
       res.json(watch);
     } else {
@@ -152,6 +152,41 @@ router.delete('/:id', isAuthenticated, async (req, res) => {
     }
   } catch (err) {
     console.error('Error deleting watch:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Create a new watch (Regular users)
+router.post('/user', isAuthenticated, upload.single('watchImage'), async (req, res) => {
+  try {
+    const { brand, model, reference_number, description, year, condition, startingPrice, price, status } = req.body;
+    const imageUrl = req.file ? `/uploads/watches/${req.file.filename}` : null;
+    const userId = req.session.user._id;
+
+    // Create watch with current user as both seller and owner
+    const newWatch = new Watch({ 
+      brand, 
+      model, 
+      reference_number, 
+      description, 
+      year, 
+      condition, 
+      imageUrl, 
+      seller: userId, 
+      owner: userId,
+      currentBid: startingPrice || 0,
+      price: price || null,
+      status: status || 'active'
+    });
+    
+    await newWatch.save();
+    
+    // Populate owner details before sending response
+    const populatedWatch = await Watch.findById(newWatch._id).populate('owner', 'name email company_name');
+    
+    res.status(201).json(populatedWatch);
+  } catch (err) {
+    console.error('Error creating watch:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });

@@ -6,7 +6,7 @@ const WatchList = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:8001/api/watches', { credentials: 'include' })
+    fetch('/api/watches', { credentials: 'include' })
       .then(res => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
@@ -47,17 +47,46 @@ const WatchList = () => {
                   <div className="p-4">
                     <h2 className="text-xl font-semibold text-gray-800 mb-1">{watch.brand}</h2>
                     <p className="text-gray-700 mb-2">{watch.model}</p>
-                    <p className="text-sm text-gray-600">Ref: {watch.reference_number}</p>
-                    {watch.price && (
-                      <p className="text-lg font-bold text-gray-800 mt-2">${watch.price.toLocaleString()}</p>
+                    <p className="text-sm text-gray-600 mb-2">Ref: {watch.reference_number}</p>
+                    
+                    {/* Price Display */}
+                    {watch.price ? (
+                      <p className="text-xl font-bold text-[#3ab54a] mb-2">${watch.price.toLocaleString()}</p>
+                    ) : (
+                      <p className="text-sm text-gray-500 mb-2">Price: Contact seller</p>
                     )}
+
+                    {/* Current Bid Display */}
+                    {watch.currentBid && watch.currentBid > 0 && (
+                      <p className="text-sm text-blue-600">
+                        Current Bid: ${watch.currentBid.toLocaleString()}
+                      </p>
+                    )}
+
+                    {/* Status */}
+                    <div className="flex items-center justify-between mt-2">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        watch.status === 'active' ? 'bg-green-100 text-green-800' :
+                        watch.status === 'sold' ? 'bg-red-100 text-red-800' :
+                        'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {watch.status.charAt(0).toUpperCase() + watch.status.slice(1)}
+                      </span>
+                    </div>
+
+                    {/* Condition */}
+                    {watch.condition && (
+                      <p className="text-sm text-gray-600 mt-1">
+                        Condition: <span className="font-medium">{watch.condition}</span>
+                      </p>
+                    )}
+
                     {watch.owner && (
                       <>
-                        <p className="text-sm text-gray-700 mt-1">Owner: {watch.owner.name}</p>
+                        <p className="text-sm text-gray-700 mt-2">Owner: {watch.owner.name}</p>
                         <p className="text-sm text-gray-700">Company: {watch.owner.company_name}</p>
                       </>
                     )}
-                    {/* Add more watch details here as needed */}
                   </div>
                 </Link>
               </div>

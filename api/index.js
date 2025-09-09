@@ -9,6 +9,11 @@ import { v4 as uuidv4 } from 'uuid';
 dotenv.config();
 
 import connectDB from './db/index.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 import authCallbackRouter from './routes/authCallback.js';
 import watchesRouter from './routes/watches.js';
@@ -16,7 +21,10 @@ import listingsRouter from './routes/listings.js';
 import ordersRouter from './routes/orders.js';
 import usersRouter from './routes/users.js';
 import bidsRouter from './routes/bids.js';
-import adminAuthRouter from './routes/adminAuth.js'; // Import adminAuth router
+import chatRouter from './routes/chat.js'; // Import chat router
+import junopayAuthRouter from './routes/junopayAuth.js'; // Import JunoPay auth router
+import junopayRouter from './routes/junopay.js'; // Import JunoPay API router
+import adminRouter from './routes/admin.js'; // Import admin router
 import cors from 'cors';
 
 
@@ -24,7 +32,7 @@ const app = express();
 
 // Add CORS middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  origin: ['https://4c153d847f98.ngrok-free.app', 'http://localhost:8002', 'http://localhost:5174'],
   credentials: true // Allow cookies to be sent
 }));
 
@@ -48,7 +56,16 @@ app.use('/api/listings', listingsRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/bids', bidsRouter);
-app.use('/api/admin', adminAuthRouter); // Mount adminAuth router
+app.use('/api/chat', chatRouter); // Mount chat router
+app.use('/auth/junopay', junopayAuthRouter); // Mount JunoPay auth router
+app.use('/api/junopay', junopayRouter); // Mount JunoPay API router
+app.use('/api/admin', adminRouter); // Mount admin router
+
+// Serve static files from the frontend build
+app.use(express.static(path.join(__dirname, '..', 'dist')));
+
+// Serve images from the images directory
+app.use('/images', express.static(path.join(__dirname, '..', 'images')));
 
 app.get('/auth/juno/callback', async (req, res) => {
   const { code, state } = req.query;
@@ -73,10 +90,11 @@ app.get('/auth/juno/callback', async (req, res) => {
 
   const tokenSet = await tokenRes.json();
   req.session.accessToken = tokenSet.access_token;
-  res.redirect('http://localhost:5173/dashboard'); // or wherever
+  res.redirect('https://4c153d847f98.ngrok-free.app/dashboard'); // or wherever
 });
 
 app.get('/api/me', isAuthenticated, (req, res) => {
+  console.log('Direct /api/me endpoint hit - user:', req.session.user);
   res.json({ user: req.session.user });
 });
 
@@ -114,6 +132,51 @@ function isAuthenticated(req, res, next) {
 //  res.json({ message: 'You are authorized!', user: req.session.user });
 //});
 
+// Serve React app for specific frontend routes
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
+});
+
+app.get('/loggedin', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
+});
+
+app.get('/dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
+});
+
+app.get('/watches', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
+});
+
+app.get('/my-watch-bids', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
+});
+
+app.get('/orders', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
+});
+
+app.get('/admin/orders', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
+});
+
+app.get('/admin/bids', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
+});
+
+app.get('/admin/orders/:orderId', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
+});
+
+app.get('/admin/bids/:bidId', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
+});
+
+app.get('/admin/login', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
+});
+
 connectDB().then(() => {
-  app.listen(8001, () => console.log('API listening on 8001'));
+  app.listen(8001, '0.0.0.0', () => console.log('API listening on 0.0.0.0:8001'));
 });
