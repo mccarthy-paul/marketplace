@@ -28,6 +28,9 @@ const upload = multer({
 // Middleware to get user context
 async function getUserContext(req, res, next) {
   try {
+    console.log('Chat getUserContext - Session:', req.session);
+    console.log('Chat getUserContext - Session user:', req.session?.user);
+    
     if (req.session && req.session.user) {
       const user = await User.findById(req.session.user._id);
       if (user) {
@@ -57,6 +60,8 @@ async function getUserContext(req, res, next) {
 // Create new chat session
 router.post('/session', getUserContext, async (req, res) => {
   try {
+    console.log('Creating chat session - userContext:', req.userContext);
+    
     const sessionId = uuidv4();
     const { pageContext } = req.body;
 

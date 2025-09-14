@@ -12,6 +12,15 @@ const userSchema = new mongoose.Schema({
   company_name: { type: String, required: true },
   buyer_fee: { type: Number }, // JunoPay buyer fee percentage
   
+  // Default delivery address
+  defaultDeliveryAddress: {
+    street: { type: String },
+    city: { type: String },
+    state: { type: String },
+    postalCode: { type: String },
+    country: { type: String, default: 'USA' }
+  },
+  
   // Legacy fields (for backward compatibility)
   juno_id: { type: String }, // Optional legacy field
   password: { type: String, select: false }, // Legacy admin password

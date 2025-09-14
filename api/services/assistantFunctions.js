@@ -3,6 +3,8 @@ import Bid from '../db/bidModel.js';
 import User from '../db/userModel.js';
 import AssistantContext from '../db/assistantContextModel.js';
 import openaiService from './openaiService.js';
+import Transaction from '../db/transactionModel.js';
+import junopayService from './junopayService.js';
 
 class AssistantFunctions {
   
@@ -56,6 +58,7 @@ class AssistantFunctions {
       return {
         success: true,
         data: watches.map(watch => ({
+          _id: watch._id.toString(),
           id: watch._id,
           brand: watch.brand,
           model: watch.model,
@@ -66,6 +69,7 @@ class AssistantFunctions {
           price: watch.price,
           currentBid: watch.currentBid,
           imageUrl: watch.imageUrl,
+          images: watch.images || [],
           seller: watch.seller?.name || 'Unknown',
           status: watch.status,
           created_at: watch.created_at
@@ -358,6 +362,113 @@ class AssistantFunctions {
     return recommendations;
   }
 
+  // Get user's orders/transactions
+  async getUserOrders(userId, params = {}) {
+    try {
+      if (!userId) {
+        return {
+          success: false,
+          error: 'User must be logged in to view orders'
+        };
+      }
+
+      const { limit = 10, status } = params;
+      
+      let query = { buyer: userId };
+      
+      if (status) {
+        query.status = status;
+      }
+      
+      const orders = await Transaction.find(query)
+        .populate('watch', 'brand model reference_number imageUrl price')
+        .populate('seller', 'name email')
+        .limit(limit)
+        .sort({ created_at: -1 });
+      
+      return {
+        success: true,
+        data: orders.map(order => ({
+          id: order._id,
+          transactionId: order.applicationTransactionId,
+          watch: {
+            brand: order.watch?.brand,
+            model: order.watch?.model,
+            reference_number: order.watch?.reference_number
+          },
+          purchasePrice: order.purchasePrice,
+          totalPrice: order.totalPrice,
+          status: order.status,
+          created_at: order.created_at
+        })),
+        count: orders.length
+      };
+    } catch (error) {
+      console.error('Get user orders error:', error);
+      return {
+        success: false,
+        error: 'Failed to retrieve user orders'
+      };
+    }
+  }
+
+  // Get user's JunoPay balance
+  async getUserBalance(userId, params = {}) {
+    try {
+      if (!userId) {
+        return {
+          success: false,
+          error: 'User must be logged in to view balance'
+        };
+      }
+
+      // Get user to fetch their JunoPay client ID and tokens
+      const user = await User.findById(userId).select('+access_token +refresh_token');
+      if (!user || !user.junopay_client_id) {
+        return {
+          success: false,
+          error: 'User does not have a JunoPay account linked'
+        };
+      }
+
+      // Get balance from JunoPay service
+      const balanceData = await junopayService.getUserBalance(user);
+      
+      if (!balanceData || !Array.isArray(balanceData)) {
+        return {
+          success: false,
+          error: 'Failed to retrieve balance from JunoPay'
+        };
+      }
+
+      // Format the balance data - balanceData is already an array
+      const formattedBalances = balanceData.map(balance => ({
+        currency: balance.currency,
+        available: balance.balance?.balanceAmount || 0,
+        pending: balance.balance?.pendingAmount || 0,
+        total: (balance.balance?.balanceAmount || 0) + (balance.balance?.pendingAmount || 0)
+      }));
+
+      return {
+        success: true,
+        data: {
+          balances: formattedBalances,
+          summary: {
+            totalUSD: formattedBalances.find(b => b.currency === 'USD')?.total || 0,
+            totalGBP: formattedBalances.find(b => b.currency === 'GBP')?.total || 0,
+            totalEUR: formattedBalances.find(b => b.currency === 'EUR')?.total || 0
+          }
+        }
+      };
+    } catch (error) {
+      console.error('Get user balance error:', error);
+      return {
+        success: false,
+        error: 'Failed to retrieve user balance'
+      };
+    }
+  }
+
   // Execute function based on name
   async executeFunction(functionName, parameters, userId = null) {
     switch (functionName) {
@@ -375,6 +486,12 @@ class AssistantFunctions {
       
       case 'get_bidding_help':
         return await this.getBiddingHelp(userId, parameters);
+      
+      case 'get_user_orders':
+        return await this.getUserOrders(userId, parameters);
+      
+      case 'get_user_balance':
+        return await this.getUserBalance(userId, parameters);
       
       default:
         return {

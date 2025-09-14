@@ -39,12 +39,8 @@ router.get('/', isAuthenticated, isAdmin, async (req, res) => {
 // Get the currently authenticated user
 router.get('/me', isAuthenticated, async (req, res) => {
   try {
-    // The isAuthenticated middleware adds the user to req.session.user
-    const user = req.session.user;
-    // You might want to fetch the user from the database again here
-    // to ensure you have the latest data, but for now, we'll return
-    // the user object from the session.
-    // const user = await User.findById(req.session.user._id);
+    // Fetch fresh user data from database to get latest delivery address
+    const user = await User.findById(req.session.user._id);
     if (user) {
       res.json({ user });
     } else {
@@ -53,6 +49,36 @@ router.get('/me', isAuthenticated, async (req, res) => {
     }
   } catch (err) {
     console.error('Error fetching current user:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Update current user's delivery address
+router.put('/me/delivery-address', isAuthenticated, async (req, res) => {
+  try {
+    const { street, city, state, postalCode, country } = req.body;
+    
+    const user = await User.findByIdAndUpdate(
+      req.session.user._id,
+      {
+        defaultDeliveryAddress: {
+          street,
+          city,
+          state,
+          postalCode,
+          country: country || 'USA'
+        }
+      },
+      { new: true }
+    );
+    
+    if (user) {
+      res.json({ success: true, user });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (err) {
+    console.error('Error updating delivery address:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });

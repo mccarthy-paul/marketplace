@@ -21,7 +21,7 @@ const app = express();
 
 // CORS configuration for admin app
 app.use(cors({
-  origin: ['http://localhost:5174', 'https://admin.4c153d847f98.ngrok-free.app'],
+  origin: ['http://localhost:5174', 'https://admin.a2842d04cca8.ngrok-free.app'],
   credentials: true
 }));
 

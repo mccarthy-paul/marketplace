@@ -1,0 +1,42 @@
+[
+  {
+    "_id": "68c3db0b08ce6e8674fb1f88",
+    "user": "68c2dcfa70a08ac593eca1c3",
+    "items": [],
+    "deliveryMethod": null,
+    "shippingCost": 0,
+    "subtotal": 0,
+    "total": 0,
+    "created_at": "2025-09-12T08:34:19.686Z",
+    "updated_at": "2025-09-12T08:34:19.688Z",
+    "__v": 0
+  },
+  {
+    "_id": "68c3e23908ce6e8674fb206c",
+    "user": "682746bf996070c6c7f6a5bf",
+    "items": [
+      {
+        "watch": "68c4057476b7144d0588663f",
+        "price": 3500,
+        "quantity": 1,
+        "fromBid": "68c408afbb4e2e86168ff651",
+        "_id": "68c4455593d630729865fa42",
+        "addedAt": "2025-09-12T16:07:49.549Z"
+      }
+    ],
+    "deliveryMethod": "shipping",
+    "shippingCost": 50,
+    "subtotal": 3500,
+    "total": 3550,
+    "created_at": "2025-09-12T09:04:57.244Z",
+    "updated_at": "2025-09-12T16:07:53.248Z",
+    "__v": 4,
+    "deliveryAddress": {
+      "street": "5 Sylvan Drive",
+      "city": "Waterford",
+      "state": "Waterford",
+      "postalCode": "X98Y23",
+      "country": "Ireland"
+    }
+  }
+]

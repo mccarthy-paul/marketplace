@@ -1,0 +1,39 @@
+{
+  "timestamp": "2025-09-11T15:56:35.810Z",
+  "environment": "local",
+  "duration": 0,
+  "summary": {
+    "totalSuites": 0,
+    "totalTests": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "passRate": "0%",
+    "duration": "0ms"
+  },
+  "coverage": null,
+  "suites": [],
+  "metrics": {
+    "totalTests": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0,
+    "duration": 0,
+    "passRate": 0
+  },
+  "trends": {
+    "passRateHistory": [
+      {
+        "date": "2025-09-11T14:38:12.802Z",
+        "passRate": 0
+      }
+    ],
+    "durationHistory": [
+      {
+        "date": "2025-09-11T14:38:12.802Z",
+        "duration": null
+      }
+    ],
+    "failuresByCategory": {}
+  }
+}

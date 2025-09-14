@@ -1,20 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { formatPrice } from './utils/currency';
 
 const WatchBidsPage = () => {
   const { watchId } = useParams();
   const [bids, setBids] = useState([]);
+  const [watch, setWatch] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchWatchBids = async () => {
+    const fetchData = async () => {
       try {
-        // TODO: Implement API endpoint to fetch bids by watch ID
-        const response = await axios.get(`http://localhost:8001/api/bids/watch/${watchId}`, { withCredentials: true });
-        setBids(response.data);
+        // Fetch both watch and bids data
+        const [watchResponse, bidsResponse] = await Promise.all([
+          axios.get(`http://localhost:8001/api/watches/${watchId}`, { withCredentials: true }),
+          axios.get(`http://localhost:8001/api/bids/watch/${watchId}`, { withCredentials: true })
+        ]);
+        setWatch(watchResponse.data);
+        setBids(bidsResponse.data);
         setLoading(false);
       } catch (err) {
         setError(err);
@@ -22,7 +28,7 @@ const WatchBidsPage = () => {
       }
     };
 
-    fetchWatchBids();
+    fetchData();
   }, [watchId]);
 
   if (loading) {
@@ -55,7 +61,7 @@ const WatchBidsPage = () => {
                 <td onClick={() => navigate(`/bids/${bid._id}`)} style={{ cursor: 'pointer', textDecoration: 'underline' }}>
                   {bid._id}
                 </td>
-                <td>${bid.amount.toLocaleString()}</td>
+                <td>{formatPrice(bid.amount, watch?.currency)}</td>
                 <td>{bid.status}</td>
                 <td>{bid.bidder ? bid.bidder.email : 'N/A'}</td>
                 <td>{new Date(bid.created_at).toLocaleString()}</td>

@@ -1,0 +1,70 @@
+[
+  {
+    "_id": "68c16ad20705035b60c883bf",
+    "watch": "68c15892f5c3d16da2f20229",
+    "bidder": "682746bf996070c6c7f6a5bf",
+    "amount": 3400,
+    "ownerEmail": "broker1@junomoney.com",
+    "bidderEmail": "paul.mccarthy@badbeat.com",
+    "bidderName": "Paul Mc",
+    "status": "accepted",
+    "negotiationHistory": [
+      {
+        "amount": 3000,
+        "proposedBy": "682746bf996070c6c7f6a5bf",
+        "proposedByRole": "buyer",
+        "message": "Fair price imo",
+        "created_at": "2025-09-10T12:10:58.733Z",
+        "_id": "68c16ad20705035b60c883c0"
+      },
+      {
+        "amount": 3500,
+        "proposedBy": "68b1abb9bca89d3a455580c7",
+        "proposedByRole": "seller",
+        "message": "My best price",
+        "created_at": "2025-09-10T12:20:02.604Z",
+        "_id": "68c16cf20705035b60c883e0"
+      },
+      {
+        "amount": 3400,
+        "proposedBy": "682746bf996070c6c7f6a5bf",
+        "proposedByRole": "buyer",
+        "message": "Getting closer :)",
+        "created_at": "2025-09-10T12:28:25.422Z",
+        "_id": "68c16ee90705035b60c88415"
+      },
+      {
+        "amount": 3400,
+        "proposedBy": "68b1abb9bca89d3a455580c7",
+        "proposedByRole": "seller",
+        "message": "Bid accepted",
+        "created_at": "2025-09-10T13:28:50.245Z",
+        "_id": "68c17d12befc6fc717955e6a"
+      }
+    ],
+    "comments": [
+      {
+        "text": "Fair price imo",
+        "user": "682746bf996070c6c7f6a5bf",
+        "created_at": "2025-09-10T12:10:58.733Z",
+        "_id": "68c16ad20705035b60c883c1"
+      },
+      {
+        "text": "My best price",
+        "user": "68b1abb9bca89d3a455580c7",
+        "created_at": "2025-09-10T12:20:02.605Z",
+        "_id": "68c16cf20705035b60c883e1"
+      },
+      {
+        "text": "Getting closer :)",
+        "user": "682746bf996070c6c7f6a5bf",
+        "created_at": "2025-09-10T12:28:25.422Z",
+        "_id": "68c16ee90705035b60c88416"
+      }
+    ],
+    "created_at": "2025-09-10T12:10:58.739Z",
+    "updated_at": "2025-09-10T13:28:50.245Z",
+    "__v": 3,
+    "agreedPrice": 3400
+  }
+]

@@ -37,3 +37,17 @@ export const apiPost = (url, data = null, options = {}) => {
 
   return apiRequest(url, postOptions);
 };
+
+// Specific helper for PUT requests
+export const apiPut = (url, data = null, options = {}) => {
+  const putOptions = {
+    method: 'PUT',
+    ...options
+  };
+
+  if (data) {
+    putOptions.body = typeof data === 'string' ? data : JSON.stringify(data);
+  }
+
+  return apiRequest(url, putOptions);
+};

@@ -116,10 +116,18 @@ console.log('Decoded ID Token:', company_name);
     req.session.user = user; // Store user in session
 
     // Redirect to the loggedin page, including the id_token as a query parameter
-    res.redirect(`http://localhost:5173/loggedin?id_token=${tokenSet.id_token}`); // front-end SPA route after login
+    // Use the origin from the request or fallback to localhost
+    const origin = req.get('origin') || req.get('referer') || 'https://a2842d04cca8.ngrok-free.app';
+    const baseUrl = origin.includes('ngrok') ? 'https://a2842d04cca8.ngrok-free.app' : 'http://localhost:5173';
+    res.redirect(`${baseUrl}/loggedin?id_token=${tokenSet.id_token}`); // front-end SPA route after login
   } catch (err) {
     console.error('Error in /auth/juno/callback:', err);
-    next(err);
+    // Send a more detailed error response
+    res.status(500).json({ 
+      error: 'Authentication failed', 
+      details: err.message,
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
   }
 });
 
@@ -138,9 +146,9 @@ async function createUser(juno_id, email, name, company_name) {
 
   const newUser = new User({
     juno_id,
-    email: juno_id || 'placeholder@example.com', // Provide a default or handle as needed
-    name: juno_id || 'Placeholder Name', // Provide a default or handle as needed
-    company_name: company_name || 'Placeholder Company', // Provide a default or handle as needed
+    email: email || `${juno_id}@junomoney.com`, // Use email param or generate from juno_id
+    name: name || 'JunoPay User', // Use name param or default
+    company_name: company_name || 'JunoPay User', // Use company_name param or default
     is_admin: false
   });
   await newUser.save();

@@ -1,0 +1,27 @@
+[
+  {
+    "_id": "68c1a2293d649f0818ee9f40",
+    "user": "682746bf996070c6c7f6a5bf",
+    "items": [],
+    "deliveryMethod": null,
+    "shippingCost": 0,
+    "subtotal": 0,
+    "total": 0,
+    "created_at": "2025-09-10T16:07:05.042Z",
+    "updated_at": "2025-09-11T09:13:01.847Z",
+    "__v": 12,
+    "deliveryAddress": null
+  },
+  {
+    "_id": "68c1ab28211fe5600000d2b6",
+    "user": "68b1abb9bca89d3a455580c7",
+    "items": [],
+    "deliveryMethod": null,
+    "shippingCost": 0,
+    "subtotal": 0,
+    "total": 0,
+    "created_at": "2025-09-10T16:45:28.317Z",
+    "updated_at": "2025-09-10T16:45:28.318Z",
+    "__v": 0
+  }
+]

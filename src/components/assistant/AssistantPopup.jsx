@@ -5,6 +5,9 @@ import ChatInterface from './ChatInterface';
 import MessageInput from './MessageInput';
 import axios from 'axios';
 
+// Configure axios defaults for this component
+axios.defaults.withCredentials = true;
+
 const AssistantPopup = ({ isOpen, onClose }) => {
   const [sessionId, setSessionId] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -38,7 +41,7 @@ const AssistantPopup = ({ isOpen, onClose }) => {
       setIsLoading(true);
       setError(null);
 
-      const response = await axios.post('http://localhost:8001/api/chat/session', {
+      const response = await axios.post('/api/chat/session', {
         pageContext: window.location.pathname
       }, {
         withCredentials: true
@@ -91,7 +94,7 @@ const AssistantPopup = ({ isOpen, onClose }) => {
         formData.append('image', file);
         formData.append('additionalContext', message);
 
-        response = await axios.post('http://localhost:8001/api/chat/upload', formData, {
+        response = await axios.post('/api/chat/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           },
@@ -113,7 +116,7 @@ const AssistantPopup = ({ isOpen, onClose }) => {
         formData.append('sessionId', sessionId);
         formData.append('audio', file);
 
-        response = await axios.post('http://localhost:8001/api/chat/voice', formData, {
+        response = await axios.post('/api/chat/voice', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           },
@@ -137,16 +140,12 @@ const AssistantPopup = ({ isOpen, onClose }) => {
           };
           setMessages(prev => [...prev, assistantMessage]);
 
-          // Auto-play voice response if available
-          if (response.data.speechResponse) {
-            setTimeout(() => {
-              playAudioResponse(response.data.speechResponse);
-            }, 500); // Small delay to ensure message is rendered
-          }
+          // Voice response is available but NOT auto-played (muted by default)
+          // User can manually play it using the speaker icon in the message
         }
       } else {
         // Handle text message
-        response = await axios.post('http://localhost:8001/api/chat/message', {
+        response = await axios.post('/api/chat/message', {
           sessionId,
           message,
           pageContext: window.location.pathname
@@ -155,6 +154,9 @@ const AssistantPopup = ({ isOpen, onClose }) => {
         });
 
         if (response.data.success) {
+          console.log('Assistant response:', response.data);
+          console.log('Function results:', response.data.functionResults);
+          
           const assistantMessage = {
             role: 'assistant',
             content: response.data.response,
@@ -165,12 +167,8 @@ const AssistantPopup = ({ isOpen, onClose }) => {
           };
           setMessages(prev => [...prev, assistantMessage]);
 
-          // Auto-play voice response if available
-          if (response.data.speechResponse) {
-            setTimeout(() => {
-              playAudioResponse(response.data.speechResponse);
-            }, 500); // Small delay to ensure message is rendered
-          }
+          // Voice response is available but NOT auto-played (muted by default)
+          // User can manually play it using the speaker icon in the message
         }
       }
 

@@ -108,11 +108,22 @@ const WatchAdminList = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-12 w-12">
-                          {watch.imageUrl ? (
+                          {(watch.imageUrl || watch.images?.[0]) ? (
                             <img
                               className="h-12 w-12 rounded-md object-cover"
-                              src={watch.imageUrl}
+                              src={watch.imageUrl || watch.images[0]}
                               alt={`${watch.brand} ${watch.model}`}
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.style.display = 'none';
+                                e.target.parentElement.innerHTML = `
+                                  <div class="h-12 w-12 bg-gray-200 rounded-md flex items-center justify-center">
+                                    <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                  </div>
+                                `;
+                              }}
                             />
                           ) : (
                             <div className="h-12 w-12 bg-gray-200 rounded-md flex items-center justify-center">

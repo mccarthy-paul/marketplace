@@ -1,0 +1,15 @@
+[
+  {
+    "_id": "68c2d518dc31555e799e7148",
+    "user": "682746bf996070c6c7f6a5bf",
+    "items": [],
+    "deliveryMethod": null,
+    "shippingCost": 0,
+    "subtotal": 0,
+    "total": 0,
+    "created_at": "2025-09-11T13:56:40.477Z",
+    "updated_at": "2025-09-11T13:56:57.918Z",
+    "__v": 1,
+    "deliveryAddress": null
+  }
+]

@@ -2,6 +2,7 @@ import express from 'express';
 import Bid from '../db/bidModel.js';
 import Watch from '../db/watchModel.js';
 import User from '../db/userModel.js'; // Import User model
+import Notification from '../db/notificationModel.js'; // Import Notification model
 // Assuming authentication middleware
 
 const router = express.Router();
@@ -41,9 +42,11 @@ router.post('/:watchId', isAuthenticated, async (req, res) => {
       return res.status(404).json({ message: 'Watch not found' });
     }
 
-    // Check if the bid is higher than the current bid
-    if (amount <= watch.currentBid) {
-      return res.status(400).json({ message: 'Bid amount must be higher than the current bid' });
+    // New bidding logic: bid should be LOWER than the listed price (if there is one)
+    if (watch.price && amount >= watch.price) {
+      return res.status(400).json({ 
+        message: `Bid amount must be lower than the listed price of $${watch.price}. Use 'Buy Now' to purchase at the listed price.` 
+      });
     }
 
     // Create a new bid
@@ -56,27 +59,40 @@ router.post('/:watchId', isAuthenticated, async (req, res) => {
       bidderName: bidderUser.name, // Populate bidder name
       status: 'offered', // Set initial status
       comments: comment ? [{ text: comment, user: bidderId, created_at: new Date() }] : [], // Add initial comment if provided
+      negotiationHistory: [{
+        amount: amount,
+        proposedBy: bidderId,
+        proposedByRole: 'buyer',
+        message: comment || 'Initial offer',
+        created_at: new Date()
+      }]
     });
 
     try {
       await bid.save();
       console.log('Bid saved successfully:', bid);
+      
+      // Create notification for watch owner about new bid
+      if (watch.owner && watch.owner._id.toString() !== bidderId) {
+        await Notification.createNotification({
+          user: watch.owner._id,
+          type: 'new_bid',
+          title: 'New Bid Received',
+          message: `${bidderUser.name} placed a bid of ${amount} on your ${watch.brand} ${watch.model}`,
+          relatedEntity: {
+            entityType: 'bid',
+            entityId: bid._id
+          }
+        });
+      }
     } catch (saveError) {
       console.error('Error saving bid:', saveError);
       return res.status(500).json({ message: 'Error saving bid' });
     }
 
 
-    // Update the watch's current bid and buyer
-    watch.currentBid = amount;
-    watch.buyer = bidderId; // Temporarily set buyer to the highest bidder
-    try {
-      await watch.save();
-      console.log('Watch updated successfully:', watch);
-    } catch (saveError) {
-      console.error('Error saving watch:', saveError);
-      return res.status(500).json({ message: 'Error saving watch' });
-    }
+    // Don't automatically update the watch's currentBid anymore since we have negotiation
+    // The currentBid will only be updated when a bid is accepted
 
 
     res.status(201).json({ message: 'Bid placed successfully', bid });
@@ -251,7 +267,7 @@ router.get('/user/placed', isAuthenticated, async (req, res) => {
 
   try {
     const bids = await Bid.find({ bidder: userId })
-      .populate('watch', 'brand model reference_number imageUrl price status')
+      .populate('watch', 'brand model reference_number imageUrl price status currency owner')
       .populate('bidder', 'name email')
       .sort({ created_at: -1 }); // Sort by newest first
 
@@ -273,7 +289,7 @@ router.get('/user/received', isAuthenticated, async (req, res) => {
   try {
     // Find bids on watches owned by the user (using ownerEmail)
     const bids = await Bid.find({ ownerEmail: userEmail })
-      .populate('watch', 'brand model reference_number imageUrl price status')
+      .populate('watch', 'brand model reference_number imageUrl price status currency owner')
       .populate('bidder', 'name email')
       .sort({ created_at: -1 }); // Sort by newest first
 
@@ -281,6 +297,214 @@ router.get('/user/received', isAuthenticated, async (req, res) => {
     res.json(bids);
   } catch (error) {
     console.error('Error fetching user received bids:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// @desc    Accept a bid or counter offer
+// @route   POST /api/bids/:bidId/accept
+// @access  Private (Seller can accept buyer's offer, Buyer can accept seller's counter offer)
+router.post('/:bidId/accept', isAuthenticated, async (req, res) => {
+  const { bidId } = req.params;
+  const userId = req.session.user._id;
+
+  try {
+    const bid = await Bid.findById(bidId).populate('watch');
+    
+    if (!bid) {
+      return res.status(404).json({ message: 'Bid not found' });
+    }
+
+    // Get the watch details
+    const watch = await Watch.findById(bid.watch._id);
+    const isSeller = watch.owner.toString() === userId;
+    const isBuyer = bid.bidder.toString() === userId;
+
+    // Determine who can accept based on the bid status
+    let canAccept = false;
+    let acceptorRole = '';
+    
+    if (bid.status === 'offered' && isSeller) {
+      // Seller can accept buyer's initial offer
+      canAccept = true;
+      acceptorRole = 'seller';
+    } else if (bid.status === 'counter_offer' && isBuyer) {
+      // Buyer can accept seller's counter offer
+      canAccept = true;
+      acceptorRole = 'buyer';
+    } else if (bid.status === 'negotiating') {
+      // Either party can accept during negotiation
+      if (isSeller || isBuyer) {
+        canAccept = true;
+        acceptorRole = isSeller ? 'seller' : 'buyer';
+      }
+    }
+
+    if (!canAccept) {
+      return res.status(403).json({ 
+        message: 'Unauthorized - you cannot accept this bid in its current state',
+        details: {
+          bidStatus: bid.status,
+          isSeller,
+          isBuyer
+        }
+      });
+    }
+
+    // Update bid status to accepted and set agreed price
+    bid.status = 'accepted';
+    bid.agreedPrice = bid.amount;
+    bid.updated_at = new Date();
+    
+    // Add to negotiation history
+    if (!bid.negotiationHistory) {
+      bid.negotiationHistory = [];
+    }
+    bid.negotiationHistory.push({
+      amount: bid.amount,
+      proposedBy: userId,
+      proposedByRole: acceptorRole,
+      message: `Offer accepted by ${acceptorRole}`,
+      created_at: new Date()
+    });
+    
+    await bid.save();
+    
+    // Create notification for the other party about bid acceptance
+    const notificationUserId = isSeller ? bid.bidder : bid.watch.owner;
+    const watchDetails = await Watch.findById(bid.watch._id || bid.watch);
+    const notificationUser = await User.findById(notificationUserId);
+    
+    if (notificationUserId && notificationUserId.toString() !== userId) {
+      await Notification.createNotification({
+        user: notificationUserId,
+        type: 'bid_accepted',
+        title: 'Bid Accepted!',
+        message: isSeller 
+          ? `Your bid on ${watchDetails.brand} ${watchDetails.model} has been accepted at ${bid.agreedPrice}`
+          : `${notificationUser.name} accepted your counter offer of ${bid.agreedPrice} for ${watchDetails.brand} ${watchDetails.model}`,
+        relatedEntity: {
+          entityType: 'bid',
+          entityId: bid._id
+        }
+      });
+    }
+
+    res.json({ message: 'Offer accepted successfully', bid });
+  } catch (error) {
+    console.error('Error accepting bid:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// @desc    Reject a bid
+// @route   POST /api/bids/:bidId/reject  
+// @access  Private (Seller only)
+router.post('/:bidId/reject', isAuthenticated, async (req, res) => {
+  const { bidId } = req.params;
+  const userId = req.session.user._id;
+
+  try {
+    const bid = await Bid.findById(bidId).populate('watch');
+    
+    if (!bid) {
+      return res.status(404).json({ message: 'Bid not found' });
+    }
+
+    // Check if the user is the owner of the watch
+    const watch = await Watch.findById(bid.watch._id);
+    if (watch.owner.toString() !== userId) {
+      return res.status(403).json({ message: 'Unauthorized - only the watch owner can reject bids' });
+    }
+
+    // Update bid status to rejected
+    bid.status = 'rejected';
+    bid.updated_at = new Date();
+    
+    await bid.save();
+
+    res.json({ message: 'Bid rejected', bid });
+  } catch (error) {
+    console.error('Error rejecting bid:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// @desc    Send counter offer
+// @route   POST /api/bids/:bidId/counter
+// @access  Private 
+router.post('/:bidId/counter', isAuthenticated, async (req, res) => {
+  const { bidId } = req.params;
+  const { amount, message } = req.body;
+  const userId = req.session.user._id;
+
+  try {
+    const bid = await Bid.findById(bidId).populate('watch');
+    
+    if (!bid) {
+      return res.status(404).json({ message: 'Bid not found' });
+    }
+
+    // Determine if the user is buyer or seller
+    const watch = await Watch.findById(bid.watch._id);
+    const isSeller = watch.owner.toString() === userId;
+    const isBuyer = bid.bidder.toString() === userId;
+    
+    if (!isSeller && !isBuyer) {
+      return res.status(403).json({ message: 'Unauthorized - you are not part of this negotiation' });
+    }
+
+    // Update bid with counter offer
+    bid.status = 'counter_offer';
+    bid.amount = amount; // Update the current amount
+    bid.updated_at = new Date();
+    
+    // Add to negotiation history
+    if (!bid.negotiationHistory) {
+      bid.negotiationHistory = [];
+    }
+    bid.negotiationHistory.push({
+      amount: amount,
+      proposedBy: userId,
+      proposedByRole: isSeller ? 'seller' : 'buyer',
+      message: message || 'Counter offer',
+      created_at: new Date()
+    });
+    
+    // Add comment if message provided
+    if (message) {
+      bid.comments.push({
+        text: message,
+        user: userId,
+        created_at: new Date()
+      });
+    }
+    
+    await bid.save();
+
+    // Create notification for the other party
+    const recipientId = isSeller ? bid.bidder : watch.owner;
+    const watchDetails = bid.watch;
+    
+    // Get the sender's info for the notification message
+    const sender = await User.findById(userId);
+    
+    await Notification.createNotification({
+      user: recipientId,
+      type: 'counter_offer',
+      title: 'Counter Offer Received',
+      message: isSeller 
+        ? `${sender.name || sender.email} has made a counter offer of $${amount.toLocaleString()} for ${watchDetails.brand} ${watchDetails.model}`
+        : `${sender.name || sender.email} has made a counter offer of $${amount.toLocaleString()} for ${watchDetails.brand} ${watchDetails.model}`,
+      relatedEntity: {
+        entityType: 'bid',
+        entityId: bid._id
+      }
+    });
+
+    res.json({ message: 'Counter offer sent successfully', bid });
+  } catch (error) {
+    console.error('Error sending counter offer:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

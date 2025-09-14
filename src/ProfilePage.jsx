@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Wallet, Settings, Activity, CreditCard, Gavel, Receipt, ShoppingBag, Watch, Plus, Edit3 } from 'lucide-react';
+import { User, Wallet, Settings, Activity, CreditCard, Gavel, Receipt, ShoppingBag, Watch, Plus, Edit3, TrendingUp } from 'lucide-react';
 import { apiGet } from './utils/api.js';
+import { formatPrice } from './utils/currency';
+import SalesHistory from './SalesHistory.jsx';
+import ActivityTab from './ActivityTab.jsx';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -13,6 +16,12 @@ export default function ProfilePage() {
   const [bidsPlaced, setBidsPlaced] = useState([]);
   const [bidsReceived, setBidsReceived] = useState([]);
   const [orderHistory, setOrderHistory] = useState([]);
+  const [counterOfferBidId, setCounterOfferBidId] = useState(null);
+  const [counterOfferAmount, setCounterOfferAmount] = useState('');
+  const [counterOfferMessage, setCounterOfferMessage] = useState('');
+  const [newOfferBidId, setNewOfferBidId] = useState(null);
+  const [newOfferAmount, setNewOfferAmount] = useState('');
+  const [newOfferMessage, setNewOfferMessage] = useState('');
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -256,6 +265,7 @@ export default function ProfilePage() {
     { id: 'bids-placed', label: 'Bids Placed', icon: Gavel },
     { id: 'bids-received', label: 'Bids Received', icon: Receipt },
     { id: 'order-history', label: 'Order History', icon: ShoppingBag },
+    { id: 'sales-history', label: 'Sales History', icon: TrendingUp },
     { id: 'activity', label: 'Activity', icon: Activity },
     { id: 'settings', label: 'Settings', icon: Settings }
   ];
@@ -441,7 +451,7 @@ export default function ProfilePage() {
                   
                   {watch.price && (
                     <p className="text-lg font-bold text-[#3ab54a]">
-                      ${watch.price.toLocaleString()}
+                      {formatPrice(watch.price, watch.currency)}
                     </p>
                   )}
                   
@@ -495,212 +505,599 @@ export default function ProfilePage() {
     </div>
   );
 
-  const renderBidsPlacedContent = () => (
-    <div className="space-y-6">
-      <div className="bg-white rounded-xl p-6 shadow-md border">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Bids Placed</h2>
-          <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-            {bidsPlaced.length} {bidsPlaced.length === 1 ? 'Bid' : 'Bids'}
-          </span>
-        </div>
+  const renderBidsPlacedContent = () => {
+    const handleCompletePurchase = async (bidId, agreedPrice, watchCurrency) => {
+      if (!window.confirm(`Add this watch to your cart at the agreed price of ${formatPrice(agreedPrice, watchCurrency)}?`)) {
+        return;
+      }
 
-        {bidsPlaced.length > 0 ? (
-          <div className="space-y-4">
-            {bidsPlaced.map((bid) => (
-              <div key={bid._id} className="bg-gray-50 rounded-lg p-4 border hover:shadow-sm transition-shadow">
-                <div className="flex items-start gap-4">
-                  {/* Watch Image */}
-                  <div className="flex-shrink-0">
-                    <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
-                      {bid.watch?.imageUrl ? (
-                        <img 
-                          src={bid.watch.imageUrl} 
-                          alt={`${bid.watch.brand} ${bid.watch.model}`}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Watch className="w-6 h-6 text-gray-400" />
+      try {
+        const response = await fetch('/api/cart/add-from-bid', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 
+            bidId: bidId,
+            agreedPrice: agreedPrice
+          }),
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+          if (response.status === 401) {
+            alert('Please log in to add items to your cart.');
+            navigate('/');
+            return;
+          }
+          throw new Error(data.message || 'Failed to add to cart');
+        }
+
+        alert('Watch added to cart successfully at the agreed price!');
+        navigate('/cart');
+        
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+        alert(`Error adding to cart: ${error.message}`);
+      }
+    };
+    
+    const handleAcceptCounterOffer = async (bidId) => {
+      try {
+        const response = await fetch(`/api/bids/${bidId}/accept`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+        
+        if (response.ok) {
+          alert('Counter offer accepted!');
+          fetchBidsPlaced();
+        } else {
+          alert('Failed to accept counter offer');
+        }
+      } catch (error) {
+        console.error('Error accepting counter offer:', error);
+        alert('Error accepting counter offer');
+      }
+    };
+
+    const handleRejectCounterOffer = async (bidId) => {
+      try {
+        const response = await fetch(`/api/bids/${bidId}/reject`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+        
+        if (response.ok) {
+          alert('Counter offer rejected');
+          fetchBidsPlaced();
+        } else {
+          alert('Failed to reject counter offer');
+        }
+      } catch (error) {
+        console.error('Error rejecting counter offer:', error);
+        alert('Error rejecting counter offer');
+      }
+    };
+
+    const handleSendNewOffer = async (bidId) => {
+      if (!newOfferAmount || isNaN(newOfferAmount)) {
+        alert('Please enter a valid amount');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/bids/${bidId}/counter`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount: parseFloat(newOfferAmount),
+            message: newOfferMessage || 'Counter offer'
+          })
+        });
+        
+        if (response.ok) {
+          alert('New offer sent successfully!');
+          setNewOfferBidId(null);
+          setNewOfferAmount('');
+          setNewOfferMessage('');
+          fetchBidsPlaced();
+        } else {
+          alert('Failed to send new offer');
+        }
+      } catch (error) {
+        console.error('Error sending new offer:', error);
+        alert('Error sending new offer');
+      }
+    };
+
+    return (
+      <div className="space-y-6">
+        <div className="bg-white rounded-xl p-6 shadow-md border">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-800">Bids Placed</h2>
+            <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+              {bidsPlaced.length} {bidsPlaced.length === 1 ? 'Bid' : 'Bids'}
+            </span>
+          </div>
+
+          {bidsPlaced.length > 0 ? (
+            <div className="space-y-4">
+              {bidsPlaced.map((bid) => (
+                <div key={bid._id} className="bg-gray-50 rounded-lg p-4 border hover:shadow-sm transition-shadow">
+                  <div className="flex items-start gap-4">
+                    {/* Watch Image */}
+                    <div className="flex-shrink-0">
+                      <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                        {bid.watch?.imageUrl ? (
+                          <img 
+                            src={bid.watch.imageUrl} 
+                            alt={`${bid.watch.brand} ${bid.watch.model}`}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Watch className="w-6 h-6 text-gray-400" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Bid Details */}
+                    <div className="flex-grow">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h3 className="font-semibold text-gray-900">
+                            {bid.watch?.brand} {bid.watch?.model}
+                          </h3>
+                          {bid.watch?.reference_number && (
+                            <p className="text-sm text-gray-600">Ref: {bid.watch.reference_number}</p>
+                          )}
+                          <p className="text-lg font-bold text-blue-600 mt-1">
+                            Current Offer: {formatPrice(bid.amount, bid.watch?.currency)}
+                          </p>
+                          {bid.watch?.price && (
+                            <p className="text-sm text-gray-600">
+                              List Price: {formatPrice(bid.watch.price, bid.watch.currency)}
+                            </p>
+                          )}
+                        </div>
+                        
+                        {/* Status and Date */}
+                        <div className="text-right">
+                          <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                            bid.status === 'offered' ? 'bg-yellow-100 text-yellow-800' :
+                            bid.status === 'counter_offer' ? 'bg-blue-100 text-blue-800' :
+                            bid.status === 'negotiating' ? 'bg-purple-100 text-purple-800' :
+                            bid.status === 'accepted' ? 'bg-green-100 text-green-800' :
+                            bid.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                            bid.status === 'cancelled' ? 'bg-gray-100 text-gray-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {bid.status === 'counter_offer' ? 'Counter Offer Received' : bid.status}
+                          </span>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {new Date(bid.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Negotiation History */}
+                      {bid.negotiationHistory && bid.negotiationHistory.length > 1 && (
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <p className="text-sm font-medium text-gray-700 mb-2">Negotiation History:</p>
+                          <div className="space-y-1">
+                            {bid.negotiationHistory.slice(-3).reverse().map((nego, idx) => (
+                              <p key={idx} className="text-xs text-gray-600">
+                                {formatPrice(nego.amount, bid.watch?.currency)} - {nego.proposedByRole === 'buyer' ? 'You' : 'Seller'} 
+                                {nego.message && `: ${nego.message}`}
+                              </p>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Comments */}
+                      {bid.comments && bid.comments.length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <p className="text-sm text-gray-700">
+                            <span className="font-medium">Latest comment:</span> {bid.comments[bid.comments.length - 1].text}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* New Offer Form */}
+                      {newOfferBidId === bid._id && (
+                        <div className="mt-3 pt-3 border-t border-gray-200 space-y-2">
+                          <div>
+                            <label className="text-sm font-medium text-gray-700">Your New Offer ($)</label>
+                            <input 
+                              type="number"
+                              value={newOfferAmount}
+                              onChange={(e) => setNewOfferAmount(e.target.value)}
+                              className="mt-1 w-full px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                              placeholder="Enter your new offer"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-gray-700">Message (optional)</label>
+                            <input 
+                              type="text"
+                              value={newOfferMessage}
+                              onChange={(e) => setNewOfferMessage(e.target.value)}
+                              className="mt-1 w-full px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                              placeholder="Add a comment with your offer"
+                            />
+                          </div>
+                          <div className="flex gap-2">
+                            <button 
+                              onClick={() => handleSendNewOffer(bid._id)}
+                              className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
+                            >
+                              Send Offer
+                            </button>
+                            <button 
+                              onClick={() => {
+                                setNewOfferBidId(null);
+                                setNewOfferAmount('');
+                                setNewOfferMessage('');
+                              }}
+                              className="px-3 py-1 bg-gray-400 text-white text-sm rounded hover:bg-gray-500 transition-colors"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Action buttons for accepted bids */}
+                      {bid.status === 'accepted' && (
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <p className="text-sm font-medium text-green-600 mb-2">
+                            ✅ Your offer has been accepted!
+                          </p>
+                          <button 
+                            onClick={() => handleCompletePurchase(bid._id, bid.agreedPrice || bid.amount, bid.watch?.currency)}
+                            className="px-4 py-2 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors"
+                          >
+                            Complete Purchase at Agreed Price
+                          </button>
+                        </div>
+                      )}
+
+                      {/* Action buttons for counter offers */}
+                      {bid.status === 'counter_offer' && (
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <p className="text-sm font-medium text-orange-600 mb-2">
+                            🔔 The seller has made a counter offer!
+                          </p>
+                          <div className="flex gap-2">
+                            <button 
+                              onClick={() => handleAcceptCounterOffer(bid._id)}
+                              className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors"
+                            >
+                              Accept Offer
+                            </button>
+                            <button 
+                              onClick={() => handleRejectCounterOffer(bid._id)}
+                              className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors"
+                            >
+                              Reject
+                            </button>
+                            {newOfferBidId !== bid._id && (
+                              <button 
+                                onClick={() => {
+                                  setNewOfferBidId(bid._id);
+                                  setNewOfferAmount('');
+                                  setNewOfferMessage('');
+                                }}
+                                className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
+                              >
+                                Make New Offer
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Action for ongoing negotiations */}
+                      {(bid.status === 'offered' || bid.status === 'negotiating') && (
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <p className="text-sm text-gray-600 mb-2">Waiting for seller's response...</p>
                         </div>
                       )}
                     </div>
                   </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <Gavel className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-600 mb-2">No bids placed yet</p>
+                <p className="text-sm text-gray-500">Your bid history will appear here</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
 
-                  {/* Bid Details */}
-                  <div className="flex-grow">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="font-semibold text-gray-900">
-                          {bid.watch?.brand} {bid.watch?.model}
-                        </h3>
-                        {bid.watch?.reference_number && (
-                          <p className="text-sm text-gray-600">Ref: {bid.watch.reference_number}</p>
+  const renderBidsReceivedContent = () => {
+    
+    const handleAcceptBid = async (bidId) => {
+      try {
+        const response = await fetch(`/api/bids/${bidId}/accept`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+        
+        if (response.ok) {
+          alert('Bid accepted successfully!');
+          // Refresh bids
+          fetchBidsReceived();
+        } else {
+          alert('Failed to accept bid');
+        }
+      } catch (error) {
+        console.error('Error accepting bid:', error);
+        alert('Error accepting bid');
+      }
+    };
+
+    const handleRejectBid = async (bidId) => {
+      try {
+        const response = await fetch(`/api/bids/${bidId}/reject`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+        
+        if (response.ok) {
+          alert('Bid rejected');
+          // Refresh bids
+          fetchBidsReceived();
+        } else {
+          alert('Failed to reject bid');
+        }
+      } catch (error) {
+        console.error('Error rejecting bid:', error);
+        alert('Error rejecting bid');
+      }
+    };
+
+    const handleCounterOffer = async (bidId) => {
+      if (!counterOfferAmount || isNaN(counterOfferAmount)) {
+        alert('Please enter a valid amount');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/bids/${bidId}/counter`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount: parseFloat(counterOfferAmount),
+            message: counterOfferMessage || 'Counter offer'
+          })
+        });
+        
+        if (response.ok) {
+          alert('Counter offer sent successfully!');
+          setCounterOfferBidId(null);
+          setCounterOfferAmount('');
+          setCounterOfferMessage('');
+          // Refresh bids
+          fetchBidsReceived();
+        } else {
+          alert('Failed to send counter offer');
+        }
+      } catch (error) {
+        console.error('Error sending counter offer:', error);
+        alert('Error sending counter offer');
+      }
+    };
+
+    return (
+      <div className="space-y-6">
+        <div className="bg-white rounded-xl p-6 shadow-md border">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-800">Bids Received</h2>
+            <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+              {bidsReceived.length} {bidsReceived.length === 1 ? 'Bid' : 'Bids'}
+            </span>
+          </div>
+
+          {bidsReceived.length > 0 ? (
+            <div className="space-y-4">
+              {bidsReceived.map((bid) => (
+                <div key={bid._id} className="bg-gray-50 rounded-lg p-4 border hover:shadow-sm transition-shadow">
+                  <div className="flex items-start gap-4">
+                    {/* Watch Image */}
+                    <div className="flex-shrink-0">
+                      <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                        {bid.watch?.imageUrl ? (
+                          <img 
+                            src={bid.watch.imageUrl} 
+                            alt={`${bid.watch.brand} ${bid.watch.model}`}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Watch className="w-6 h-6 text-gray-400" />
+                          </div>
                         )}
-                        <p className="text-lg font-bold text-blue-600 mt-1">
-                          Bid: ${bid.amount.toLocaleString()}
-                        </p>
-                        {bid.watch?.price && (
-                          <p className="text-sm text-gray-600">
-                            List Price: ${bid.watch.price.toLocaleString()}
-                          </p>
-                        )}
-                      </div>
-                      
-                      {/* Status and Date */}
-                      <div className="text-right">
-                        <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                          bid.status === 'offered' ? 'bg-yellow-100 text-yellow-800' :
-                          bid.status === 'accepted' ? 'bg-green-100 text-green-800' :
-                          bid.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                          bid.status === 'cancelled' ? 'bg-gray-100 text-gray-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {bid.status}
-                        </span>
-                        <p className="text-xs text-gray-500 mt-1">
-                          {new Date(bid.created_at).toLocaleDateString()}
-                        </p>
                       </div>
                     </div>
 
-                    {/* Comments */}
-                    {bid.comments && bid.comments.length > 0 && (
-                      <div className="mt-3 pt-3 border-t border-gray-200">
-                        <p className="text-sm text-gray-700">
-                          <span className="font-medium">Your comment:</span> {bid.comments[0].text}
-                        </p>
+                    {/* Bid Details */}
+                    <div className="flex-grow">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h3 className="font-semibold text-gray-900">
+                            {bid.watch?.brand} {bid.watch?.model}
+                          </h3>
+                          {bid.watch?.reference_number && (
+                            <p className="text-sm text-gray-600">Ref: {bid.watch.reference_number}</p>
+                          )}
+                          <p className="text-lg font-bold text-green-600 mt-1">
+                            Current Offer: {formatPrice(bid.amount, bid.watch?.currency)}
+                          </p>
+                          {bid.watch?.price && (
+                            <p className="text-sm text-gray-600">
+                              Your List Price: {formatPrice(bid.watch.price, bid.watch.currency)}
+                            </p>
+                          )}
+                          {bid.bidder && (
+                            <p className="text-sm text-gray-700 mt-1">
+                              Bidder: {bid.bidder.name} ({bid.bidder.email})
+                            </p>
+                          )}
+                        </div>
+                        
+                        {/* Status and Date */}
+                        <div className="text-right">
+                          <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                            bid.status === 'offered' ? 'bg-yellow-100 text-yellow-800' :
+                            bid.status === 'counter_offer' ? 'bg-blue-100 text-blue-800' :
+                            bid.status === 'negotiating' ? 'bg-purple-100 text-purple-800' :
+                            bid.status === 'accepted' ? 'bg-green-100 text-green-800' :
+                            bid.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                            bid.status === 'cancelled' ? 'bg-gray-100 text-gray-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {bid.status === 'counter_offer' ? 'Counter Offered' : bid.status}
+                          </span>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {new Date(bid.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
                       </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <Gavel className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 mb-2">No bids placed yet</p>
-              <p className="text-sm text-gray-500">Your bid history will appear here</p>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
 
-  const renderBidsReceivedContent = () => (
-    <div className="space-y-6">
-      <div className="bg-white rounded-xl p-6 shadow-md border">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Bids Received</h2>
-          <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-            {bidsReceived.length} {bidsReceived.length === 1 ? 'Bid' : 'Bids'}
-          </span>
-        </div>
+                      {/* Negotiation History */}
+                      {bid.negotiationHistory && bid.negotiationHistory.length > 1 && (
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <p className="text-sm font-medium text-gray-700 mb-2">Negotiation History:</p>
+                          <div className="space-y-1">
+                            {bid.negotiationHistory.slice(-3).reverse().map((nego, idx) => (
+                              <p key={idx} className="text-xs text-gray-600">
+                                {formatPrice(nego.amount, bid.watch?.currency)} - {nego.proposedByRole === 'seller' ? 'You' : 'Bidder'} 
+                                {nego.message && `: ${nego.message}`}
+                              </p>
+                            ))}
+                          </div>
+                        </div>
+                      )}
 
-        {bidsReceived.length > 0 ? (
-          <div className="space-y-4">
-            {bidsReceived.map((bid) => (
-              <div key={bid._id} className="bg-gray-50 rounded-lg p-4 border hover:shadow-sm transition-shadow">
-                <div className="flex items-start gap-4">
-                  {/* Watch Image */}
-                  <div className="flex-shrink-0">
-                    <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
-                      {bid.watch?.imageUrl ? (
-                        <img 
-                          src={bid.watch.imageUrl} 
-                          alt={`${bid.watch.brand} ${bid.watch.model}`}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Watch className="w-6 h-6 text-gray-400" />
+                      {/* Comments */}
+                      {bid.comments && bid.comments.length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-gray-200">
+                          <p className="text-sm text-gray-700">
+                            <span className="font-medium">Latest comment:</span> {bid.comments[bid.comments.length - 1].text}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Counter Offer Form */}
+                      {counterOfferBidId === bid._id && (
+                        <div className="mt-3 pt-3 border-t border-gray-200 space-y-2">
+                          <div>
+                            <label className="text-sm font-medium text-gray-700">Counter Offer Amount ($)</label>
+                            <input 
+                              type="number"
+                              value={counterOfferAmount}
+                              onChange={(e) => setCounterOfferAmount(e.target.value)}
+                              className="mt-1 w-full px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-green-500"
+                              placeholder="Enter your counter offer"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-gray-700">Message (optional)</label>
+                            <input 
+                              type="text"
+                              value={counterOfferMessage}
+                              onChange={(e) => setCounterOfferMessage(e.target.value)}
+                              className="mt-1 w-full px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-green-500"
+                              placeholder="Add a message with your counter offer"
+                            />
+                          </div>
+                          <div className="flex gap-2">
+                            <button 
+                              onClick={() => handleCounterOffer(bid._id)}
+                              className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
+                            >
+                              Send Counter Offer
+                            </button>
+                            <button 
+                              onClick={() => {
+                                setCounterOfferBidId(null);
+                                setCounterOfferAmount('');
+                                setCounterOfferMessage('');
+                              }}
+                              className="px-3 py-1 bg-gray-400 text-white text-sm rounded hover:bg-gray-500 transition-colors"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Action buttons for received bids */}
+                      {(bid.status === 'offered' || bid.status === 'counter_offer' || bid.status === 'negotiating') && (
+                        <div className="mt-3 pt-3 border-t border-gray-200 flex gap-2">
+                          <button 
+                            onClick={() => handleAcceptBid(bid._id)}
+                            className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors"
+                          >
+                            Accept
+                          </button>
+                          <button 
+                            onClick={() => handleRejectBid(bid._id)}
+                            className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors"
+                          >
+                            Reject
+                          </button>
+                          {counterOfferBidId !== bid._id && (
+                            <button 
+                              onClick={() => {
+                                setCounterOfferBidId(bid._id);
+                                setCounterOfferAmount('');
+                                setCounterOfferMessage('');
+                              }}
+                              className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors"
+                            >
+                              Counter Offer
+                            </button>
+                          )}
                         </div>
                       )}
                     </div>
                   </div>
-
-                  {/* Bid Details */}
-                  <div className="flex-grow">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="font-semibold text-gray-900">
-                          {bid.watch?.brand} {bid.watch?.model}
-                        </h3>
-                        {bid.watch?.reference_number && (
-                          <p className="text-sm text-gray-600">Ref: {bid.watch.reference_number}</p>
-                        )}
-                        <p className="text-lg font-bold text-green-600 mt-1">
-                          Bid: ${bid.amount.toLocaleString()}
-                        </p>
-                        {bid.watch?.price && (
-                          <p className="text-sm text-gray-600">
-                            Your List Price: ${bid.watch.price.toLocaleString()}
-                          </p>
-                        )}
-                        {bid.bidder && (
-                          <p className="text-sm text-gray-700 mt-1">
-                            Bidder: {bid.bidder.name} ({bid.bidder.email})
-                          </p>
-                        )}
-                      </div>
-                      
-                      {/* Status and Date */}
-                      <div className="text-right">
-                        <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                          bid.status === 'offered' ? 'bg-yellow-100 text-yellow-800' :
-                          bid.status === 'accepted' ? 'bg-green-100 text-green-800' :
-                          bid.status === 'rejected' ? 'bg-red-100 text-red-800' :
-                          bid.status === 'cancelled' ? 'bg-gray-100 text-gray-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {bid.status}
-                        </span>
-                        <p className="text-xs text-gray-500 mt-1">
-                          {new Date(bid.created_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Comments */}
-                    {bid.comments && bid.comments.length > 0 && (
-                      <div className="mt-3 pt-3 border-t border-gray-200">
-                        <p className="text-sm text-gray-700">
-                          <span className="font-medium">Bidder's comment:</span> {bid.comments[0].text}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Action buttons for received bids */}
-                    {bid.status === 'offered' && (
-                      <div className="mt-3 pt-3 border-t border-gray-200 flex gap-2">
-                        <button className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 transition-colors">
-                          Accept
-                        </button>
-                        <button className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors">
-                          Reject
-                        </button>
-                      </div>
-                    )}
-                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="flex items-center justify-center py-12">
-            <div className="text-center">
-              <Receipt className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 mb-2">No bids received yet</p>
-              <p className="text-sm text-gray-500">Bids on your watches will appear here</p>
+              ))}
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <Receipt className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-600 mb-2">No bids received yet</p>
+                <p className="text-sm text-gray-500">Bids on your watches will appear here</p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderOrderHistoryContent = () => (
     <div className="space-y-6">
@@ -758,19 +1155,19 @@ export default function ProfilePage() {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="flex justify-between">
                         <span className="text-gray-600">Purchase Price:</span>
-                        <span className="font-semibold">${parseFloat(order.purchasePrice).toLocaleString()}</span>
+                        <span className="font-semibold">{formatPrice(parseFloat(order.purchasePrice), order.watch?.currency)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Shipping:</span>
-                        <span className="font-semibold">${parseFloat(order.shippingPrice).toLocaleString()}</span>
+                        <span className="font-semibold">{formatPrice(parseFloat(order.shippingPrice), order.watch?.currency)}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Buyer Fee:</span>
-                        <span className="font-semibold">${parseFloat(order.buyerFee || 0).toLocaleString()}</span>
+                        <span className="font-semibold">{formatPrice(parseFloat(order.buyerFee || 0), order.watch?.currency)}</span>
                       </div>
                       <div className="flex justify-between border-t pt-2">
                         <span className="text-gray-800 font-medium">Total:</span>
-                        <span className="font-bold text-lg text-[#3ab54a]">${parseFloat(order.totalPrice).toLocaleString()}</span>
+                        <span className="font-bold text-lg text-[#3ab54a]">{formatPrice(parseFloat(order.totalPrice), order.watch?.currency)}</span>
                       </div>
                     </div>
                     
@@ -803,14 +1200,16 @@ export default function ProfilePage() {
                   >
                     View Details
                   </button>
-                  {order.currentStatus === 'initiated' || order.currentStatus === 'pending' && (
+                  {(order.currentStatus === 'initiated' || order.currentStatus === 'pending') && (
                     <>
                       <button 
+                        onClick={() => navigate(`/orders`)}
                         className="text-xs bg-green-100 text-green-800 px-3 py-1 rounded-full hover:bg-green-200 transition-colors"
                       >
                         Confirm Receipt
                       </button>
                       <button 
+                        onClick={() => navigate(`/orders`)}
                         className="text-xs bg-orange-100 text-orange-800 px-3 py-1 rounded-full hover:bg-orange-200 transition-colors"
                       >
                         Report Issue
@@ -840,14 +1239,7 @@ export default function ProfilePage() {
     </div>
   );
 
-  const renderActivityContent = () => (
-    <div className="space-y-6">
-      <div className="bg-white rounded-xl p-6 shadow-md border">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Recent Activity</h2>
-        <p className="text-gray-600">Activity tracking coming soon...</p>
-      </div>
-    </div>
-  );
+  const renderActivityContent = () => <ActivityTab />;
 
   const renderSettingsContent = () => (
     <div className="space-y-6">
@@ -872,6 +1264,8 @@ export default function ProfilePage() {
         return renderBidsReceivedContent();
       case 'order-history':
         return renderOrderHistoryContent();
+      case 'sales-history':
+        return <SalesHistory />;
       case 'activity':
         return renderActivityContent();
       case 'settings':

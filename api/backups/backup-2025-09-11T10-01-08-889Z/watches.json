@@ -1,0 +1,101 @@
+[
+  {
+    "_id": "68c15892f5c3d16da2f20229",
+    "brand": "Breitling",
+    "model": "Aerospace EVO",
+    "reference_number": "BREIT001",
+    "year": 2025,
+    "condition": "Excellent",
+    "imageUrl": "/public/uploads/watches/watchImages-1757501586141.jpg",
+    "images": [
+      "/public/uploads/watches/watchImages-1757501586141.jpg",
+      "/public/uploads/watches/watchImages-1757501586142.jpg",
+      "/public/uploads/watches/watchImages-1757501586186.jpg",
+      "/public/uploads/watches/watchImages-1757501586186.jpg",
+      "/public/uploads/watches/watchImages-1757501586187.jpg"
+    ],
+    "seller": "68b1abb9bca89d3a455580c7",
+    "owner": "68b1abb9bca89d3a455580c7",
+    "currentBid": 3750,
+    "status": "sold",
+    "price": 3750,
+    "created_at": "2025-09-10T10:53:06.194Z",
+    "updated_at": "2025-09-11T09:14:18.062Z",
+    "__v": 1,
+    "currency": "USD"
+  },
+  {
+    "_id": "68c19fe1d17265585b93408b",
+    "brand": "Rolex",
+    "model": "Datejust 36",
+    "reference_number": "RX0023456",
+    "description": "36mm Mint Green Oyster Bracelet",
+    "year": 2025,
+    "condition": "Excellent",
+    "imageUrl": "/public/uploads/watches/watchImages-1757519841264.jpg",
+    "images": [
+      "/public/uploads/watches/watchImages-1757519841264.jpg",
+      "/public/uploads/watches/watchImages-1757519841264.jpg",
+      "/public/uploads/watches/watchImages-1757519841320.jpg",
+      "/public/uploads/watches/watchImages-1757519841320.jpg",
+      "/public/uploads/watches/watchImages-1757519841322.jpg"
+    ],
+    "seller": "68b1abb9bca89d3a455580c7",
+    "owner": "68b1abb9bca89d3a455580c7",
+    "currentBid": 9500,
+    "status": "active",
+    "price": 9500,
+    "created_at": "2025-09-10T15:57:21.330Z",
+    "updated_at": "2025-09-10T15:57:21.330Z",
+    "__v": 0
+  },
+  {
+    "_id": "68c1a3c33d649f0818ee9f4d",
+    "brand": "Cartier",
+    "model": "Tank",
+    "reference_number": "CR002345678",
+    "description": "Must Tank LM Ref.1615 - 23x30mm",
+    "year": 2025,
+    "condition": "Excellent",
+    "imageUrl": "/public/uploads/watches/watchImages-1757520835031.jpg",
+    "images": [
+      "/public/uploads/watches/watchImages-1757520835031.jpg",
+      "/public/uploads/watches/watchImages-1757520835033.jpg",
+      "/public/uploads/watches/watchImages-1757520835033.jpg",
+      "/public/uploads/watches/watchImages-1757520835034.jpg",
+      "/public/uploads/watches/watchImages-1757520835034.jpg"
+    ],
+    "seller": "68b1abb9bca89d3a455580c7",
+    "owner": "68b1abb9bca89d3a455580c7",
+    "currentBid": 1985,
+    "status": "active",
+    "price": 1985,
+    "created_at": "2025-09-10T16:13:55.040Z",
+    "updated_at": "2025-09-10T16:13:55.040Z",
+    "__v": 0
+  },
+  {
+    "_id": "68c1e86301f2a4c9954edbae",
+    "brand": "Cartier",
+    "model": "Santos",
+    "reference_number": "CR00998833",
+    "description": "Cartier Blue Dial Large Model Watch",
+    "year": 2025,
+    "condition": "Excellent",
+    "imageUrl": "/public/uploads/watches/watchImages-1757538402971.webp",
+    "images": [
+      "/public/uploads/watches/watchImages-1757538402971.webp",
+      "/public/uploads/watches/watchImages-1757538402972.webp",
+      "/public/uploads/watches/watchImages-1757538402972.webp",
+      "/public/uploads/watches/watchImages-1757538402998.webp"
+    ],
+    "seller": "68b1abb9bca89d3a455580c7",
+    "owner": "68b1abb9bca89d3a455580c7",
+    "currentBid": 0,
+    "status": "active",
+    "price": 6650,
+    "created_at": "2025-09-10T21:06:43.007Z",
+    "updated_at": "2025-09-10T21:06:43.007Z",
+    "__v": 0
+  }
+]

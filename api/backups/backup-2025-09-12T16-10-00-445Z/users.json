@@ -1,0 +1,97 @@
+[
+  {
+    "_id": "682746bf996070c6c7f6a5bf",
+    "juno_id": "paul.mccarthy@badbeat.com",
+    "email": "paul.mccarthy@badbeat.com",
+    "name": "Paul Mc",
+    "company_name": "big Picture Software",
+    "is_admin": false,
+    "created_at": "2025-05-16T14:07:59.535Z",
+    "updated_at": "2025-09-11T14:05:06.949Z",
+    "__v": 0,
+    "junopay_client_id": "client3598481332",
+    "buyer_fee": 1,
+    "defaultDeliveryAddress": {
+      "street": "5 Sylvan Drive",
+      "city": "Waterford",
+      "state": "Waterford",
+      "postalCode": "X98Y23",
+      "country": "Ireland"
+    }
+  },
+  {
+    "_id": "68401700ebac97f7da9b802c",
+    "juno_id": "admin-juno-id",
+    "email": "admin@luxe24.com",
+    "name": "Admin",
+    "company_name": "Luxe24 Admin",
+    "is_admin": true,
+    "created_at": "2025-09-06T17:51:01.630Z",
+    "updated_at": "2025-09-11T14:05:06.949Z",
+    "__v": 0
+  },
+  {
+    "_id": "684162b66344febfdba452e0",
+    "juno_id": "Alice@example.com",
+    "email": "placeholder@example.com",
+    "name": "Placeholder Name",
+    "company_name": "Placeholder Company",
+    "is_admin": false,
+    "created_at": "2025-06-05T09:26:14.112Z",
+    "updated_at": "2025-09-11T14:05:06.949Z",
+    "__v": 0
+  },
+  {
+    "_id": "6841bbbb0a716b974c08da70",
+    "juno_id": "paul@broker1.com",
+    "email": "paul@broker1.com",
+    "name": "Paul McCarthy",
+    "company_name": "Broker One",
+    "is_admin": false,
+    "created_at": "2025-06-05T15:46:03.211Z",
+    "updated_at": "2025-09-11T14:05:06.949Z",
+    "__v": 0
+  },
+  {
+    "_id": "6841cd390a716b974c08da76",
+    "juno_id": "dave@broker2.com",
+    "email": "dave@broker2.com",
+    "name": "David Conroy",
+    "company_name": "Broker Two",
+    "is_admin": false,
+    "created_at": "2025-06-05T17:00:41.514Z",
+    "updated_at": "2025-09-11T14:05:06.949Z",
+    "__v": 0
+  },
+  {
+    "_id": "68b1abb9bca89d3a455580c7",
+    "junopay_client_id": "client1289152352",
+    "email": "broker1@junomoney.com",
+    "name": "Broker1",
+    "company_name": "JunoPay User",
+    "is_admin": true,
+    "created_at": "2025-08-29T13:31:37.722Z",
+    "updated_at": "2025-09-11T14:05:06.949Z",
+    "__v": 0,
+    "buyer_fee": 1,
+    "defaultDeliveryAddress": {
+      "country": "USA"
+    }
+  },
+  {
+    "_id": "68c2dcfa70a08ac593eca1c3",
+    "junopay_client_id": "client5178941042",
+    "email": "broker2@junomoney.com",
+    "name": "Broker2",
+    "company_name": "JunoPay User",
+    "buyer_fee": 1,
+    "defaultDeliveryAddress": {
+      "country": "USA"
+    },
+    "juno_id": "broker2_juno_id",
+    "is_admin": false,
+    "created_at": "2025-09-11T14:30:18.366Z",
+    "updated_at": "2025-09-11T14:30:18.366Z",
+    "__v": 0
+  }
+]

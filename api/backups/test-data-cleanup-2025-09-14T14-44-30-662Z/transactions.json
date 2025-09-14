@@ -1,0 +1,23 @@
+[
+  {
+    "_id": "68c6a59b6554532831b5095a",
+    "applicationTransactionId": "JNT-cec23516",
+    "watch": "68c1a3c33d649f0818ee9f4d",
+    "buyer": "682746bf996070c6c7f6a5bf",
+    "seller": "68b1abb9bca89d3a455580c7",
+    "buyerClientId": "client3598481332",
+    "sellerClientId": "client1289152352",
+    "productName": "Cartier Tank",
+    "productCode": "CR002345678",
+    "currency": "USD",
+    "purchasePrice": "1985",
+    "shippingPrice": "50.00",
+    "totalPrice": "2035.00",
+    "buyerFee": "19.85",
+    "status": "completed",
+    "buyerNote": "Purchase of Cartier Tank - Ref: CR002345678",
+    "created_at": "2025-09-14T11:23:07.006Z",
+    "updated_at": "2025-09-14T11:27:56.849Z",
+    "__v": 0
+  }
+]

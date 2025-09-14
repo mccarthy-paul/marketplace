@@ -26,10 +26,44 @@ const bidSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['offered', 'accepted', 'rejected', 'cancelled'], // Define possible status values
+    enum: ['offered', 'accepted', 'rejected', 'cancelled', 'counter_offer', 'negotiating'], // Added negotiation statuses
     default: 'offered',
   },
+  // Track negotiation history
+  negotiationHistory: [
+    {
+      amount: {
+        type: Number,
+        required: true,
+      },
+      proposedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+      },
+      proposedByRole: {
+        type: String,
+        enum: ['buyer', 'seller'],
+        required: true,
+      },
+      message: {
+        type: String,
+      },
+      created_at: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
+  // Final agreed price (when accepted)
+  agreedPrice: {
+    type: Number,
+  },
   created_at: {
+    type: Date,
+    default: Date.now,
+  },
+  updated_at: {
     type: Date,
     default: Date.now,
   },

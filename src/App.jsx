@@ -24,6 +24,9 @@ import AdminLogin from './AdminLogin.jsx'; // Import AdminLogin
 import { Navigate } from 'react-router-dom'; // Import Navigate
 import NavigationHandler from './NavigationHandler.jsx'; // Import NavigationHandler
 import AssistantButton from './components/assistant/AssistantButton.jsx'; // Import AssistantButton
+import Cart from './Cart.jsx'; // Import Cart
+import Checkout from './Checkout.jsx'; // Import Checkout
+import OrderDetailsPage from './OrderDetailsPage.jsx'; // Import OrderDetailsPage
 import './index.css';
 import axios from 'axios'; // Import axios
 
@@ -32,8 +35,31 @@ axios.defaults.withCredentials = true; // Configure axios to send cookies
 
 // Note: beginAuth function removed - login handled via /auth/junopay/login
 
+// Application Version
+const APP_VERSION = '2.5.0-2024.12.14';
+const BUILD_FEATURES = {
+  notifications: true,
+  activityCharts: true,
+  aiAssistantMuted: true,
+  profileLinkInNav: true,
+  bidsRemovedFromNav: true,
+  cartFeature: true,
+  salesHistory: true
+};
+
 export default function App() {
   const [navOpen, setNavOpen] = useState(false);
+
+  // Log version info on mount
+  useEffect(() => {
+    console.log('%c🚀 Luxe24.1 Marketplace', 'color: #3ab54a; font-size: 20px; font-weight: bold');
+    console.log(`%c📦 Version: ${APP_VERSION}`, 'color: #facc15; font-size: 14px');
+    console.log('%c✨ Features:', 'color: #3ab54a; font-size: 14px');
+    Object.entries(BUILD_FEATURES).forEach(([feature, enabled]) => {
+      console.log(`  ${enabled ? '✅' : '❌'} ${feature}`);
+    });
+    console.log('%c📅 Build Time:', 'color: #3ab54a; font-size: 14px', new Date().toISOString());
+  }, []);
 
   /* --- PKCE callback logic stays here (unchanged) --- */
 
@@ -48,6 +74,7 @@ export default function App() {
         <Route path="/watches" element={<WatchList />} />
         <Route path="/listings" element={<ListingList />} />
         <Route path="/orders" element={<OrderList />} />
+        <Route path="/orders/:transactionId" element={<OrderDetailsPage />} />
         <Route path="/watches/:id" element={<WatchDetails />} />
         <Route path="/listings/:id" element={<ListingDetails />} />
         <Route path="/orders/:id" element={<OrderDetails />} />
@@ -56,6 +83,8 @@ export default function App() {
         <Route path="/bids/:bidId" element={<BidDetailsPage />} /> {/* Route for bid details */}
         <Route path="/profile" element={<ProfilePage />} /> {/* Route for user profile */}
         <Route path="/add-watch" element={<AddWatch />} /> {/* Route for adding a watch */}
+        <Route path="/cart" element={<Cart />} /> {/* Route for shopping cart */}
+        <Route path="/checkout" element={<Checkout />} /> {/* Route for checkout */}
         
         {/* Admin Routes */}
         <Route path="/admin/orders" element={<AdminOrdersPage />} /> {/* Admin orders management */}

@@ -1,0 +1,51 @@
+{
+  "name": "@juno-marketplace/test-automation",
+  "version": "1.0.0",
+  "description": "Test automation framework for Juno Marketplace",
+  "type": "module",
+  "scripts": {
+    "test:all": "node scripts/test-runner.js --all",
+    "test:marketplace": "node scripts/test-runner.js --suite=marketplace",
+    "test:admin": "node scripts/test-runner.js --suite=admin",
+    "test:api": "node scripts/test-runner.js --suite=api",
+    "test:e2e": "playwright test",
+    "test:unit": "vitest run --config config/vitest.config.js",
+    "test:integration": "node scripts/test-runner.js --suite=integration",
+    "test:watch": "vitest --config config/vitest.config.js",
+    "test:debug": "node --inspect scripts/test-runner.js",
+    "test:coverage": "vitest run --coverage --config config/vitest.config.js",
+    "test:coverage:view": "open coverage/index.html",
+    "test:local": "cross-env TEST_ENV=local npm run test:all",
+    "test:staging": "cross-env TEST_ENV=staging npm run test:all",
+    "test:production": "cross-env TEST_ENV=production npm run test:all",
+    "report:generate": "node scripts/report-generator.js",
+    "report:publish": "node scripts/report-publisher.js",
+    "setup": "node scripts/setup.js",
+    "clean": "rimraf reports coverage .nyc_output test-results"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.40.0",
+    "axios": "^1.6.0",
+    "chai": "^4.3.10",
+    "chai-http": "^4.4.0",
+    "dotenv": "^16.3.1",
+    "mongodb": "^6.3.0",
+    "supertest": "^6.3.3"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^9.3.3",
+    "@testing-library/jest-dom": "^6.1.5",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/user-event": "^14.5.1",
+    "@vitest/coverage-v8": "^1.0.4",
+    "@vitest/ui": "^1.0.4",
+    "cross-env": "^7.0.3",
+    "jsdom": "^23.0.1",
+    "msw": "^2.0.11",
+    "rimraf": "^5.0.5",
+    "vitest": "^1.0.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

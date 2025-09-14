@@ -209,7 +209,12 @@ class JunoPayService {
         transactionId: transactionId
       };
 
-      return await this.makeAuthenticatedRequest(user, '/get-app-transaction-details', requestBody);
+      const result = await this.makeAuthenticatedRequest(user, '/get-app-transaction-details', requestBody);
+      
+      // The result should contain the transaction details with current status
+      console.log(`Transaction ${transactionId} details:`, result);
+      
+      return result;
     } catch (error) {
       console.error('Get transaction details error:', error);
       throw error;

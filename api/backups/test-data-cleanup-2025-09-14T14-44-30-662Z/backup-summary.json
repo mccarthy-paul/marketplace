@@ -1,0 +1,30 @@
+{
+  "timestamp": "2025-09-14T14:44:30.671Z",
+  "purpose": "Test data cleanup backup",
+  "collections": [
+    {
+      "name": "watches",
+      "count": 206
+    },
+    {
+      "name": "users",
+      "count": 97
+    },
+    {
+      "name": "bids",
+      "count": 1
+    },
+    {
+      "name": "transactions",
+      "count": 23
+    },
+    {
+      "name": "carts",
+      "count": 15
+    },
+    {
+      "name": "notifications",
+      "count": 164
+    }
+  ]
+}

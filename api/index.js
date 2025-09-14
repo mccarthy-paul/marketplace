@@ -25,6 +25,10 @@ import chatRouter from './routes/chat.js'; // Import chat router
 import junopayAuthRouter from './routes/junopayAuth.js'; // Import JunoPay auth router
 import junopayRouter from './routes/junopay.js'; // Import JunoPay API router
 import adminRouter from './routes/admin.js'; // Import admin router
+import cartRouter from './routes/cart.js'; // Import cart router
+import dataSpecialistRouter from './routes/dataSpecialist.js'; // Import data specialist router
+import notificationsRouter from './routes/notifications.js'; // Import notifications router
+import analyticsRouter from './routes/analytics.js'; // Import analytics router
 import cors from 'cors';
 
 
@@ -32,7 +36,14 @@ const app = express();
 
 // Add CORS middleware
 app.use(cors({
-  origin: ['https://4c153d847f98.ngrok-free.app', 'http://localhost:8002', 'http://localhost:5174'],
+  origin: [
+    'https://a2842d04cca8.ngrok-free.app',
+    'https://admin.a2842d04cca8.ngrok-free.app',
+    'https://a2842d04cca8.ngrok-free.app',
+    'http://localhost:8002',
+    'http://localhost:5174',
+    'http://localhost:5173'
+  ],
   credentials: true // Allow cookies to be sent
 }));
 
@@ -40,14 +51,19 @@ app.use(cors({
 app.use(express.json());
 
 // PMC TESTING REMOVE
+// Trust proxy for ngrok/production environments
+app.set('trust proxy', 1);
+
 app.use(session({
   secret: process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex'),
   resave: false,
   saveUninitialized: false,
   cookie: {
-    sameSite: 'lax',
+    sameSite: 'none', // Allow cross-site cookies for ngrok
+    secure: true, // Required for sameSite: 'none'
     httpOnly: true,
- },
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+  },
 }));
 
 app.use('/auth/juno', authCallbackRouter);
@@ -60,12 +76,19 @@ app.use('/api/chat', chatRouter); // Mount chat router
 app.use('/auth/junopay', junopayAuthRouter); // Mount JunoPay auth router
 app.use('/api/junopay', junopayRouter); // Mount JunoPay API router
 app.use('/api/admin', adminRouter); // Mount admin router
+app.use('/api/cart', cartRouter); // Mount cart router
+app.use('/api/data', dataSpecialistRouter); // Mount data specialist router
+app.use('/api/notifications', notificationsRouter); // Mount notifications router
+app.use('/api/analytics', analyticsRouter); // Mount analytics router
 
 // Serve static files from the frontend build
 app.use(express.static(path.join(__dirname, '..', 'dist')));
 
 // Serve images from the images directory
 app.use('/images', express.static(path.join(__dirname, '..', 'images')));
+
+// Serve uploaded files from the public directory
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 app.get('/auth/juno/callback', async (req, res) => {
   const { code, state } = req.query;
@@ -90,12 +113,25 @@ app.get('/auth/juno/callback', async (req, res) => {
 
   const tokenSet = await tokenRes.json();
   req.session.accessToken = tokenSet.access_token;
-  res.redirect('https://4c153d847f98.ngrok-free.app/dashboard'); // or wherever
+  res.redirect('https://a2842d04cca8.ngrok-free.app/dashboard'); // or wherever
 });
 
 app.get('/api/me', isAuthenticated, (req, res) => {
   console.log('Direct /api/me endpoint hit - user:', req.session.user);
   res.json({ user: req.session.user });
+});
+
+// Debug endpoint to check session without auth
+app.get('/api/session-check', (req, res) => {
+  console.log('Session check - Full session:', req.session);
+  console.log('Session check - User:', req.session?.user);
+  console.log('Session check - Session ID:', req.sessionID);
+  res.json({ 
+    hasSession: !!req.session,
+    hasUser: !!req.session?.user,
+    sessionId: req.sessionID,
+    user: req.session?.user || null
+  });
 });
 
 /* 2️⃣  logout  ──────────────────────────────────────────────────*/

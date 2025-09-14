@@ -198,6 +198,35 @@ RESPONSE GUIDELINES:
           },
           required: ["watchId"]
         }
+      },
+      {
+        name: "get_user_orders",
+        description: "Get the user's order history and transaction details",
+        parameters: {
+          type: "object",
+          properties: {
+            status: {
+              type: "string",
+              enum: ["initiated", "pending", "completed", "cancelled"],
+              description: "Filter orders by status"
+            },
+            limit: {
+              type: "number",
+              description: "Maximum number of orders to return",
+              default: 10
+            }
+          },
+          required: []
+        }
+      },
+      {
+        name: "get_user_balance",
+        description: "Get the user's JunoPay fiat balance in different currencies",
+        parameters: {
+          type: "object",
+          properties: {},
+          required: []
+        }
       }
     ];
   }

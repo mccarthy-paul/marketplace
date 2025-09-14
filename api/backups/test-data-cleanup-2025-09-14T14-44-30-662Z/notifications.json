@@ -1,0 +1,164 @@
+[
+  {
+    "_id": "68c3eab35eab6a1962ac0cd1",
+    "user": "68b1abb9bca89d3a455580c7",
+    "type": "order_placed",
+    "title": "New Order Received",
+    "message": "Paul Mc has placed an order for your Cartier Tank",
+    "relatedEntity": {
+      "entityType": "order",
+      "entityId": "68c3e26408ce6e8674fb2090"
+    },
+    "read": true,
+    "createdAt": "2025-09-12T09:41:07.368Z",
+    "__v": 0,
+    "readAt": "2025-09-12T09:51:44.840Z"
+  },
+  {
+    "_id": "68c3edf476b7144d05886527",
+    "user": "68b1abb9bca89d3a455580c7",
+    "type": "watch_sold",
+    "title": "Watch Sold!",
+    "message": "Your Cartier Tank has been sold to Paul Mc",
+    "relatedEntity": {
+      "entityType": "order",
+      "entityId": "68c3e26408ce6e8674fb2090"
+    },
+    "read": true,
+    "createdAt": "2025-09-12T09:55:00.123Z",
+    "__v": 0,
+    "readAt": "2025-09-12T09:55:48.960Z"
+  },
+  {
+    "_id": "68c3edf476b7144d05886529",
+    "user": "682746bf996070c6c7f6a5bf",
+    "type": "order_shipped",
+    "title": "Order Confirmed",
+    "message": "Your purchase of Cartier Tank has been confirmed",
+    "relatedEntity": {
+      "entityType": "order",
+      "entityId": "68c3e26408ce6e8674fb2090"
+    },
+    "read": true,
+    "createdAt": "2025-09-12T09:55:00.126Z",
+    "__v": 0,
+    "readAt": "2025-09-12T11:23:34.401Z"
+  },
+  {
+    "_id": "68c408afbb4e2e86168ff655",
+    "user": "68c2dcfa70a08ac593eca1c3",
+    "type": "new_bid",
+    "title": "New Bid Received",
+    "message": "Paul Mc placed a bid of 3000 on your Cartier Santos Dumont",
+    "relatedEntity": {
+      "entityType": "bid",
+      "entityId": "68c408afbb4e2e86168ff651"
+    },
+    "read": true,
+    "createdAt": "2025-09-12T11:49:03.826Z",
+    "__v": 0,
+    "readAt": "2025-09-12T11:49:37.632Z"
+  },
+  {
+    "_id": "68c40976bb4e2e86168ff697",
+    "user": "68c2dcfa70a08ac593eca1c3",
+    "type": "bid_accepted",
+    "title": "Bid Accepted!",
+    "message": "Broker2 accepted your counter offer of 3500 for Cartier Santos Dumont",
+    "relatedEntity": {
+      "entityType": "bid",
+      "entityId": "68c408afbb4e2e86168ff651"
+    },
+    "read": false,
+    "createdAt": "2025-09-12T11:52:22.902Z",
+    "__v": 0
+  },
+  {
+    "_id": "68c40e63ccf7e7c7555709e2",
+    "user": "68c2dcfa70a08ac593eca1c3",
+    "type": "order_placed",
+    "title": "New Order Received",
+    "message": "Paul Mc has placed an order for your Cartier Santos Dumont",
+    "relatedEntity": {
+      "entityType": "order",
+      "entityId": "68c40e63ccf7e7c7555709e0"
+    },
+    "read": false,
+    "createdAt": "2025-09-12T12:13:23.968Z",
+    "__v": 0
+  },
+  {
+    "_id": "68c4457e93d630729865fa90",
+    "user": "68c2dcfa70a08ac593eca1c3",
+    "type": "watch_sold",
+    "title": "Watch Sold!",
+    "message": "Your Cartier Santos Dumont has been sold to Paul Mc",
+    "relatedEntity": {
+      "entityType": "order",
+      "entityId": "68c40e63ccf7e7c7555709e0"
+    },
+    "read": false,
+    "createdAt": "2025-09-12T16:08:30.215Z",
+    "__v": 0
+  },
+  {
+    "_id": "68c4457e93d630729865fa92",
+    "user": "682746bf996070c6c7f6a5bf",
+    "type": "order_shipped",
+    "title": "Order Confirmed",
+    "message": "Your purchase of Cartier Santos Dumont has been confirmed",
+    "relatedEntity": {
+      "entityType": "order",
+      "entityId": "68c40e63ccf7e7c7555709e0"
+    },
+    "read": true,
+    "createdAt": "2025-09-12T16:08:30.220Z",
+    "__v": 0,
+    "readAt": "2025-09-12T17:13:48.285Z"
+  },
+  {
+    "_id": "68c6a59b6554532831b5095c",
+    "user": "68b1abb9bca89d3a455580c7",
+    "type": "order_placed",
+    "title": "New Order Received",
+    "message": "Paul Mc has placed an order for your Cartier Tank",
+    "relatedEntity": {
+      "entityType": "order",
+      "entityId": "68c6a59b6554532831b5095a"
+    },
+    "read": true,
+    "createdAt": "2025-09-14T11:23:07.010Z",
+    "__v": 0,
+    "readAt": "2025-09-14T11:26:21.557Z"
+  },
+  {
+    "_id": "68c6a6ba0d852700837f3c0e",
+    "user": "68b1abb9bca89d3a455580c7",
+    "type": "watch_sold",
+    "title": "Watch Sold!",
+    "message": "Your Cartier Tank has been sold to Paul Mc",
+    "relatedEntity": {
+      "entityType": "order",
+      "entityId": "68c6a59b6554532831b5095a"
+    },
+    "read": true,
+    "createdAt": "2025-09-14T11:27:54.390Z",
+    "__v": 0,
+    "readAt": "2025-09-14T11:29:03.845Z"
+  },
+  {
+    "_id": "68c6a6ba0d852700837f3c10",
+    "user": "682746bf996070c6c7f6a5bf",
+    "type": "order_shipped",
+    "title": "Order Confirmed",
+    "message": "Your purchase of Cartier Tank has been confirmed",
+    "relatedEntity": {
+      "entityType": "order",
+      "entityId": "68c6a59b6554532831b5095a"
+    },
+    "read": true,
+    "createdAt": "2025-09-14T11:27:54.396Z",
+    "__v": 0,
+    "readAt": "2025-09-14T11:28:19.660Z"
+  }
+]

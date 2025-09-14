@@ -12,11 +12,12 @@ const AddWatch = () => {
     condition: 'Excellent',
     startingPrice: '',
     price: '',
+    currency: 'USD',
     status: 'active'
   });
 
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imageFiles, setImageFiles] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
@@ -32,13 +33,37 @@ const AddWatch = () => {
   };
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onload = (e) => setImagePreview(e.target.result);
-      reader.readAsDataURL(file);
+    const files = Array.from(e.target.files);
+    
+    // Limit to 5 images
+    if (files.length + imageFiles.length > 5) {
+      alert('You can upload a maximum of 5 images');
+      return;
     }
+    
+    // Add new files to existing ones
+    const newImageFiles = [...imageFiles, ...files].slice(0, 5);
+    setImageFiles(newImageFiles);
+    
+    // Generate previews
+    const newPreviews = [];
+    newImageFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        newPreviews.push(e.target.result);
+        if (newPreviews.length === newImageFiles.length) {
+          setImagePreviews(newPreviews);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImage = (index) => {
+    const newImageFiles = imageFiles.filter((_, i) => i !== index);
+    const newPreviews = imagePreviews.filter((_, i) => i !== index);
+    setImageFiles(newImageFiles);
+    setImagePreviews(newPreviews);
   };
 
   const handleSubmit = async (e) => {
@@ -57,10 +82,10 @@ const AddWatch = () => {
         }
       });
 
-      // Add image if selected
-      if (imageFile) {
-        data.append('watchImage', imageFile);
-      }
+      // Add images if selected (multiple files)
+      imageFiles.forEach(file => {
+        data.append('watchImages', file);
+      });
 
       // Submit to user watches endpoint
       const response = await fetch('/api/watches/user', {
@@ -71,6 +96,15 @@ const AddWatch = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
+        
+        // Check if it's a JunoPay configuration error
+        if (response.status === 400 && errorData.message?.includes('JunoPay')) {
+          // Show more user-friendly error and redirect to login
+          alert(errorData.message + '\n\nYou will be redirected to log in with JunoPay.');
+          window.location.href = '/auth/junopay/login';
+          return;
+        }
+        
         throw new Error(errorData.message || 'Failed to add watch');
       }
 
@@ -213,67 +247,128 @@ const AddWatch = () => {
             {/* Pricing */}
             <div>
               <h3 className="text-lg font-medium text-gray-900 mb-4">Pricing</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label htmlFor="currency" className="block text-sm font-medium text-gray-700 mb-1">
+                    Currency
+                  </label>
+                  <select
+                    id="currency"
+                    name="currency"
+                    value={formData.currency}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3ab54a] focus:border-transparent"
+                  >
+                    <option value="USD">USD - US Dollar</option>
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="GBP">GBP - British Pound</option>
+                    <option value="CHF">CHF - Swiss Franc</option>
+                    <option value="JPY">JPY - Japanese Yen</option>
+                    <option value="CAD">CAD - Canadian Dollar</option>
+                    <option value="AUD">AUD - Australian Dollar</option>
+                    <option value="SGD">SGD - Singapore Dollar</option>
+                    <option value="HKD">HKD - Hong Kong Dollar</option>
+                  </select>
+                </div>
+
                 <div>
                   <label htmlFor="startingPrice" className="block text-sm font-medium text-gray-700 mb-1">
-                    Starting Bid Price ($)
+                    Starting Bid Price
                   </label>
-                  <input
-                    type="number"
-                    id="startingPrice"
-                    name="startingPrice"
-                    value={formData.startingPrice}
-                    onChange={handleInputChange}
-                    min="0"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3ab54a] focus:border-transparent"
-                    placeholder="0"
-                  />
+                  <div className="relative">
+                    <span className="absolute left-3 top-2 text-gray-500">
+                      {formData.currency === 'USD' ? '$' :
+                       formData.currency === 'EUR' ? '€' :
+                       formData.currency === 'GBP' ? '£' :
+                       formData.currency === 'JPY' ? '¥' :
+                       formData.currency}
+                    </span>
+                    <input
+                      type="number"
+                      id="startingPrice"
+                      name="startingPrice"
+                      value={formData.startingPrice}
+                      onChange={handleInputChange}
+                      min="0"
+                      className="w-full pl-12 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3ab54a] focus:border-transparent"
+                      placeholder="0"
+                    />
+                  </div>
                 </div>
 
                 <div>
                   <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
-                    Buy Now Price ($)
+                    Buy Now Price
                   </label>
-                  <input
-                    type="number"
-                    id="price"
-                    name="price"
-                    value={formData.price}
-                    onChange={handleInputChange}
-                    min="0"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3ab54a] focus:border-transparent"
-                    placeholder="0"
-                  />
+                  <div className="relative">
+                    <span className="absolute left-3 top-2 text-gray-500">
+                      {formData.currency === 'USD' ? '$' :
+                       formData.currency === 'EUR' ? '€' :
+                       formData.currency === 'GBP' ? '£' :
+                       formData.currency === 'JPY' ? '¥' :
+                       formData.currency}
+                    </span>
+                    <input
+                      type="number"
+                      id="price"
+                      name="price"
+                      value={formData.price}
+                      onChange={handleInputChange}
+                      min="0"
+                      className="w-full pl-12 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3ab54a] focus:border-transparent"
+                      placeholder="0"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Image Upload */}
             <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Watch Image</h3>
-              <div className="flex items-start space-x-4">
-                <div className="flex-1">
-                  <label htmlFor="watchImage" className="block text-sm font-medium text-gray-700 mb-1">
-                    Upload Image
-                  </label>
-                  <input
-                    type="file"
-                    id="watchImage"
-                    name="watchImage"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3ab54a] focus:border-transparent"
-                  />
-                  <p className="text-sm text-gray-500 mt-1">Accepted formats: JPG, PNG, GIF</p>
-                </div>
-
-                {imagePreview && (
-                  <div className="flex-shrink-0">
-                    <img
-                      src={imagePreview}
-                      alt="Preview"
-                      className="h-24 w-24 object-cover rounded-md border"
-                    />
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Watch Images</h3>
+              <div>
+                <label htmlFor="watchImages" className="block text-sm font-medium text-gray-700 mb-1">
+                  Upload Images (Maximum 5)
+                </label>
+                <input
+                  type="file"
+                  id="watchImages"
+                  name="watchImages"
+                  accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                  multiple
+                  onChange={handleImageChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3ab54a] focus:border-transparent"
+                />
+                <p className="text-sm text-gray-500 mt-1">
+                  Accepted formats: JPG, PNG, GIF, WebP • {imageFiles.length}/5 images selected
+                </p>
+                
+                {/* Image Previews */}
+                {imagePreviews.length > 0 && (
+                  <div className="mt-4 grid grid-cols-5 gap-2">
+                    {imagePreviews.map((preview, index) => (
+                      <div key={index} className="relative group">
+                        <img
+                          src={preview}
+                          alt={`Preview ${index + 1}`}
+                          className="h-24 w-24 object-cover rounded-md border"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                        {index === 0 && (
+                          <span className="absolute bottom-1 left-1 bg-[#3ab54a] text-white text-xs px-1 rounded">
+                            Primary
+                          </span>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>

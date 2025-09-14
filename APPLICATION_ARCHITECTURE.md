@@ -17,8 +17,8 @@ The Juno Marketplace is a luxury watch marketplace with two main applications:
 | **Main Frontend** | 5173 | http://localhost:5173 | Customer marketplace interface |
 | **Admin API** | 8002 | http://localhost:8002 | Admin backend with proxy routes |
 | **Admin Frontend** | 5174 | http://localhost:5174 | Admin interface (dev) |
-| **Ngrok Main** | - | https://4c153d847f98.ngrok-free.app | Public access to main app |
-| **Ngrok Admin** | - | https://admin.4c153d847f98.ngrok-free.app | Public access to admin app |
+| **Ngrok Main** | - | https://a2842d04cca8.ngrok-free.app | Public access to main app |
+| **Ngrok Admin** | - | https://admin.a2842d04cca8.ngrok-free.app | Public access to admin app |
 
 ## 🗂️ Directory Structure
 
@@ -199,11 +199,11 @@ juno-marketplace/
 3. **Start Admin Server**: `cd admin-app && pnpm start` (Port 8002)
 
 ### Production Access
-- **Main App**: https://4c153d847f98.ngrok-free.app
-- **Admin App**: https://admin.4c153d847f98.ngrok-free.app
+- **Main App**: https://a2842d04cca8.ngrok-free.app
+- **Admin App**: https://admin.a2842d04cca8.ngrok-free.app
 
 ### Admin Access
-1. Navigate to admin login: `https://admin.4c153d847f98.ngrok-free.app/login`
+1. Navigate to admin login: `https://admin.a2842d04cca8.ngrok-free.app/login`
 2. Login with: `admin@luxe24.com` / `admin123`
 3. Access dashboard and management interfaces
 

@@ -1,0 +1,56 @@
+[
+  {
+    "_id": "68c2c05bbd5cb76545b4ccfe",
+    "watch": "68c1e86301f2a4c9954edbae",
+    "bidder": "682746bf996070c6c7f6a5bf",
+    "amount": 6000,
+    "ownerEmail": "broker1@junomoney.com",
+    "bidderEmail": "paul.mccarthy@badbeat.com",
+    "bidderName": "Paul Mc",
+    "status": "accepted",
+    "negotiationHistory": [
+      {
+        "amount": 5000,
+        "proposedBy": "682746bf996070c6c7f6a5bf",
+        "proposedByRole": "buyer",
+        "message": "good offer",
+        "created_at": "2025-09-11T12:28:11.382Z",
+        "_id": "68c2c05bbd5cb76545b4ccff"
+      },
+      {
+        "amount": 6000,
+        "proposedBy": "68b1abb9bca89d3a455580c7",
+        "proposedByRole": "seller",
+        "message": "My lowest price",
+        "created_at": "2025-09-11T13:14:02.956Z",
+        "_id": "68c2cb1abd5cb76545b4cd1c"
+      },
+      {
+        "amount": 6000,
+        "proposedBy": "682746bf996070c6c7f6a5bf",
+        "proposedByRole": "buyer",
+        "message": "Offer accepted by buyer",
+        "created_at": "2025-09-11T13:20:25.104Z",
+        "_id": "68c2cc99028f9e1379d68423"
+      }
+    ],
+    "comments": [
+      {
+        "text": "good offer",
+        "user": "682746bf996070c6c7f6a5bf",
+        "created_at": "2025-09-11T12:28:11.382Z",
+        "_id": "68c2c05bbd5cb76545b4cd00"
+      },
+      {
+        "text": "My lowest price",
+        "user": "68b1abb9bca89d3a455580c7",
+        "created_at": "2025-09-11T13:14:02.958Z",
+        "_id": "68c2cb1abd5cb76545b4cd1d"
+      }
+    ],
+    "created_at": "2025-09-11T12:28:11.383Z",
+    "updated_at": "2025-09-11T13:20:25.104Z",
+    "__v": 2,
+    "agreedPrice": 6000
+  }
+]

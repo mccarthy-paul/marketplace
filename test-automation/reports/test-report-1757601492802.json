@@ -1,0 +1,55 @@
+{
+  "timestamp": "2025-09-11T14:38:12.802Z",
+  "environment": "local",
+  "config": {
+    "baseDir": "/Users/paulmccarthy/juno-marketplace/test-automation",
+    "marketplaceUrl": "http://localhost:5173",
+    "adminUrl": "http://localhost:5174",
+    "apiUrl": "http://localhost:8001",
+    "testTimeout": 30000,
+    "retryCount": 3,
+    "parallel": false,
+    "headless": true,
+    "coverage": false
+  },
+  "results": [
+    {
+      "suite": "api",
+      "timestamp": "2025-09-11T14:38:11.189Z",
+      "results": {
+        "success": false,
+        "exitCode": 1
+      }
+    },
+    {
+      "suite": "marketplace",
+      "timestamp": "2025-09-11T14:38:11.617Z",
+      "results": {
+        "success": false,
+        "exitCode": 1
+      }
+    },
+    {
+      "suite": "admin",
+      "timestamp": "2025-09-11T14:38:11.994Z",
+      "results": {
+        "success": false,
+        "exitCode": 1
+      }
+    },
+    {
+      "suite": "integration",
+      "timestamp": "2025-09-11T14:38:12.343Z",
+      "results": {
+        "success": false,
+        "exitCode": 1
+      }
+    }
+  ],
+  "summary": {
+    "total": 4,
+    "passed": 0,
+    "failed": 4,
+    "passRate": "0.00%"
+  }
+}

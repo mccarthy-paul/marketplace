@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { formatPrice } from './utils/currency';
 
 const BidDetailsPage = () => {
   const { bidId } = useParams();
@@ -55,7 +56,7 @@ const BidDetailsPage = () => {
     <div>
       <h2>Bid Details for Bid {bidId}</h2>
       <p>Watch Model: {bid.watch ? bid.watch.model : 'N/A'}</p>
-      <p>Bid Amount: ${bid.amount.toLocaleString()}</p>
+      <p>Bid Amount: {formatPrice(bid.amount, bid.watch?.currency)}</p>
       <p>Status: {bid.status}</p>
       <p>Bidder Email: {bid.bidder ? bid.bidder.email : 'N/A'}</p>
       <p>Bid Time: {new Date(bid.created_at).toLocaleString()}</p>
