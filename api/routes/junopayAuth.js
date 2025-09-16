@@ -160,74 +160,123 @@ router.get('/callback', async (req, res) => {
   }
 });
 
+// Get user's access token for client-side logout
+router.get('/logout-token', async (req, res) => {
+  console.log('📤 Getting logout token for client...');
+
+  if (req.session?.user?._id) {
+    try {
+      // Get the user's access token from the database
+      const user = await User.findById(req.session.user._id).select('+access_token');
+
+      if (user?.access_token) {
+        console.log('↪ Returning access token for client-side logout');
+        return res.json({
+          success: true,
+          access_token: user.access_token
+        });
+      } else {
+        console.log('⚠️ No access token found for user');
+        return res.json({
+          success: false,
+          message: 'No token available'
+        });
+      }
+    } catch (error) {
+      console.error('❌ Error getting logout token:', error);
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to get logout token'
+      });
+    }
+  } else {
+    return res.json({
+      success: false,
+      message: 'No active session'
+    });
+  }
+});
+
+// Proxy for JunoPay application_logout (to bypass CORS)
+router.post('/application-logout-proxy', async (req, res) => {
+  console.log('🔄 Proxying application_logout request to JunoPay...');
+
+  if (req.session?.user?._id) {
+    try {
+      // Get the user's access token from the database
+      const user = await User.findById(req.session.user._id).select('+access_token');
+
+      if (user?.access_token) {
+        console.log('↪ Making application_logout request to JunoPay...');
+
+        // Call JunoPay application_logout
+        const logoutResponse = await fetch('https://stg.junomoney.org/restapi/application_logout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${user.access_token}`
+          },
+          body: JSON.stringify({
+            token: user.access_token,
+            client_id: process.env.JUNO_APPLICATION_ID || 'PaulsMarketplace-cafd2e7e'
+          })
+        });
+
+        const responseText = await logoutResponse.text();
+        console.log('↪ JunoPay application_logout response:', logoutResponse.status, responseText);
+
+        return res.json({
+          success: true,
+          status: logoutResponse.status,
+          message: 'Application logout called'
+        });
+      } else {
+        console.log('⚠️ No access token found for user');
+        return res.json({
+          success: false,
+          message: 'No token available'
+        });
+      }
+    } catch (error) {
+      console.error('❌ Error calling application_logout:', error);
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to call application_logout'
+      });
+    }
+  } else {
+    return res.json({
+      success: false,
+      message: 'No active session'
+    });
+  }
+});
+
 // Logout route
 router.post('/logout', async (req, res) => {
   console.log('🚪 Logout request received');
   console.log('↪ Session before logout:', JSON.stringify(req.session, null, 2));
   
-  // Call JunoPay logout service if user has a token
+  // Clear tokens from our database only (JunoPay logout will be called from browser)
   if (req.session?.user?._id) {
     try {
-      // Get the user's access token from the database (explicitly select access_token since it's hidden by default)
-      const user = await User.findById(req.session.user._id).select('+access_token');
+      // Get the user's access token from the database
+      const user = await User.findById(req.session.user._id).select('+access_token +refresh_token');
       console.log('↪ User found:', user ? 'Yes' : 'No');
-      console.log('↪ Has access token:', user?.access_token ? 'Yes' : 'No');
-      
-      if (user?.access_token) {
-        console.log('📤 Calling JunoPay logout service with user token...');
-        console.log('↪ Token being used (first 20 chars):', user.access_token.substring(0, 20) + '...');
-        
-        // Try multiple logout endpoints
-        const logoutEndpoints = [
-          'https://stg.junomoney.org/restapi/application_logout',
-          'https://stg.junomoney.org/oauth/logout',
-          'https://stg.junomoney.org/oauth/revoke', // Try token revocation endpoint
-          'https://stg.junomoney.org/logout'
-        ];
-        
-        for (const endpoint of logoutEndpoints) {
-          try {
-            console.log(`↪ Trying logout endpoint: ${endpoint}`);
-            
-            // Different body for revoke endpoint
-            const requestBody = endpoint.includes('revoke') 
-              ? { token: user.access_token, token_type_hint: 'access_token' }
-              : { token: user.access_token, client_id: process.env.JUNO_APPLICATION_ID };
-            
-            const logoutResponse = await fetch(endpoint, {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${user.access_token}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(requestBody)
-            });
-            
-            console.log(`↪ Response status from ${endpoint}:`, logoutResponse.status);
-            
-            if (logoutResponse.ok || logoutResponse.status === 204) {
-              console.log(`✅ Logout successful at ${endpoint}`);
-              break;
-            } else {
-              const responseText = await logoutResponse.text();
-              console.log(`↪ Response from ${endpoint}:`, responseText);
-            }
-          } catch (err) {
-            console.log(`↪ Error calling ${endpoint}:`, err.message);
-          }
-        }
-        
-        // Also clear the tokens from our database
+
+      if (user) {
+        // Clear the tokens from our database
         user.access_token = null;
         user.refresh_token = null;
         await user.save();
         console.log('↪ Tokens cleared from database');
+        console.log('↪ JunoPay logout will be called from browser with authentication');
       } else {
-        console.log('⚠️ No access token found for user');
+        console.log('⚠️ User not found in database');
       }
     } catch (error) {
-      console.error('❌ Error calling JunoPay logout:', error);
-      // Continue with local logout even if JunoPay logout fails
+      console.error('❌ Error clearing user tokens:', error);
+      // Continue with local logout even if token clearing fails
     }
   } else {
     console.log('⚠️ No user session found');

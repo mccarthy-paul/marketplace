@@ -29,6 +29,7 @@ import cartRouter from './routes/cart.js'; // Import cart router
 import dataSpecialistRouter from './routes/dataSpecialist.js'; // Import data specialist router
 import notificationsRouter from './routes/notifications.js'; // Import notifications router
 import analyticsRouter from './routes/analytics.js'; // Import analytics router
+import sellersRouter from './routes/sellers.js'; // Import sellers router
 import cors from 'cors';
 
 
@@ -80,6 +81,7 @@ app.use('/api/cart', cartRouter); // Mount cart router
 app.use('/api/data', dataSpecialistRouter); // Mount data specialist router
 app.use('/api/notifications', notificationsRouter); // Mount notifications router
 app.use('/api/analytics', analyticsRouter); // Mount analytics router
+app.use('/api/sellers', sellersRouter); // Mount sellers router
 
 // Serve static files from the frontend build
 app.use(express.static(path.join(__dirname, '..', 'dist')));

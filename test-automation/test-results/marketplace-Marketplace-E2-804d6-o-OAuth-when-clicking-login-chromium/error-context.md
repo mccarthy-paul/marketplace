@@ -1,0 +1,42 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - link "Luxe24.1 Marketplace" [ref=e5] [cursor=pointer]:
+        - /url: /
+      - navigation [ref=e6]:
+        - link "Marketplace" [ref=e7] [cursor=pointer]:
+          - /url: /watches
+        - link "Watch Brands" [ref=e8] [cursor=pointer]:
+          - /url: /
+        - link "Sell a Watch" [ref=e9] [cursor=pointer]:
+          - /url: /
+        - link "Magazine" [ref=e10] [cursor=pointer]:
+          - /url: /
+        - link "Watch Collection" [ref=e11] [cursor=pointer]:
+          - /url: /watches
+  - main [ref=e13]:
+    - generic [ref=e14]:
+      - img "Luxury watches background" [ref=e15]
+      - generic [ref=e17]:
+        - heading "Discover & Trade Luxury Watches" [level=1] [ref=e18]
+        - paragraph [ref=e19]: Buy, sell and manage your watch collection securely through our Juno‑powered marketplace.
+        - link "Login with JunoPay" [ref=e20] [cursor=pointer]:
+          - /url: /auth/junopay/login
+  - contentinfo [ref=e21]:
+    - generic [ref=e22]:
+      - generic [ref=e23]: © 2025 Luxe24.1 Marketplace. All rights reserved.
+      - generic [ref=e24]:
+        - link "Privacy Policy" [ref=e25] [cursor=pointer]:
+          - /url: "#privacy"
+        - link "Terms of Use" [ref=e26] [cursor=pointer]:
+          - /url: "#terms"
+        - link "Contact Us" [ref=e27] [cursor=pointer]:
+          - /url: "#contact"
+  - generic [ref=e28]:
+    - button "Open AI Assistant" [ref=e29] [cursor=pointer]:
+      - img [ref=e31] [cursor=pointer]
+    - generic: Need help? Ask our AI assistant!
+```

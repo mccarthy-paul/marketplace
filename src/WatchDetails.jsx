@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { ChevronLeft, ChevronRight, User, Star } from 'lucide-react';
 import { apiGet } from './utils/api.js';
 
 const WatchDetails = () => {
@@ -505,9 +505,34 @@ const WatchDetails = () => {
             </div>
 
             {watch.owner && (
-              <div className="mb-4 p-3 bg-blue-50 rounded">
-                <p className="text-gray-700 text-sm"><strong>Seller:</strong> {watch.owner.name}</p>
-                <p className="text-gray-700 text-sm"><strong>Company:</strong> {watch.owner.company_name}</p>
+              <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-gray-700 text-sm mb-1"><strong>Seller:</strong> {watch.owner.name}</p>
+                    <p className="text-gray-700 text-sm mb-2"><strong>Company:</strong> {watch.owner.company_name}</p>
+                    {watch.owner.sellerStats && (
+                      <div className="flex items-center gap-2 mt-2">
+                        <div className="flex items-center">
+                          <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                          <span className="text-sm text-gray-600 ml-1">
+                            {watch.owner.sellerStats.averageRating?.toFixed(1) || 'N/A'}
+                          </span>
+                        </div>
+                        <span className="text-gray-400">•</span>
+                        <span className="text-sm text-gray-600">
+                          {watch.owner.sellerStats.totalSales || 0} sales
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <Link
+                    to={`/seller/${watch.owner._id}`}
+                    className="inline-flex items-center gap-2 px-3 py-2 bg-white border border-blue-300 rounded-lg text-blue-600 hover:bg-blue-50 hover:border-blue-400 transition-colors text-sm font-medium"
+                  >
+                    <User className="w-4 h-4" />
+                    View Profile
+                  </Link>
+                </div>
               </div>
             )}
 

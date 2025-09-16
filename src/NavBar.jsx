@@ -120,8 +120,94 @@ export default function NavBar({ navOpen, setNavOpen }) {
   const handleSignOut = async () => {
     try {
       console.log('Frontend: Starting logout process...');
-      
-      // Clear all client-side storage including PKCE values
+
+      // FIRST: Get the access token from backend BEFORE clearing it
+      console.log('Frontend: Getting access token for direct logout...');
+      let tokenData = null;
+      try {
+        const tokenResponse = await fetch('/auth/junopay/logout-token', {
+          credentials: 'include'
+        });
+
+        if (tokenResponse.ok) {
+          tokenData = await tokenResponse.json();
+          if (tokenData.success && tokenData.access_token) {
+            console.log('Frontend: Got access token, calling JunoPay application_logout directly...');
+
+            // Try multiple approaches to call application_logout
+            console.log('Frontend: Token received:', tokenData.access_token.substring(0, 20) + '...');
+
+            // Approach 1: Direct fetch with proper CORS headers (most likely to work)
+            console.log('Frontend: Attempting direct POST to application_logout...');
+            try {
+              const logoutResponse = await fetch('https://stg.junomoney.org/restapi/application_logout', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${tokenData.access_token}`
+                },
+                body: JSON.stringify({
+                  token: tokenData.access_token,
+                  client_id: 'PaulsMarketplace-cafd2e7e'
+                })
+              });
+
+              console.log('Frontend: Direct POST response status:', logoutResponse.status);
+
+              // Try to read response if possible
+              if (logoutResponse.ok || logoutResponse.status === 200) {
+                console.log('Frontend: application_logout successful');
+              }
+            } catch (corsError) {
+              console.log('Frontend: CORS error on direct call:', corsError.message);
+
+              // Fallback: Use backend proxy to bypass CORS
+              try {
+                console.log('Frontend: Falling back to backend proxy...');
+                const proxyResponse = await fetch('/auth/junopay/application-logout-proxy', {
+                  method: 'POST',
+                  credentials: 'include',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  }
+                });
+
+                if (proxyResponse.ok) {
+                  const proxyData = await proxyResponse.json();
+                  console.log('Frontend: Backend proxy response:', proxyData);
+                }
+              } catch (proxyError) {
+                console.log('Frontend: Proxy error:', proxyError.message);
+              }
+            }
+
+            // Approach 2: Send as beacon (fire-and-forget, won't show response but will make the call)
+            if (navigator.sendBeacon) {
+              console.log('Frontend: Sending application_logout via sendBeacon...');
+              const beaconData = new FormData();
+              beaconData.append('token', tokenData.access_token);
+              beaconData.append('client_id', 'PaulsMarketplace-cafd2e7e');
+
+              const beaconBlob = new Blob([JSON.stringify({
+                token: tokenData.access_token,
+                client_id: 'PaulsMarketplace-cafd2e7e'
+              })], { type: 'application/json' });
+
+              const sent = navigator.sendBeacon('https://stg.junomoney.org/restapi/application_logout', beaconBlob);
+              console.log('Frontend: Beacon sent:', sent);
+            }
+
+          } else {
+            console.log('Frontend: No access token available for direct logout');
+          }
+        } else {
+          console.log('Frontend: Could not get logout token from backend');
+        }
+      } catch (e) {
+        console.log('Frontend: Error in logout token process:', e);
+      }
+
+      // SECOND: Clear all client-side storage including PKCE values
       localStorage.clear();
       sessionStorage.clear();
 
@@ -136,14 +222,7 @@ export default function NavBar({ navOpen, setNavOpen }) {
         document.cookie = cookieName + "=; expires=" + expirationDate + "; domain=" + window.location.hostname;
       });
 
-      console.log('Frontend: Calling logout API...');
-      const response = await apiPost("/auth/junopay/logout");
-      const result = await response.json();
-      console.log('Frontend: Logout API response:', result);
-      
-      // Try multiple approaches to clear JunoPay's session
-      console.log('Frontend: Attempting to clear JunoPay web session...');
-      
+      // THIRD: Try additional logout methods (popups, iframes, etc.)
       // Approach 1: Open logout URL in popup window
       try {
         const logoutWindow = window.open(
@@ -151,7 +230,7 @@ export default function NavBar({ navOpen, setNavOpen }) {
           'junopay_logout',
           'width=1,height=1,left=-100,top=-100'
         );
-        
+
         if (logoutWindow) {
           setTimeout(() => {
             try {
@@ -164,7 +243,7 @@ export default function NavBar({ navOpen, setNavOpen }) {
       } catch (e) {
         console.log('Popup blocked, trying iframe approach');
       }
-      
+
       // Approach 2: Hidden iframe to JunoPay logout with multiple URLs
       const logoutUrls = [
         'https://stg.junomoney.org/logout',
@@ -172,7 +251,7 @@ export default function NavBar({ navOpen, setNavOpen }) {
         `https://stg.junomoney.org/oauth/logout?post_logout_redirect_uri=${encodeURIComponent(window.location.origin)}`,
         'https://stg.junomoney.org/restapi/application_logout'
       ];
-      
+
       logoutUrls.forEach((url, index) => {
         setTimeout(() => {
           const frame = document.createElement('iframe');
@@ -180,7 +259,7 @@ export default function NavBar({ navOpen, setNavOpen }) {
           frame.src = url;
           frame.sandbox = 'allow-same-origin allow-scripts';
           document.body.appendChild(frame);
-          
+
           // Remove after a delay
           setTimeout(() => {
             try {
@@ -191,23 +270,28 @@ export default function NavBar({ navOpen, setNavOpen }) {
           }, 1000);
         }, index * 200);
       });
-      
+
       // Approach 3: Image tag trick (sometimes works for logout endpoints)
       const img = new Image();
       img.src = 'https://stg.junomoney.org/logout?_=' + Date.now();
-      
+
       console.log('Frontend: Attempted to clear JunoPay session via multiple methods');
-      
+
+      // FOURTH: Now call backend logout to clear server-side session
+      console.log('Frontend: Calling backend logout to clear server session...');
+      const result = await apiPost('/auth/junopay/logout');
+      console.log('Frontend: Backend logout response:', result);
+
       // Clear the current user state immediately
       setCurrentUser(null);
       setAuthChecked(true);
-      
+
       // If API signals to clear storage, do it again (in case of race condition)
-      if (result.clearStorage) {
+      if (result && result.clearStorage) {
         localStorage.clear();
         sessionStorage.clear();
       }
-      
+
       console.log('Frontend: Logout complete, staying on current page');
       // Optionally redirect to home page after logout
       // window.location.href = '/';

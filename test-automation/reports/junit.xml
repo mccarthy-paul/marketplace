@@ -1,0 +1,2381 @@
+<testsuites id="" name="" tests="53" failures="49" skipped="0" errors="0" time="65.47018200000001">
+<testsuite name="admin.spec.js" timestamp="2025-09-15T11:30:30.904Z" hostname="chromium" tests="31" failures="31" skipped="0" time="14.149" errors="0">
+<testcase name="Admin Application E2E Tests › Admin Authentication › should display login page" classname="admin.spec.js" time="0.875">
+<failure message="admin.spec.js:9:5 should display login page" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:9:5 › Admin Application E2E Tests › Admin Authentication › should display login page 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+       8 |   test.describe('Admin Authentication', () => {
+       9 |     test('should display login page', async ({ page }) => {
+    > 10 |       await page.goto(`${ADMIN_URL}/login`);
+         |                  ^
+      11 |       
+      12 |       await expect(page.locator('h1, h2')).toContainText(/Admin Login/i);
+      13 |       await expect(page.getByPlaceholder(/Email/i)).toBeVisible();
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:10:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-d0b48-n-should-display-login-page-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-d0b48-n-should-display-login-page-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-d0b48-n-should-display-login-page-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-d0b48-n-should-display-login-page-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-d0b48-n-should-display-login-page-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-d0b48-n-should-display-login-page-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-d0b48-n-should-display-login-page-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Admin Authentication › should show error for invalid credentials" classname="admin.spec.js" time="0.855">
+<failure message="admin.spec.js:18:5 should show error for invalid credentials" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:18:5 › Admin Application E2E Tests › Admin Authentication › should show error for invalid credentials 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      17 |
+      18 |     test('should show error for invalid credentials', async ({ page }) => {
+    > 19 |       await page.goto(`${ADMIN_URL}/login`);
+         |                  ^
+      20 |       
+      21 |       await page.getByPlaceholder(/Email/i).fill('invalid@example.com');
+      22 |       await page.getByPlaceholder(/Password/i).fill('wrongpassword');
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:19:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-986a9-ror-for-invalid-credentials-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-986a9-ror-for-invalid-credentials-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-986a9-ror-for-invalid-credentials-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-986a9-ror-for-invalid-credentials-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-986a9-ror-for-invalid-credentials-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-986a9-ror-for-invalid-credentials-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-986a9-ror-for-invalid-credentials-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Admin Authentication › should login with valid credentials" classname="admin.spec.js" time="0.882">
+<failure message="admin.spec.js:29:5 should login with valid credentials" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:29:5 › Admin Application E2E Tests › Admin Authentication › should login with valid credentials 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      28 |
+      29 |     test('should login with valid credentials', async ({ page }) => {
+    > 30 |       await page.goto(`${ADMIN_URL}/login`);
+         |                  ^
+      31 |       
+      32 |       await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      33 |       await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:30:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-0be38-ogin-with-valid-credentials-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-0be38-ogin-with-valid-credentials-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-0be38-ogin-with-valid-credentials-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-0be38-ogin-with-valid-credentials-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-0be38-ogin-with-valid-credentials-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-0be38-ogin-with-valid-credentials-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-0be38-ogin-with-valid-credentials-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Admin Authentication › should logout successfully" classname="admin.spec.js" time="0.873">
+<failure message="admin.spec.js:40:5 should logout successfully" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:40:5 › Admin Application E2E Tests › Admin Authentication › should logout successfully 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:41:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-1a4b4--should-logout-successfully-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-1a4b4--should-logout-successfully-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-1a4b4--should-logout-successfully-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-1a4b4--should-logout-successfully-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-1a4b4--should-logout-successfully-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-1a4b4--should-logout-successfully-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-1a4b4--should-logout-successfully-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Admin Dashboard › should display dashboard statistics" classname="admin.spec.js" time="0.842">
+<failure message="admin.spec.js:55:5 should display dashboard statistics" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:55:5 › Admin Application E2E Tests › Admin Dashboard › should display dashboard statistics 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:52:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-4e372-isplay-dashboard-statistics-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-4e372-isplay-dashboard-statistics-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-4e372-isplay-dashboard-statistics-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-4e372-isplay-dashboard-statistics-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-4e372-isplay-dashboard-statistics-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-4e372-isplay-dashboard-statistics-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-4e372-isplay-dashboard-statistics-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Admin Dashboard › should navigate to watches management" classname="admin.spec.js" time="0.341">
+<failure message="admin.spec.js:62:5 should navigate to watches management" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:62:5 › Admin Application E2E Tests › Admin Dashboard › should navigate to watches management 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:52:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-003f8-igate-to-watches-management-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-003f8-igate-to-watches-management-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-003f8-igate-to-watches-management-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-003f8-igate-to-watches-management-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-003f8-igate-to-watches-management-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-003f8-igate-to-watches-management-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-003f8-igate-to-watches-management-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Admin Dashboard › should navigate to users management" classname="admin.spec.js" time="0.328">
+<failure message="admin.spec.js:70:5 should navigate to users management" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:70:5 › Admin Application E2E Tests › Admin Dashboard › should navigate to users management 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:52:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-f6dbf-avigate-to-users-management-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-f6dbf-avigate-to-users-management-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-f6dbf-avigate-to-users-management-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-f6dbf-avigate-to-users-management-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-f6dbf-avigate-to-users-management-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-f6dbf-avigate-to-users-management-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-f6dbf-avigate-to-users-management-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Admin Dashboard › should navigate to orders management" classname="admin.spec.js" time="0.363">
+<failure message="admin.spec.js:78:5 should navigate to orders management" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:78:5 › Admin Application E2E Tests › Admin Dashboard › should navigate to orders management 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:52:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-223a4-vigate-to-orders-management-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-223a4-vigate-to-orders-management-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-223a4-vigate-to-orders-management-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-223a4-vigate-to-orders-management-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-223a4-vigate-to-orders-management-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-223a4-vigate-to-orders-management-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-223a4-vigate-to-orders-management-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Admin Dashboard › should navigate to bids management" classname="admin.spec.js" time="0.374">
+<failure message="admin.spec.js:86:5 should navigate to bids management" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:86:5 › Admin Application E2E Tests › Admin Dashboard › should navigate to bids management 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:52:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-d805b-navigate-to-bids-management-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-d805b-navigate-to-bids-management-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-d805b-navigate-to-bids-management-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-d805b-navigate-to-bids-management-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-d805b-navigate-to-bids-management-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-d805b-navigate-to-bids-management-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-d805b-navigate-to-bids-management-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Watch Management › should display watch list" classname="admin.spec.js" time="0.315">
+<failure message="admin.spec.js:101:5 should display watch list" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:101:5 › Admin Application E2E Tests › Watch Management › should display watch list 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:97:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-6b4a4-t-should-display-watch-list-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-6b4a4-t-should-display-watch-list-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-6b4a4-t-should-display-watch-list-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-6b4a4-t-should-display-watch-list-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-6b4a4-t-should-display-watch-list-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-6b4a4-t-should-display-watch-list-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-6b4a4-t-should-display-watch-list-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Watch Management › should search for watches" classname="admin.spec.js" time="0.357">
+<failure message="admin.spec.js:107:5 should search for watches" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:107:5 › Admin Application E2E Tests › Watch Management › should search for watches 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:97:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-d9a5b-t-should-search-for-watches-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-d9a5b-t-should-search-for-watches-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-d9a5b-t-should-search-for-watches-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-d9a5b-t-should-search-for-watches-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-d9a5b-t-should-search-for-watches-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-d9a5b-t-should-search-for-watches-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-d9a5b-t-should-search-for-watches-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Watch Management › should open add watch form" classname="admin.spec.js" time="0.396">
+<failure message="admin.spec.js:119:5 should open add watch form" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:119:5 › Admin Application E2E Tests › Watch Management › should open add watch form 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:97:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-40ed7--should-open-add-watch-form-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-40ed7--should-open-add-watch-form-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-40ed7--should-open-add-watch-form-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-40ed7--should-open-add-watch-form-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-40ed7--should-open-add-watch-form-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-40ed7--should-open-add-watch-form-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-40ed7--should-open-add-watch-form-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Watch Management › should edit watch details" classname="admin.spec.js" time="0.388">
+<failure message="admin.spec.js:128:5 should edit watch details" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:128:5 › Admin Application E2E Tests › Watch Management › should edit watch details 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:97:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-1ee0e-t-should-edit-watch-details-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-1ee0e-t-should-edit-watch-details-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-1ee0e-t-should-edit-watch-details-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-1ee0e-t-should-edit-watch-details-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-1ee0e-t-should-edit-watch-details-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-1ee0e-t-should-edit-watch-details-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-1ee0e-t-should-edit-watch-details-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Watch Management › should delete watch" classname="admin.spec.js" time="0.345">
+<failure message="admin.spec.js:145:5 should delete watch" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:145:5 › Admin Application E2E Tests › Watch Management › should delete watch 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:97:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-04ffa-agement-should-delete-watch-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-04ffa-agement-should-delete-watch-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-04ffa-agement-should-delete-watch-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-04ffa-agement-should-delete-watch-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-04ffa-agement-should-delete-watch-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-04ffa-agement-should-delete-watch-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-04ffa-agement-should-delete-watch-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › User Management › should display user list" classname="admin.spec.js" time="0.348">
+<failure message="admin.spec.js:162:5 should display user list" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:162:5 › Admin Application E2E Tests › User Management › should display user list 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:158:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-69edd-nt-should-display-user-list-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-69edd-nt-should-display-user-list-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-69edd-nt-should-display-user-list-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-69edd-nt-should-display-user-list-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-69edd-nt-should-display-user-list-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-69edd-nt-should-display-user-list-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-69edd-nt-should-display-user-list-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › User Management › should search for users" classname="admin.spec.js" time="0.497">
+<failure message="admin.spec.js:168:5 should search for users" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:168:5 › Admin Application E2E Tests › User Management › should search for users 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:158:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-b9954-ent-should-search-for-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-b9954-ent-should-search-for-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-b9954-ent-should-search-for-users-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-b9954-ent-should-search-for-users-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-b9954-ent-should-search-for-users-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-b9954-ent-should-search-for-users-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-b9954-ent-should-search-for-users-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › User Management › should toggle user admin status" classname="admin.spec.js" time="0.476">
+<failure message="admin.spec.js:180:5 should toggle user admin status" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:180:5 › Admin Application E2E Tests › User Management › should toggle user admin status 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:158:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-598b6-ld-toggle-user-admin-status-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-598b6-ld-toggle-user-admin-status-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-598b6-ld-toggle-user-admin-status-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-598b6-ld-toggle-user-admin-status-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-598b6-ld-toggle-user-admin-status-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-598b6-ld-toggle-user-admin-status-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-598b6-ld-toggle-user-admin-status-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › User Management › should view user details" classname="admin.spec.js" time="0.498">
+<failure message="admin.spec.js:193:5 should view user details" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:193:5 › Admin Application E2E Tests › User Management › should view user details 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:158:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-e0b82-nt-should-view-user-details-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-e0b82-nt-should-view-user-details-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-e0b82-nt-should-view-user-details-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-e0b82-nt-should-view-user-details-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-e0b82-nt-should-view-user-details-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-e0b82-nt-should-view-user-details-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-e0b82-nt-should-view-user-details-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Order Management › should display order list" classname="admin.spec.js" time="0.471">
+<failure message="admin.spec.js:209:5 should display order list" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:209:5 › Admin Application E2E Tests › Order Management › should display order list 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:205:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-25b88-t-should-display-order-list-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-25b88-t-should-display-order-list-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-25b88-t-should-display-order-list-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-25b88-t-should-display-order-list-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-25b88-t-should-display-order-list-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-25b88-t-should-display-order-list-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-25b88-t-should-display-order-list-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Order Management › should filter orders by status" classname="admin.spec.js" time="0.375">
+<failure message="admin.spec.js:221:5 should filter orders by status" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:221:5 › Admin Application E2E Tests › Order Management › should filter orders by status 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:205:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-dda8e-uld-filter-orders-by-status-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-dda8e-uld-filter-orders-by-status-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-dda8e-uld-filter-orders-by-status-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-dda8e-uld-filter-orders-by-status-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-dda8e-uld-filter-orders-by-status-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-dda8e-uld-filter-orders-by-status-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-dda8e-uld-filter-orders-by-status-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Order Management › should view order details" classname="admin.spec.js" time="0.428">
+<failure message="admin.spec.js:236:5 should view order details" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:236:5 › Admin Application E2E Tests › Order Management › should view order details 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:205:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-4fa84-t-should-view-order-details-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-4fa84-t-should-view-order-details-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-4fa84-t-should-view-order-details-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-4fa84-t-should-view-order-details-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-4fa84-t-should-view-order-details-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-4fa84-t-should-view-order-details-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-4fa84-t-should-view-order-details-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Order Management › should refresh order status from JunoPay" classname="admin.spec.js" time="0.421">
+<failure message="admin.spec.js:249:5 should refresh order status from JunoPay" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:249:5 › Admin Application E2E Tests › Order Management › should refresh order status from JunoPay 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:205:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-1c9f2-h-order-status-from-JunoPay-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-1c9f2-h-order-status-from-JunoPay-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-1c9f2-h-order-status-from-JunoPay-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-1c9f2-h-order-status-from-JunoPay-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-1c9f2-h-order-status-from-JunoPay-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-1c9f2-h-order-status-from-JunoPay-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-1c9f2-h-order-status-from-JunoPay-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Bid Management › should display bid list" classname="admin.spec.js" time="0.428">
+<failure message="admin.spec.js:268:5 should display bid list" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:268:5 › Admin Application E2E Tests › Bid Management › should display bid list 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:264:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-ea3a9-ent-should-display-bid-list-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-ea3a9-ent-should-display-bid-list-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-ea3a9-ent-should-display-bid-list-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-ea3a9-ent-should-display-bid-list-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-ea3a9-ent-should-display-bid-list-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-ea3a9-ent-should-display-bid-list-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-ea3a9-ent-should-display-bid-list-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Bid Management › should filter bids by status" classname="admin.spec.js" time="0.431">
+<failure message="admin.spec.js:280:5 should filter bids by status" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:280:5 › Admin Application E2E Tests › Bid Management › should filter bids by status 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:264:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-ea6d9-hould-filter-bids-by-status-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-ea6d9-hould-filter-bids-by-status-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-ea6d9-hould-filter-bids-by-status-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-ea6d9-hould-filter-bids-by-status-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-ea6d9-hould-filter-bids-by-status-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-ea6d9-hould-filter-bids-by-status-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-ea6d9-hould-filter-bids-by-status-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Bid Management › should view bid details" classname="admin.spec.js" time="0.388">
+<failure message="admin.spec.js:295:5 should view bid details" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:295:5 › Admin Application E2E Tests › Bid Management › should view bid details 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:264:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-2f80d-ent-should-view-bid-details-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-2f80d-ent-should-view-bid-details-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-2f80d-ent-should-view-bid-details-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-2f80d-ent-should-view-bid-details-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-2f80d-ent-should-view-bid-details-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-2f80d-ent-should-view-bid-details-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-2f80d-ent-should-view-bid-details-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Bid Management › should update bid status" classname="admin.spec.js" time="0.32">
+<failure message="admin.spec.js:308:5 should update bid status" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:308:5 › Admin Application E2E Tests › Bid Management › should update bid status 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:264:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-0b98b-nt-should-update-bid-status-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-0b98b-nt-should-update-bid-status-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-0b98b-nt-should-update-bid-status-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-0b98b-nt-should-update-bid-status-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-0b98b-nt-should-update-bid-status-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-0b98b-nt-should-update-bid-status-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-0b98b-nt-should-update-bid-status-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Admin Navigation › should have working breadcrumbs" classname="admin.spec.js" time="0.329">
+<failure message="admin.spec.js:332:5 should have working breadcrumbs" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:332:5 › Admin Application E2E Tests › Admin Navigation › should have working breadcrumbs 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:329:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-38561-ld-have-working-breadcrumbs-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-38561-ld-have-working-breadcrumbs-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-38561-ld-have-working-breadcrumbs-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-38561-ld-have-working-breadcrumbs-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-38561-ld-have-working-breadcrumbs-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-38561-ld-have-working-breadcrumbs-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-38561-ld-have-working-breadcrumbs-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Admin Navigation › should have working sidebar navigation" classname="admin.spec.js" time="0.346">
+<failure message="admin.spec.js:344:5 should have working sidebar navigation" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:344:5 › Admin Application E2E Tests › Admin Navigation › should have working sidebar navigation 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:329:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-ea706--working-sidebar-navigation-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-ea706--working-sidebar-navigation-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-ea706--working-sidebar-navigation-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-ea706--working-sidebar-navigation-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-ea706--working-sidebar-navigation-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-ea706--working-sidebar-navigation-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-ea706--working-sidebar-navigation-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Admin Navigation › should display admin header" classname="admin.spec.js" time="0.31">
+<failure message="admin.spec.js:352:5 should display admin header" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:352:5 › Admin Application E2E Tests › Admin Navigation › should display admin header 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:329:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-db264-should-display-admin-header-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-db264-should-display-admin-header-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-db264-should-display-admin-header-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-db264-should-display-admin-header-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-db264-should-display-admin-header-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-db264-should-display-admin-header-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-db264-should-display-admin-header-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Data Export › should export watch data" classname="admin.spec.js" time="0.333">
+<failure message="admin.spec.js:364:5 should export watch data" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:364:5 › Admin Application E2E Tests › Data Export › should export watch data 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:361:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-58dfb-rt-should-export-watch-data-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-58dfb-rt-should-export-watch-data-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-58dfb-rt-should-export-watch-data-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-58dfb-rt-should-export-watch-data-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-58dfb-rt-should-export-watch-data-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-58dfb-rt-should-export-watch-data-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-58dfb-rt-should-export-watch-data-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Admin Application E2E Tests › Data Export › should export user data" classname="admin.spec.js" time="0.216">
+<failure message="admin.spec.js:378:5 should export user data" type="FAILURE">
+<![CDATA[  [chromium] › admin.spec.js:378:5 › Admin Application E2E Tests › Data Export › should export user data 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      393 |
+      394 | async function loginAsAdmin(page) {
+    > 395 |   await page.goto(`${ADMIN_URL}/login`);
+          |              ^
+      396 |   await page.getByPlaceholder(/Email/i).fill(ADMIN_EMAIL);
+      397 |   await page.getByPlaceholder(/Password/i).fill(ADMIN_PASSWORD);
+      398 |   await page.getByRole('button', { name: /Login/i }).click();
+        at loginAsAdmin (/Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:395:14)
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/admin.spec.js:361:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-3af43-ort-should-export-user-data-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-3af43-ort-should-export-user-data-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/admin-Admin-Application-E2-3af43-ort-should-export-user-data-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/admin-Admin-Application-E2-3af43-ort-should-export-user-data-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-3af43-ort-should-export-user-data-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-3af43-ort-should-export-user-data-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/admin-Admin-Application-E2-3af43-ort-should-export-user-data-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="demo.spec.js" timestamp="2025-09-15T11:30:30.904Z" hostname="chromium" tests="3" failures="1" skipped="0" time="10.408" errors="0">
+<testcase name="🎬 Visual Demo - Marketplace Tour › Browse the Luxury Watch Marketplace" classname="demo.spec.js" time="9.809">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/demo-🎬-Visual-Demo---Mark-30456-he-Luxury-Watch-Marketplace-chromium/test-finished-1.png]]
+
+[[ATTACHMENT|../test-results/demo-🎬-Visual-Demo---Mark-30456-he-Luxury-Watch-Marketplace-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/demo-🎬-Visual-Demo---Mark-30456-he-Luxury-Watch-Marketplace-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="🎬 Visual Demo - Admin Dashboard › Tour the Admin Dashboard" classname="demo.spec.js" time="0.231">
+<failure message="demo.spec.js:82:3 Tour the Admin Dashboard" type="FAILURE">
+<![CDATA[  [chromium] › demo.spec.js:82:3 › 🎬 Visual Demo - Admin Dashboard › Tour the Admin Dashboard › 🔐 Admin Login Page 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/login
+    Call log:
+      - navigating to "http://localhost:5174/login", waiting until "load"
+
+
+      83 |     // Go to admin login
+      84 |     await test.step('🔐 Admin Login Page', async () => {
+    > 85 |       await page.goto(`${ADMIN_URL}/login`);
+         |                  ^
+      86 |       await page.waitForTimeout(1000);
+      87 |     });
+      88 |
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/demo.spec.js:85:18
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/demo.spec.js:84:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/demo-🎬-Visual-Demo---Admi-9f169-rd-Tour-the-Admin-Dashboard-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/demo-🎬-Visual-Demo---Admi-9f169-rd-Tour-the-Admin-Dashboard-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/demo-🎬-Visual-Demo---Admi-9f169-rd-Tour-the-Admin-Dashboard-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/demo-🎬-Visual-Demo---Admi-9f169-rd-Tour-the-Admin-Dashboard-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/demo-🎬-Visual-Demo---Admi-9f169-rd-Tour-the-Admin-Dashboard-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/demo-🎬-Visual-Demo---Admi-9f169-rd-Tour-the-Admin-Dashboard-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/demo-🎬-Visual-Demo---Admi-9f169-rd-Tour-the-Admin-Dashboard-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="🎬 Quick API Health Check › Check API Endpoints" classname="demo.spec.js" time="0.368">
+<system-out>
+<![CDATA[Found 8 watches in the marketplace
+
+[[ATTACHMENT|../test-results/demo-🎬-Quick-API-Health-Check-Check-API-Endpoints-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="marketplace.spec.js" timestamp="2025-09-15T11:30:30.904Z" hostname="chromium" tests="19" failures="17" skipped="0" time="229.33" errors="0">
+<testcase name="Marketplace E2E Tests › Homepage › should load homepage with correct title" classname="marketplace.spec.js" time="7.287">
+<failure message="marketplace.spec.js:11:5 should load homepage with correct title" type="FAILURE">
+<![CDATA[  [chromium] › marketplace.spec.js:11:5 › Marketplace E2E Tests › Homepage › should load homepage with correct title 
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: locator('h1')
+    Expected pattern: /Luxury Watch Marketplace/i
+    Received string:  "Discover & Trade Luxury Watches"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "toContainText" with timeout 5000ms
+      - waiting for locator('h1')
+        9 × locator resolved to <h1 class="text-4xl lg:text-6xl font-extrabold leading-tight mb-6">Discover & Trade Luxury Watches</h1>
+          - unexpected value "Discover & Trade Luxury Watches"
+
+
+      11 |     test('should load homepage with correct title', async ({ page }) => {
+      12 |       await expect(page).toHaveTitle(/Luxe Marketplace/i);
+    > 13 |       await expect(page.locator('h1')).toContainText(/Luxury Watch Marketplace/i);
+         |                                        ^
+      14 |     });
+      15 |
+      16 |     test('should display hero section with login button', async ({ page }) => {
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/marketplace.spec.js:13:40
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-c265f-homepage-with-correct-title-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-c265f-homepage-with-correct-title-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/marketplace-Marketplace-E2-c265f-homepage-with-correct-title-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-c265f-homepage-with-correct-title-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/marketplace-Marketplace-E2-c265f-homepage-with-correct-title-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-c265f-homepage-with-correct-title-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-c265f-homepage-with-correct-title-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-c265f-homepage-with-correct-title-chromium/error-context.md]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-c265f-homepage-with-correct-title-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Marketplace E2E Tests › Homepage › should display hero section with login button" classname="marketplace.spec.js" time="6.44">
+<failure message="marketplace.spec.js:16:5 should display hero section with login button" type="FAILURE">
+<![CDATA[  [chromium] › marketplace.spec.js:16:5 › Marketplace E2E Tests › Homepage › should display hero section with login button 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  locator('.hero-section')
+    Expected: visible
+    Received: <element(s) not found>
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for locator('.hero-section')
+
+
+      16 |     test('should display hero section with login button', async ({ page }) => {
+      17 |       const heroSection = page.locator('.hero-section');
+    > 18 |       await expect(heroSection).toBeVisible();
+         |                                 ^
+      19 |       
+      20 |       const loginButton = page.getByRole('button', { name: /Login with Juno/i });
+      21 |       await expect(loginButton).toBeVisible();
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/marketplace.spec.js:18:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-6621d-o-section-with-login-button-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-6621d-o-section-with-login-button-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/marketplace-Marketplace-E2-6621d-o-section-with-login-button-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-6621d-o-section-with-login-button-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/marketplace-Marketplace-E2-6621d-o-section-with-login-button-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-6621d-o-section-with-login-button-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-6621d-o-section-with-login-button-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-6621d-o-section-with-login-button-chromium/error-context.md]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-6621d-o-section-with-login-button-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Marketplace E2E Tests › Homepage › should navigate to watches page" classname="marketplace.spec.js" time="16.403">
+<failure message="marketplace.spec.js:24:5 should navigate to watches page" type="FAILURE">
+<![CDATA[  [chromium] › marketplace.spec.js:24:5 › Marketplace E2E Tests › Homepage › should navigate to watches page 
+
+    TimeoutError: locator.click: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for getByRole('link', { name: /Browse Watches/i })
+
+
+      24 |     test('should navigate to watches page', async ({ page }) => {
+      25 |       const watchesLink = page.getByRole('link', { name: /Browse Watches/i });
+    > 26 |       await watchesLink.click();
+         |                         ^
+      27 |       
+      28 |       await expect(page).toHaveURL(/\/watches/);
+      29 |       await expect(page.locator('h1')).toContainText(/Luxury Watches/i);
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/marketplace.spec.js:26:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-f4076-ld-navigate-to-watches-page-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-f4076-ld-navigate-to-watches-page-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/marketplace-Marketplace-E2-f4076-ld-navigate-to-watches-page-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-f4076-ld-navigate-to-watches-page-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/marketplace-Marketplace-E2-f4076-ld-navigate-to-watches-page-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-f4076-ld-navigate-to-watches-page-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-f4076-ld-navigate-to-watches-page-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-f4076-ld-navigate-to-watches-page-chromium/error-context.md]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-f4076-ld-navigate-to-watches-page-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Marketplace E2E Tests › Watch Browsing › should display watch listings" classname="marketplace.spec.js" time="12.132">
+<failure message="marketplace.spec.js:38:5 should display watch listings" type="FAILURE">
+<![CDATA[  [chromium] › marketplace.spec.js:38:5 › Marketplace E2E Tests › Watch Browsing › should display watch listings 
+
+    TimeoutError: page.waitForSelector: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('.watch-card') to be visible
+
+
+      37 |
+      38 |     test('should display watch listings', async ({ page }) => {
+    > 39 |       await page.waitForSelector('.watch-card', { timeout: 10000 });
+         |                  ^
+      40 |       const watchCards = page.locator('.watch-card');
+      41 |       await expect(watchCards).toHaveCount.greaterThan(0);
+      42 |     });
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/marketplace.spec.js:39:18
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-0f6b2-ould-display-watch-listings-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-0f6b2-ould-display-watch-listings-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/marketplace-Marketplace-E2-0f6b2-ould-display-watch-listings-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-0f6b2-ould-display-watch-listings-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/marketplace-Marketplace-E2-0f6b2-ould-display-watch-listings-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-0f6b2-ould-display-watch-listings-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-0f6b2-ould-display-watch-listings-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-0f6b2-ould-display-watch-listings-chromium/error-context.md]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-0f6b2-ould-display-watch-listings-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Marketplace E2E Tests › Watch Browsing › should filter watches by brand" classname="marketplace.spec.js" time="16.03">
+<failure message="marketplace.spec.js:44:5 should filter watches by brand" type="FAILURE">
+<![CDATA[  [chromium] › marketplace.spec.js:44:5 › Marketplace E2E Tests › Watch Browsing › should filter watches by brand 
+
+    TimeoutError: locator.selectOption: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for getByRole('combobox', { name: /Brand/i })
+
+
+      44 |     test('should filter watches by brand', async ({ page }) => {
+      45 |       const brandFilter = page.getByRole('combobox', { name: /Brand/i });
+    > 46 |       await brandFilter.selectOption('Rolex');
+         |                         ^
+      47 |       
+      48 |       await page.waitForTimeout(1000);
+      49 |       
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/marketplace.spec.js:46:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-2adeb-uld-filter-watches-by-brand-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-2adeb-uld-filter-watches-by-brand-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/marketplace-Marketplace-E2-2adeb-uld-filter-watches-by-brand-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-2adeb-uld-filter-watches-by-brand-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/marketplace-Marketplace-E2-2adeb-uld-filter-watches-by-brand-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-2adeb-uld-filter-watches-by-brand-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-2adeb-uld-filter-watches-by-brand-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-2adeb-uld-filter-watches-by-brand-chromium/error-context.md]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-2adeb-uld-filter-watches-by-brand-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Marketplace E2E Tests › Watch Browsing › should sort watches by price" classname="marketplace.spec.js" time="15.985">
+<failure message="marketplace.spec.js:55:5 should sort watches by price" type="FAILURE">
+<![CDATA[  [chromium] › marketplace.spec.js:55:5 › Marketplace E2E Tests › Watch Browsing › should sort watches by price 
+
+    TimeoutError: locator.selectOption: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for getByRole('combobox', { name: /Sort/i })
+
+
+      55 |     test('should sort watches by price', async ({ page }) => {
+      56 |       const sortSelect = page.getByRole('combobox', { name: /Sort/i });
+    > 57 |       await sortSelect.selectOption('price-asc');
+         |                        ^
+      58 |       
+      59 |       await page.waitForTimeout(1000);
+      60 |       
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/marketplace.spec.js:57:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-57bac-hould-sort-watches-by-price-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-57bac-hould-sort-watches-by-price-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/marketplace-Marketplace-E2-57bac-hould-sort-watches-by-price-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-57bac-hould-sort-watches-by-price-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/marketplace-Marketplace-E2-57bac-hould-sort-watches-by-price-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-57bac-hould-sort-watches-by-price-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-57bac-hould-sort-watches-by-price-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-57bac-hould-sort-watches-by-price-chromium/error-context.md]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-57bac-hould-sort-watches-by-price-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Marketplace E2E Tests › Watch Browsing › should navigate to watch details page" classname="marketplace.spec.js" time="15.829">
+<failure message="marketplace.spec.js:69:5 should navigate to watch details page" type="FAILURE">
+<![CDATA[  [chromium] › marketplace.spec.js:69:5 › Marketplace E2E Tests › Watch Browsing › should navigate to watch details page 
+
+    TimeoutError: locator.textContent: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for locator('.watch-card').first().locator('.watch-title')
+
+
+      69 |     test('should navigate to watch details page', async ({ page }) => {
+      70 |       const firstWatch = page.locator('.watch-card').first();
+    > 71 |       const watchTitle = await firstWatch.locator('.watch-title').textContent();
+         |                                                                   ^
+      72 |       
+      73 |       await firstWatch.click();
+      74 |       
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/marketplace.spec.js:71:67
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-cf88e-igate-to-watch-details-page-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-cf88e-igate-to-watch-details-page-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/marketplace-Marketplace-E2-cf88e-igate-to-watch-details-page-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-cf88e-igate-to-watch-details-page-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/marketplace-Marketplace-E2-cf88e-igate-to-watch-details-page-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-cf88e-igate-to-watch-details-page-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-cf88e-igate-to-watch-details-page-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-cf88e-igate-to-watch-details-page-chromium/error-context.md]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-cf88e-igate-to-watch-details-page-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Marketplace E2E Tests › Watch Details › should display watch information" classname="marketplace.spec.js" time="15.753">
+<failure message="marketplace.spec.js:81:5 should display watch information" type="FAILURE">
+<![CDATA[  [chromium] › marketplace.spec.js:81:5 › Marketplace E2E Tests › Watch Details › should display watch information 
+
+    TimeoutError: locator.click: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for locator('.watch-card').first()
+
+
+      82 |       await page.goto(`${MARKETPLACE_URL}/watches`);
+      83 |       const firstWatch = page.locator('.watch-card').first();
+    > 84 |       await firstWatch.click();
+         |                        ^
+      85 |       
+      86 |       await expect(page.locator('.watch-brand')).toBeVisible();
+      87 |       await expect(page.locator('.watch-model')).toBeVisible();
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/marketplace.spec.js:84:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-7c9b0-d-display-watch-information-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-7c9b0-d-display-watch-information-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/marketplace-Marketplace-E2-7c9b0-d-display-watch-information-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-7c9b0-d-display-watch-information-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/marketplace-Marketplace-E2-7c9b0-d-display-watch-information-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-7c9b0-d-display-watch-information-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-7c9b0-d-display-watch-information-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-7c9b0-d-display-watch-information-chromium/error-context.md]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-7c9b0-d-display-watch-information-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Marketplace E2E Tests › Watch Details › should show buy now button for available watches" classname="marketplace.spec.js" time="15.867">
+<failure message="marketplace.spec.js:92:5 should show buy now button for available watches" type="FAILURE">
+<![CDATA[  [chromium] › marketplace.spec.js:92:5 › Marketplace E2E Tests › Watch Details › should show buy now button for available watches 
+
+    TimeoutError: locator.click: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for locator('.watch-card').first()
+
+
+      93 |       await page.goto(`${MARKETPLACE_URL}/watches`);
+      94 |       const firstWatch = page.locator('.watch-card').first();
+    > 95 |       await firstWatch.click();
+         |                        ^
+      96 |       
+      97 |       const buyButton = page.getByRole('button', { name: /Buy Now/i });
+      98 |       await expect(buyButton).toBeVisible();
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/marketplace.spec.js:95:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-9d9e2-utton-for-available-watches-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-9d9e2-utton-for-available-watches-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/marketplace-Marketplace-E2-9d9e2-utton-for-available-watches-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-9d9e2-utton-for-available-watches-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/marketplace-Marketplace-E2-9d9e2-utton-for-available-watches-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-9d9e2-utton-for-available-watches-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-9d9e2-utton-for-available-watches-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-9d9e2-utton-for-available-watches-chromium/error-context.md]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-9d9e2-utton-for-available-watches-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Marketplace E2E Tests › Watch Details › should display watch images" classname="marketplace.spec.js" time="16.28">
+<failure message="marketplace.spec.js:101:5 should display watch images" type="FAILURE">
+<![CDATA[  [chromium] › marketplace.spec.js:101:5 › Marketplace E2E Tests › Watch Details › should display watch images 
+
+    TimeoutError: locator.click: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for locator('.watch-card').first()
+
+
+      102 |       await page.goto(`${MARKETPLACE_URL}/watches`);
+      103 |       const firstWatch = page.locator('.watch-card').first();
+    > 104 |       await firstWatch.click();
+          |                        ^
+      105 |       
+      106 |       const watchImage = page.locator('.watch-image, img[alt*="watch"]').first();
+      107 |       await expect(watchImage).toBeVisible();
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/marketplace.spec.js:104:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-2e0cf-should-display-watch-images-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-2e0cf-should-display-watch-images-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/marketplace-Marketplace-E2-2e0cf-should-display-watch-images-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-2e0cf-should-display-watch-images-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/marketplace-Marketplace-E2-2e0cf-should-display-watch-images-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-2e0cf-should-display-watch-images-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-2e0cf-should-display-watch-images-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-2e0cf-should-display-watch-images-chromium/error-context.md]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-2e0cf-should-display-watch-images-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Marketplace E2E Tests › Authentication Flow › should redirect to Juno OAuth when clicking login" classname="marketplace.spec.js" time="16.233">
+<failure message="marketplace.spec.js:112:5 should redirect to Juno OAuth when clicking login" type="FAILURE">
+<![CDATA[  [chromium] › marketplace.spec.js:112:5 › Marketplace E2E Tests › Authentication Flow › should redirect to Juno OAuth when clicking login 
+
+    TimeoutError: page.waitForEvent: Timeout 15000ms exceeded while waiting for event "popup"
+    =========================== logs ===========================
+    waiting for event "popup"
+    ============================================================
+
+      114 |       
+      115 |       const [popup] = await Promise.all([
+    > 116 |         page.waitForEvent('popup'),
+          |              ^
+      117 |         loginButton.click()
+      118 |       ]);
+      119 |       
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/marketplace.spec.js:116:14
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-804d6-o-OAuth-when-clicking-login-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-804d6-o-OAuth-when-clicking-login-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/marketplace-Marketplace-E2-804d6-o-OAuth-when-clicking-login-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-804d6-o-OAuth-when-clicking-login-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/marketplace-Marketplace-E2-804d6-o-OAuth-when-clicking-login-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-804d6-o-OAuth-when-clicking-login-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-804d6-o-OAuth-when-clicking-login-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-804d6-o-OAuth-when-clicking-login-chromium/error-context.md]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-804d6-o-OAuth-when-clicking-login-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Marketplace E2E Tests › Authentication Flow › should show user menu after login" classname="marketplace.spec.js" time="5.855">
+<failure message="marketplace.spec.js:124:5 should show user menu after login" type="FAILURE">
+<![CDATA[  [chromium] › marketplace.spec.js:124:5 › Marketplace E2E Tests › Authentication Flow › should show user menu after login 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  getByTestId('user-menu')
+    Expected: visible
+    Received: <element(s) not found>
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByTestId('user-menu')
+
+
+      141 |       
+      142 |       const userMenu = page.getByTestId('user-menu');
+    > 143 |       await expect(userMenu).toBeVisible();
+          |                              ^
+      144 |     });
+      145 |   });
+      146 |
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/marketplace.spec.js:143:30
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-51f07--show-user-menu-after-login-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-51f07--show-user-menu-after-login-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/marketplace-Marketplace-E2-51f07--show-user-menu-after-login-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-51f07--show-user-menu-after-login-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/marketplace-Marketplace-E2-51f07--show-user-menu-after-login-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-51f07--show-user-menu-after-login-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-51f07--show-user-menu-after-login-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-51f07--show-user-menu-after-login-chromium/error-context.md]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-51f07--show-user-menu-after-login-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Marketplace E2E Tests › Bidding System › should show bid form on watch details page" classname="marketplace.spec.js" time="0.548">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-57082--form-on-watch-details-page-chromium/test-finished-1.png]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-57082--form-on-watch-details-page-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-57082--form-on-watch-details-page-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Marketplace E2E Tests › Bidding System › should validate bid amount" classname="marketplace.spec.js" time="0.486">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-55201--should-validate-bid-amount-chromium/test-finished-1.png]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-55201--should-validate-bid-amount-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-55201--should-validate-bid-amount-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Marketplace E2E Tests › Search Functionality › should search for watches" classname="marketplace.spec.js" time="15.617">
+<failure message="marketplace.spec.js:185:5 should search for watches" type="FAILURE">
+<![CDATA[  [chromium] › marketplace.spec.js:185:5 › Marketplace E2E Tests › Search Functionality › should search for watches 
+
+    TimeoutError: locator.fill: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for getByPlaceholder(/Search watches/i)
+
+
+      187 |       
+      188 |       const searchInput = page.getByPlaceholder(/Search watches/i);
+    > 189 |       await searchInput.fill('Rolex Submariner');
+          |                         ^
+      190 |       await searchInput.press('Enter');
+      191 |       
+      192 |       await page.waitForTimeout(1000);
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/marketplace.spec.js:189:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-3f28e-y-should-search-for-watches-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-3f28e-y-should-search-for-watches-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/marketplace-Marketplace-E2-3f28e-y-should-search-for-watches-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-3f28e-y-should-search-for-watches-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/marketplace-Marketplace-E2-3f28e-y-should-search-for-watches-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-3f28e-y-should-search-for-watches-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-3f28e-y-should-search-for-watches-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-3f28e-y-should-search-for-watches-chromium/error-context.md]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-3f28e-y-should-search-for-watches-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Marketplace E2E Tests › Search Functionality › should show no results message for invalid search" classname="marketplace.spec.js" time="15.675">
+<failure message="marketplace.spec.js:200:5 should show no results message for invalid search" type="FAILURE">
+<![CDATA[  [chromium] › marketplace.spec.js:200:5 › Marketplace E2E Tests › Search Functionality › should show no results message for invalid search 
+
+    TimeoutError: locator.fill: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for getByPlaceholder(/Search watches/i)
+
+
+      202 |       
+      203 |       const searchInput = page.getByPlaceholder(/Search watches/i);
+    > 204 |       await searchInput.fill('InvalidWatchName12345');
+          |                         ^
+      205 |       await searchInput.press('Enter');
+      206 |       
+      207 |       await page.waitForTimeout(1000);
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/marketplace.spec.js:204:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-9463c--message-for-invalid-search-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-9463c--message-for-invalid-search-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/marketplace-Marketplace-E2-9463c--message-for-invalid-search-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-9463c--message-for-invalid-search-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/marketplace-Marketplace-E2-9463c--message-for-invalid-search-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-9463c--message-for-invalid-search-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-9463c--message-for-invalid-search-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-9463c--message-for-invalid-search-chromium/error-context.md]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-9463c--message-for-invalid-search-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Marketplace E2E Tests › Responsive Design › should display mobile menu on small screens" classname="marketplace.spec.js" time="5.526">
+<failure message="marketplace.spec.js:215:5 should display mobile menu on small screens" type="FAILURE">
+<![CDATA[  [chromium] › marketplace.spec.js:215:5 › Marketplace E2E Tests › Responsive Design › should display mobile menu on small screens 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  getByRole('button', { name: /menu/i })
+    Expected: visible
+    Received: <element(s) not found>
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('button', { name: /menu/i })
+
+
+      218 |       
+      219 |       const mobileMenuButton = page.getByRole('button', { name: /menu/i });
+    > 220 |       await expect(mobileMenuButton).toBeVisible();
+          |                                      ^
+      221 |       
+      222 |       await mobileMenuButton.click();
+      223 |       
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/marketplace.spec.js:220:38
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-9be49-obile-menu-on-small-screens-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-9be49-obile-menu-on-small-screens-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/marketplace-Marketplace-E2-9be49-obile-menu-on-small-screens-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-9be49-obile-menu-on-small-screens-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/marketplace-Marketplace-E2-9be49-obile-menu-on-small-screens-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-9be49-obile-menu-on-small-screens-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-9be49-obile-menu-on-small-screens-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-9be49-obile-menu-on-small-screens-chromium/error-context.md]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-9be49-obile-menu-on-small-screens-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Marketplace E2E Tests › Responsive Design › should stack watch cards on mobile" classname="marketplace.spec.js" time="15.559">
+<failure message="marketplace.spec.js:228:5 should stack watch cards on mobile" type="FAILURE">
+<![CDATA[  [chromium] › marketplace.spec.js:228:5 › Marketplace E2E Tests › Responsive Design › should stack watch cards on mobile 
+
+    TimeoutError: locator.boundingBox: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for locator('.watch-card').first()
+
+
+      234 |       const secondCard = watchCards.nth(1);
+      235 |       
+    > 236 |       const firstBox = await firstCard.boundingBox();
+          |                                        ^
+      237 |       const secondBox = await secondCard.boundingBox();
+      238 |       
+      239 |       if (firstBox && secondBox) {
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/marketplace.spec.js:236:40
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-4b1c9-stack-watch-cards-on-mobile-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-4b1c9-stack-watch-cards-on-mobile-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/marketplace-Marketplace-E2-4b1c9-stack-watch-cards-on-mobile-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-4b1c9-stack-watch-cards-on-mobile-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/marketplace-Marketplace-E2-4b1c9-stack-watch-cards-on-mobile-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-4b1c9-stack-watch-cards-on-mobile-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-4b1c9-stack-watch-cards-on-mobile-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-4b1c9-stack-watch-cards-on-mobile-chromium/error-context.md]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-4b1c9-stack-watch-cards-on-mobile-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Marketplace E2E Tests › User Profile › should navigate to profile page" classname="marketplace.spec.js" time="15.825">
+<failure message="marketplace.spec.js:246:5 should navigate to profile page" type="FAILURE">
+<![CDATA[  [chromium] › marketplace.spec.js:246:5 › Marketplace E2E Tests › User Profile › should navigate to profile page 
+
+    TimeoutError: locator.click: Timeout 15000ms exceeded.
+    Call log:
+      - waiting for getByRole('link', { name: /Profile/i })
+
+
+      263 |       
+      264 |       const profileLink = page.getByRole('link', { name: /Profile/i });
+    > 265 |       await profileLink.click();
+          |                         ^
+      266 |       
+      267 |       await expect(page).toHaveURL(/\/profile/);
+      268 |       await expect(page.locator('h1')).toContainText(/Profile/i);
+        at /Users/paulmccarthy/juno-marketplace/test-automation/suites/e2e/marketplace.spec.js:265:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-09338-ld-navigate-to-profile-page-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-09338-ld-navigate-to-profile-page-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/marketplace-Marketplace-E2-09338-ld-navigate-to-profile-page-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../test-results/marketplace-Marketplace-E2-09338-ld-navigate-to-profile-page-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../test-results/marketplace-Marketplace-E2-09338-ld-navigate-to-profile-page-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-09338-ld-navigate-to-profile-page-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-09338-ld-navigate-to-profile-page-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-09338-ld-navigate-to-profile-page-chromium/error-context.md]]
+
+[[ATTACHMENT|../test-results/marketplace-Marketplace-E2-09338-ld-navigate-to-profile-page-chromium/trace.zip]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>

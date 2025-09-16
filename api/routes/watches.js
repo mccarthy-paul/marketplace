@@ -135,7 +135,7 @@ router.get('/', async (req, res) => {
     
     console.log('Applied filters:', filter);
     
-    const watches = await Watch.find(filter).populate('owner', 'email name company_name junopay_client_id');
+    const watches = await Watch.find(filter).populate('owner', 'email name company_name junopay_client_id sellerStats');
     res.json(watches);
   } catch (err) {
     console.error('Error fetching watches:', err);
@@ -288,6 +288,77 @@ router.delete('/:id', isAuthenticated, async (req, res) => {
     }
   } catch (err) {
     console.error('Error deleting watch:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Update a watch (Regular users - can only update their own watches)
+router.put('/user/:id', isAuthenticated, upload.array('watchImages', 5), async (req, res) => {
+  try {
+    const watchId = req.params.id;
+    const userId = req.session.user._id;
+
+    // First check if the watch exists and belongs to the user
+    const existingWatch = await Watch.findById(watchId);
+
+    if (!existingWatch) {
+      return res.status(404).json({ message: 'Watch not found' });
+    }
+
+    // Check ownership
+    if (String(existingWatch.owner) !== String(userId) && String(existingWatch.seller) !== String(userId)) {
+      return res.status(403).json({ message: 'You can only edit your own watches' });
+    }
+
+    const { brand, model, reference_number, description, year, condition, price, currentBid, currency, status, existingImages } = req.body;
+
+    // Build update object
+    const updateData = {
+      brand,
+      model,
+      reference_number,
+      description,
+      year,
+      condition,
+      price: price || null,
+      currentBid: currentBid || 0,
+      currency: currency || 'USD',
+      status: status || 'active',
+      updated_at: new Date()
+    };
+
+    // Handle images
+    let finalImages = [];
+
+    // Parse existing images to keep
+    if (existingImages) {
+      try {
+        const imagesToKeep = JSON.parse(existingImages);
+        finalImages = Array.isArray(imagesToKeep) ? imagesToKeep : [];
+      } catch (e) {
+        console.error('Error parsing existing images:', e);
+      }
+    }
+
+    // Add new uploaded images
+    if (req.files && req.files.length > 0) {
+      const newImages = req.files.map(file => `/public/uploads/watches/${file.filename}`);
+      finalImages = [...finalImages, ...newImages];
+    }
+
+    // Update images array
+    if (finalImages.length > 0) {
+      updateData.images = finalImages;
+      updateData.imageUrl = finalImages[0]; // Keep first image as primary for backward compatibility
+    }
+
+    const updatedWatch = await Watch.findByIdAndUpdate(watchId, updateData, { new: true })
+      .populate('owner', 'name email company_name junopay_client_id');
+
+    res.json(updatedWatch);
+
+  } catch (err) {
+    console.error('Error updating watch:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });

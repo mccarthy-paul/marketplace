@@ -1,0 +1,187 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - generic [ref=e4]:
+      - link "Luxe24.1 Marketplace" [ref=e5] [cursor=pointer]:
+        - /url: /
+      - navigation [ref=e6]:
+        - link "Marketplace" [ref=e7] [cursor=pointer]:
+          - /url: /watches
+        - link "Watch Brands" [ref=e8] [cursor=pointer]:
+          - /url: /watches
+        - link "Sell a Watch" [ref=e9] [cursor=pointer]:
+          - /url: /watches
+        - link "Magazine" [ref=e10] [cursor=pointer]:
+          - /url: /watches
+        - link "Watch Collection" [ref=e11] [cursor=pointer]:
+          - /url: /watches
+  - generic [ref=e13]:
+    - heading "Watch Marketplace" [level=1] [ref=e14]
+    - generic [ref=e16]:
+      - heading "Search Filters" [level=2] [ref=e17]
+      - button "Show" [ref=e18] [cursor=pointer]:
+        - generic [ref=e19] [cursor=pointer]: Show
+        - img [ref=e20] [cursor=pointer]
+    - paragraph [ref=e23]: Found 8 watches
+    - generic [ref=e24]:
+      - 'link "Breitling Aerospace EVO Breitling Aerospace EVO Ref: BREIT001 $3,750 Current Bid: $3,750 Active Condition: Excellent Sold by: Broker1" [ref=e26] [cursor=pointer]':
+        - /url: /watches/68c15892f5c3d16da2f20229
+        - img "Breitling Aerospace EVO" [ref=e27] [cursor=pointer]
+        - generic [ref=e28] [cursor=pointer]:
+          - heading "Breitling" [level=2] [ref=e29] [cursor=pointer]
+          - paragraph [ref=e30] [cursor=pointer]: Aerospace EVO
+          - paragraph [ref=e31] [cursor=pointer]: "Ref: BREIT001"
+          - paragraph [ref=e32] [cursor=pointer]: $3,750
+          - paragraph [ref=e33] [cursor=pointer]: "Current Bid: $3,750"
+          - generic [ref=e35] [cursor=pointer]: Active
+          - paragraph [ref=e36] [cursor=pointer]:
+            - text: "Condition:"
+            - generic [ref=e37] [cursor=pointer]: Excellent
+          - 'link "Sold by: Broker1" [ref=e39] [cursor=pointer]':
+            - /url: /seller/68b1abb9bca89d3a455580c7
+            - generic [ref=e40] [cursor=pointer]: "Sold by:"
+            - generic [ref=e41] [cursor=pointer]: Broker1
+            - img [ref=e42] [cursor=pointer]
+      - 'link "Rolex Datejust 36 Rolex Datejust 36 Ref: RX0023456 $9,500 Current Bid: $9,500 Active Condition: Excellent Sold by: Broker1" [ref=e45] [cursor=pointer]':
+        - /url: /watches/68c19fe1d17265585b93408b
+        - img "Rolex Datejust 36" [ref=e46] [cursor=pointer]
+        - generic [ref=e47] [cursor=pointer]:
+          - heading "Rolex" [level=2] [ref=e48] [cursor=pointer]
+          - paragraph [ref=e49] [cursor=pointer]: Datejust 36
+          - paragraph [ref=e50] [cursor=pointer]: "Ref: RX0023456"
+          - paragraph [ref=e51] [cursor=pointer]: $9,500
+          - paragraph [ref=e52] [cursor=pointer]: "Current Bid: $9,500"
+          - generic [ref=e54] [cursor=pointer]: Active
+          - paragraph [ref=e55] [cursor=pointer]:
+            - text: "Condition:"
+            - generic [ref=e56] [cursor=pointer]: Excellent
+          - 'link "Sold by: Broker1" [ref=e58] [cursor=pointer]':
+            - /url: /seller/68b1abb9bca89d3a455580c7
+            - generic [ref=e59] [cursor=pointer]: "Sold by:"
+            - generic [ref=e60] [cursor=pointer]: Broker1
+            - img [ref=e61] [cursor=pointer]
+      - 'link "Cartier Tank Cartier Tank Ref: CR002345678 $1,985 Current Bid: $1,985 Active Condition: Excellent Sold by: Broker1" [ref=e64] [cursor=pointer]':
+        - /url: /watches/68c1a3c33d649f0818ee9f4d
+        - img "Cartier Tank" [ref=e65] [cursor=pointer]
+        - generic [ref=e66] [cursor=pointer]:
+          - heading "Cartier" [level=2] [ref=e67] [cursor=pointer]
+          - paragraph [ref=e68] [cursor=pointer]: Tank
+          - paragraph [ref=e69] [cursor=pointer]: "Ref: CR002345678"
+          - paragraph [ref=e70] [cursor=pointer]: $1,985
+          - paragraph [ref=e71] [cursor=pointer]: "Current Bid: $1,985"
+          - generic [ref=e73] [cursor=pointer]: Active
+          - paragraph [ref=e74] [cursor=pointer]:
+            - text: "Condition:"
+            - generic [ref=e75] [cursor=pointer]: Excellent
+          - 'link "Sold by: Broker1" [ref=e77] [cursor=pointer]':
+            - /url: /seller/68b1abb9bca89d3a455580c7
+            - generic [ref=e78] [cursor=pointer]: "Sold by:"
+            - generic [ref=e79] [cursor=pointer]: Broker1
+            - img [ref=e80] [cursor=pointer]
+      - 'link "Cartier Santos Cartier Santos Ref: CR00998833 $6,650 0 Active Condition: Excellent Sold by: Broker1" [ref=e83] [cursor=pointer]':
+        - /url: /watches/68c1e86301f2a4c9954edbae
+        - img "Cartier Santos" [ref=e84] [cursor=pointer]
+        - generic [ref=e85] [cursor=pointer]:
+          - heading "Cartier" [level=2] [ref=e86] [cursor=pointer]
+          - paragraph [ref=e87] [cursor=pointer]: Santos
+          - paragraph [ref=e88] [cursor=pointer]: "Ref: CR00998833"
+          - paragraph [ref=e89] [cursor=pointer]: $6,650
+          - text: "0"
+          - generic [ref=e91] [cursor=pointer]: Active
+          - paragraph [ref=e92] [cursor=pointer]:
+            - text: "Condition:"
+            - generic [ref=e93] [cursor=pointer]: Excellent
+          - 'link "Sold by: Broker1" [ref=e95] [cursor=pointer]':
+            - /url: /seller/68b1abb9bca89d3a455580c7
+            - generic [ref=e96] [cursor=pointer]: "Sold by:"
+            - generic [ref=e97] [cursor=pointer]: Broker1
+            - img [ref=e98] [cursor=pointer]
+      - 'link "Rolex Sky-Dweller Rolex Sky-Dweller Ref: RX0099988776622 $20,000 0 Active Condition: Excellent Sold by: Broker1" [ref=e101] [cursor=pointer]':
+        - /url: /watches/68c2d885d715e59fbe096a0a
+        - img "Rolex Sky-Dweller" [ref=e102] [cursor=pointer]
+        - generic [ref=e103] [cursor=pointer]:
+          - heading "Rolex" [level=2] [ref=e104] [cursor=pointer]
+          - paragraph [ref=e105] [cursor=pointer]: Sky-Dweller
+          - paragraph [ref=e106] [cursor=pointer]: "Ref: RX0099988776622"
+          - paragraph [ref=e107] [cursor=pointer]: $20,000
+          - text: "0"
+          - generic [ref=e109] [cursor=pointer]: Active
+          - paragraph [ref=e110] [cursor=pointer]:
+            - text: "Condition:"
+            - generic [ref=e111] [cursor=pointer]: Excellent
+          - 'link "Sold by: Broker1" [ref=e113] [cursor=pointer]':
+            - /url: /seller/68b1abb9bca89d3a455580c7
+            - generic [ref=e114] [cursor=pointer]: "Sold by:"
+            - generic [ref=e115] [cursor=pointer]: Broker1
+            - img [ref=e116] [cursor=pointer]
+      - 'link "Breitling Superocean 42 Breitling Superocean 42 Ref: BG00998823477 $2,000 0 Active Condition: Excellent Sold by: Broker2" [ref=e119] [cursor=pointer]':
+        - /url: /watches/68c2dd99d98b42ac62694b11
+        - img "Breitling Superocean 42" [ref=e120] [cursor=pointer]
+        - generic [ref=e121] [cursor=pointer]:
+          - heading "Breitling" [level=2] [ref=e122] [cursor=pointer]
+          - paragraph [ref=e123] [cursor=pointer]: Superocean 42
+          - paragraph [ref=e124] [cursor=pointer]: "Ref: BG00998823477"
+          - paragraph [ref=e125] [cursor=pointer]: $2,000
+          - text: "0"
+          - generic [ref=e127] [cursor=pointer]: Active
+          - paragraph [ref=e128] [cursor=pointer]:
+            - text: "Condition:"
+            - generic [ref=e129] [cursor=pointer]: Excellent
+          - 'link "Sold by: Broker2" [ref=e131] [cursor=pointer]':
+            - /url: /seller/68c2dcfa70a08ac593eca1c3
+            - generic [ref=e132] [cursor=pointer]: "Sold by:"
+            - generic [ref=e133] [cursor=pointer]: Broker2
+            - img [ref=e134] [cursor=pointer]
+      - 'link "Breitling Bentley Motors Breitling Bentley Motors Ref: BG009988223345 £3,800 0 Active Condition: Excellent Sold by: Broker2" [ref=e137] [cursor=pointer]':
+        - /url: /watches/68c31f411da3d7c4a2f12400
+        - img "Breitling Bentley Motors" [ref=e138] [cursor=pointer]
+        - generic [ref=e139] [cursor=pointer]:
+          - heading "Breitling" [level=2] [ref=e140] [cursor=pointer]
+          - paragraph [ref=e141] [cursor=pointer]: Bentley Motors
+          - paragraph [ref=e142] [cursor=pointer]: "Ref: BG009988223345"
+          - paragraph [ref=e143] [cursor=pointer]: £3,800
+          - text: "0"
+          - generic [ref=e145] [cursor=pointer]: Active
+          - paragraph [ref=e146] [cursor=pointer]:
+            - text: "Condition:"
+            - generic [ref=e147] [cursor=pointer]: Excellent
+          - 'link "Sold by: Broker2" [ref=e149] [cursor=pointer]':
+            - /url: /seller/68c2dcfa70a08ac593eca1c3
+            - generic [ref=e150] [cursor=pointer]: "Sold by:"
+            - generic [ref=e151] [cursor=pointer]: Broker2
+            - img [ref=e152] [cursor=pointer]
+      - 'link "Cartier Santos Dumont Cartier Santos Dumont Ref: CR00998822345 £4,000 0 Active Condition: Excellent Sold by: Broker2" [ref=e155] [cursor=pointer]':
+        - /url: /watches/68c4057476b7144d0588663f
+        - img "Cartier Santos Dumont" [ref=e156] [cursor=pointer]
+        - generic [ref=e157] [cursor=pointer]:
+          - heading "Cartier" [level=2] [ref=e158] [cursor=pointer]
+          - paragraph [ref=e159] [cursor=pointer]: Santos Dumont
+          - paragraph [ref=e160] [cursor=pointer]: "Ref: CR00998822345"
+          - paragraph [ref=e161] [cursor=pointer]: £4,000
+          - text: "0"
+          - generic [ref=e163] [cursor=pointer]: Active
+          - paragraph [ref=e164] [cursor=pointer]:
+            - text: "Condition:"
+            - generic [ref=e165] [cursor=pointer]: Excellent
+          - 'link "Sold by: Broker2" [ref=e167] [cursor=pointer]':
+            - /url: /seller/68c2dcfa70a08ac593eca1c3
+            - generic [ref=e168] [cursor=pointer]: "Sold by:"
+            - generic [ref=e169] [cursor=pointer]: Broker2
+            - img [ref=e170] [cursor=pointer]
+  - contentinfo [ref=e172]:
+    - generic [ref=e173]:
+      - generic [ref=e174]: © 2025 Luxe24.1 Marketplace. All rights reserved.
+      - generic [ref=e175]:
+        - link "Privacy Policy" [ref=e176] [cursor=pointer]:
+          - /url: "#privacy"
+        - link "Terms of Use" [ref=e177] [cursor=pointer]:
+          - /url: "#terms"
+        - link "Contact Us" [ref=e178] [cursor=pointer]:
+          - /url: "#contact"
+  - generic [ref=e179]:
+    - button "Open AI Assistant" [ref=e180] [cursor=pointer]:
+      - img [ref=e182] [cursor=pointer]
+    - generic: Need help? Ask our AI assistant!
+```

@@ -1,0 +1,395 @@
+{
+  "timestamp": "2025-09-14T18:18:44.642Z",
+  "collections": {
+    "users": [
+      {
+        "_id": "682746bf996070c6c7f6a5bf",
+        "juno_id": "paul.mccarthy@badbeat.com",
+        "email": "paul.mccarthy@badbeat.com",
+        "name": "Paul Mc",
+        "company_name": "big Picture Software",
+        "is_admin": false,
+        "created_at": "2025-05-16T14:07:59.535Z",
+        "updated_at": "2025-09-14T17:18:42.432Z",
+        "__v": 0,
+        "junopay_client_id": "client3598481332",
+        "buyer_fee": 1,
+        "defaultDeliveryAddress": {
+          "street": "5 Sylvan Drive",
+          "city": "Waterford",
+          "state": "Waterford",
+          "postalCode": "X98Y23",
+          "country": "Ireland"
+        }
+      },
+      {
+        "_id": "68401700ebac97f7da9b802c",
+        "juno_id": "admin-juno-id",
+        "email": "admin@luxe24.com",
+        "name": "Admin",
+        "company_name": "Luxe24 Admin",
+        "is_admin": true,
+        "created_at": "2025-09-06T17:51:01.630Z",
+        "updated_at": "2025-09-12T16:10:00.458Z",
+        "__v": 0
+      },
+      {
+        "_id": "6841bbbb0a716b974c08da70",
+        "juno_id": "paul@broker1.com",
+        "email": "paul@broker1.com",
+        "name": "Paul McCarthy",
+        "company_name": "Broker One",
+        "is_admin": false,
+        "created_at": "2025-06-05T15:46:03.211Z",
+        "updated_at": "2025-09-12T16:10:00.458Z",
+        "__v": 0
+      },
+      {
+        "_id": "6841cd390a716b974c08da76",
+        "juno_id": "dave@broker2.com",
+        "email": "dave@broker2.com",
+        "name": "David Conroy",
+        "company_name": "Broker Two",
+        "is_admin": false,
+        "created_at": "2025-06-05T17:00:41.514Z",
+        "updated_at": "2025-09-12T16:10:00.458Z",
+        "__v": 0
+      },
+      {
+        "_id": "68b1abb9bca89d3a455580c7",
+        "junopay_client_id": "client1289152352",
+        "email": "broker1@junomoney.com",
+        "name": "Broker1",
+        "company_name": "JunoPay User",
+        "is_admin": true,
+        "created_at": "2025-08-29T13:31:37.722Z",
+        "updated_at": "2025-09-12T16:10:00.458Z",
+        "__v": 0,
+        "buyer_fee": 1,
+        "defaultDeliveryAddress": {
+          "country": "USA"
+        }
+      },
+      {
+        "_id": "68c2dcfa70a08ac593eca1c3",
+        "junopay_client_id": "client5178941042",
+        "email": "broker2@junomoney.com",
+        "name": "Broker2",
+        "company_name": "JunoPay User",
+        "buyer_fee": 1,
+        "defaultDeliveryAddress": {
+          "country": "USA"
+        },
+        "juno_id": "broker2_juno_id",
+        "is_admin": false,
+        "created_at": "2025-09-11T14:30:18.366Z",
+        "updated_at": "2025-09-12T16:10:00.458Z",
+        "__v": 0
+      }
+    ],
+    "watches": [
+      {
+        "_id": "68c15892f5c3d16da2f20229",
+        "brand": "Breitling",
+        "model": "Aerospace EVO",
+        "reference_number": "BREIT001",
+        "year": 2025,
+        "condition": "Excellent",
+        "imageUrl": "/public/uploads/watches/watchImages-1757501586141.jpg",
+        "images": [
+          "/public/uploads/watches/watchImages-1757501586141.jpg",
+          "/public/uploads/watches/watchImages-1757501586142.jpg",
+          "/public/uploads/watches/watchImages-1757501586186.jpg",
+          "/public/uploads/watches/watchImages-1757501586186.jpg",
+          "/public/uploads/watches/watchImages-1757501586187.jpg"
+        ],
+        "seller": "68b1abb9bca89d3a455580c7",
+        "owner": "68b1abb9bca89d3a455580c7",
+        "currentBid": 3750,
+        "status": "active",
+        "price": 3750,
+        "created_at": "2025-09-10T10:53:06.194Z",
+        "updated_at": "2025-09-14T15:41:13.334Z",
+        "__v": 1,
+        "currency": "USD"
+      },
+      {
+        "_id": "68c19fe1d17265585b93408b",
+        "brand": "Rolex",
+        "model": "Datejust 36",
+        "reference_number": "RX0023456",
+        "description": "36mm Mint Green Oyster Bracelet",
+        "year": 2025,
+        "condition": "Excellent",
+        "imageUrl": "/public/uploads/watches/watchImages-1757519841264.jpg",
+        "images": [
+          "/public/uploads/watches/watchImages-1757519841264.jpg",
+          "/public/uploads/watches/watchImages-1757519841264.jpg",
+          "/public/uploads/watches/watchImages-1757519841320.jpg",
+          "/public/uploads/watches/watchImages-1757519841320.jpg",
+          "/public/uploads/watches/watchImages-1757519841322.jpg"
+        ],
+        "seller": "68b1abb9bca89d3a455580c7",
+        "owner": "68b1abb9bca89d3a455580c7",
+        "currentBid": 9500,
+        "status": "active",
+        "price": 9500,
+        "created_at": "2025-09-10T15:57:21.330Z",
+        "updated_at": "2025-09-14T15:41:13.334Z",
+        "__v": 0
+      },
+      {
+        "_id": "68c1a3c33d649f0818ee9f4d",
+        "brand": "Cartier",
+        "model": "Tank",
+        "reference_number": "CR002345678",
+        "description": "Must Tank LM Ref.1615 - 23x30mm",
+        "year": 2025,
+        "condition": "Excellent",
+        "imageUrl": "/public/uploads/watches/watchImages-1757520835031.jpg",
+        "images": [
+          "/public/uploads/watches/watchImages-1757520835031.jpg",
+          "/public/uploads/watches/watchImages-1757520835033.jpg",
+          "/public/uploads/watches/watchImages-1757520835033.jpg",
+          "/public/uploads/watches/watchImages-1757520835034.jpg",
+          "/public/uploads/watches/watchImages-1757520835034.jpg"
+        ],
+        "seller": "68b1abb9bca89d3a455580c7",
+        "owner": "68b1abb9bca89d3a455580c7",
+        "currentBid": 1985,
+        "status": "sold",
+        "price": 1985,
+        "created_at": "2025-09-10T16:13:55.040Z",
+        "updated_at": "2025-09-14T17:19:00.169Z",
+        "__v": 0,
+        "currency": "USD"
+      },
+      {
+        "_id": "68c1e86301f2a4c9954edbae",
+        "brand": "Cartier",
+        "model": "Santos",
+        "reference_number": "CR00998833",
+        "description": "Cartier Blue Dial Large Model Watch",
+        "year": 2025,
+        "condition": "Excellent",
+        "imageUrl": "/public/uploads/watches/watchImages-1757538402971.webp",
+        "images": [
+          "/public/uploads/watches/watchImages-1757538402971.webp",
+          "/public/uploads/watches/watchImages-1757538402972.webp",
+          "/public/uploads/watches/watchImages-1757538402972.webp",
+          "/public/uploads/watches/watchImages-1757538402998.webp"
+        ],
+        "seller": "68b1abb9bca89d3a455580c7",
+        "owner": "68b1abb9bca89d3a455580c7",
+        "currentBid": 0,
+        "status": "active",
+        "price": 6650,
+        "created_at": "2025-09-10T21:06:43.007Z",
+        "updated_at": "2025-09-14T15:41:13.334Z",
+        "__v": 0
+      },
+      {
+        "_id": "68c2d885d715e59fbe096a0a",
+        "brand": "Rolex",
+        "model": "Sky-Dweller",
+        "reference_number": "RX0099988776622",
+        "description": "NEW 2025 Sky-Dweller 42mm 336934 Stainless Steel Oyster Green Dial",
+        "year": 2025,
+        "condition": "Excellent",
+        "imageUrl": "/public/uploads/watches/watchImages-1757599876888.jpg",
+        "images": [
+          "/public/uploads/watches/watchImages-1757599876888.jpg",
+          "/public/uploads/watches/watchImages-1757599876889.jpg",
+          "/public/uploads/watches/watchImages-1757599877008.jpg",
+          "/public/uploads/watches/watchImages-1757599877008.webp",
+          "/public/uploads/watches/watchImages-1757599877008.jpg"
+        ],
+        "seller": "68b1abb9bca89d3a455580c7",
+        "owner": "68b1abb9bca89d3a455580c7",
+        "currentBid": 0,
+        "status": "active",
+        "price": 20000,
+        "currency": "USD",
+        "created_at": "2025-09-11T14:11:17.079Z",
+        "updated_at": "2025-09-14T15:41:13.334Z",
+        "__v": 0
+      },
+      {
+        "_id": "68c2dd99d98b42ac62694b11",
+        "brand": "Breitling",
+        "model": "Superocean 42",
+        "reference_number": "BG00998823477",
+        "description": "Stainless Steel Black Dial 42mm Automatic Mens Watch A17366",
+        "year": 2025,
+        "condition": "Excellent",
+        "imageUrl": "/public/uploads/watches/watchImages-1757601177027.jpg",
+        "images": [
+          "/public/uploads/watches/watchImages-1757601177027.jpg",
+          "/public/uploads/watches/watchImages-1757601177028.jpg",
+          "/public/uploads/watches/watchImages-1757601177028.webp",
+          "/public/uploads/watches/watchImages-1757601177029.webp",
+          "/public/uploads/watches/watchImages-1757601177029.webp"
+        ],
+        "seller": "68c2dcfa70a08ac593eca1c3",
+        "owner": "68c2dcfa70a08ac593eca1c3",
+        "currentBid": 0,
+        "status": "active",
+        "price": 2000,
+        "currency": "USD",
+        "created_at": "2025-09-11T14:32:57.041Z",
+        "updated_at": "2025-09-14T15:41:13.334Z",
+        "__v": 0
+      },
+      {
+        "_id": "68c31f411da3d7c4a2f12400",
+        "brand": "Breitling",
+        "model": "Bentley Motors",
+        "reference_number": "BG009988223345",
+        "description": "Breitling Bentley Motors",
+        "year": 2025,
+        "condition": "Excellent",
+        "imageUrl": "/public/uploads/watches/watchImages-1757617985029.jpg",
+        "images": [
+          "/public/uploads/watches/watchImages-1757617985029.jpg",
+          "/public/uploads/watches/watchImages-1757617985029.webp",
+          "/public/uploads/watches/watchImages-1757617985030.jpg",
+          "/public/uploads/watches/watchImages-1757617985055.webp",
+          "/public/uploads/watches/watchImages-1757617985055.jpg"
+        ],
+        "seller": "68c2dcfa70a08ac593eca1c3",
+        "owner": "68c2dcfa70a08ac593eca1c3",
+        "currentBid": 0,
+        "status": "active",
+        "price": 3800,
+        "currency": "GBP",
+        "created_at": "2025-09-11T19:13:05.068Z",
+        "updated_at": "2025-09-14T15:41:13.334Z",
+        "__v": 0
+      },
+      {
+        "_id": "68c4057476b7144d0588663f",
+        "brand": "Cartier",
+        "model": "Santos Dumont",
+        "reference_number": "CR00998822345",
+        "description": "NEW 2025 Santos-Dumont (WSSA0085)",
+        "year": 2025,
+        "condition": "Excellent",
+        "imageUrl": "/public/uploads/watches/watchImages-1757676916913.webp",
+        "images": [
+          "/public/uploads/watches/watchImages-1757676916913.webp",
+          "/public/uploads/watches/watchImages-1757676916914.jpg",
+          "/public/uploads/watches/watchImages-1757676916914.webp",
+          "/public/uploads/watches/watchImages-1757676916914.webp",
+          "/public/uploads/watches/watchImages-1757676916914.webp"
+        ],
+        "seller": "68c2dcfa70a08ac593eca1c3",
+        "owner": "68c2dcfa70a08ac593eca1c3",
+        "currentBid": 0,
+        "status": "active",
+        "price": 4000,
+        "currency": "GBP",
+        "created_at": "2025-09-12T11:35:16.925Z",
+        "updated_at": "2025-09-14T15:41:13.334Z",
+        "__v": 0
+      }
+    ],
+    "bids": [],
+    "orders": [],
+    "transactions": [
+      {
+        "_id": "68c6f8f4ef17dc623433fd16",
+        "applicationTransactionId": "JNT-865e426d",
+        "watch": "68c1a3c33d649f0818ee9f4d",
+        "buyer": "682746bf996070c6c7f6a5bf",
+        "seller": "68b1abb9bca89d3a455580c7",
+        "buyerClientId": "client3598481332",
+        "sellerClientId": "client1289152352",
+        "productName": "Cartier Tank",
+        "productCode": "CR002345678",
+        "currency": "USD",
+        "purchasePrice": "1985",
+        "shippingPrice": "50.00",
+        "totalPrice": "2035.00",
+        "buyerFee": "19.85",
+        "status": "completed",
+        "buyerNote": "Purchase of Cartier Tank - Ref: CR002345678",
+        "created_at": "2025-09-14T17:18:44.179Z",
+        "updated_at": "2025-09-14T17:19:01.919Z",
+        "__v": 0
+      }
+    ],
+    "notifications": [
+      {
+        "_id": "68c6f8f4ef17dc623433fd18",
+        "user": "68b1abb9bca89d3a455580c7",
+        "type": "order_placed",
+        "title": "New Order Received",
+        "message": "Paul Mc has placed an order for your Cartier Tank",
+        "relatedEntity": {
+          "entityType": "order",
+          "entityId": "68c6f8f4ef17dc623433fd16"
+        },
+        "read": true,
+        "createdAt": "2025-09-14T17:18:44.182Z",
+        "__v": 0,
+        "readAt": "2025-09-14T17:19:35.610Z"
+      },
+      {
+        "_id": "68c6f904ef17dc623433fd28",
+        "user": "68b1abb9bca89d3a455580c7",
+        "type": "watch_sold",
+        "title": "Watch Sold!",
+        "message": "Your Cartier Tank has been sold to Paul Mc",
+        "relatedEntity": {
+          "entityType": "order",
+          "entityId": "68c6f8f4ef17dc623433fd16"
+        },
+        "read": true,
+        "createdAt": "2025-09-14T17:19:00.173Z",
+        "__v": 0,
+        "readAt": "2025-09-14T17:19:32.175Z"
+      },
+      {
+        "_id": "68c6f904ef17dc623433fd2a",
+        "user": "682746bf996070c6c7f6a5bf",
+        "type": "order_shipped",
+        "title": "Order Confirmed",
+        "message": "Your purchase of Cartier Tank has been confirmed",
+        "relatedEntity": {
+          "entityType": "order",
+          "entityId": "68c6f8f4ef17dc623433fd16"
+        },
+        "read": false,
+        "createdAt": "2025-09-14T17:19:00.177Z",
+        "__v": 0
+      }
+    ],
+    "carts": [
+      {
+        "_id": "68c6f8ebef17dc623433fcfc",
+        "user": "682746bf996070c6c7f6a5bf",
+        "items": [],
+        "deliveryMethod": null,
+        "shippingCost": 0,
+        "subtotal": 0,
+        "total": 0,
+        "created_at": "2025-09-14T17:18:35.244Z",
+        "updated_at": "2025-09-14T17:18:44.259Z",
+        "__v": 1,
+        "deliveryAddress": null
+      },
+      {
+        "_id": "68c7047345ce3d6b8179ed8e",
+        "user": "68b1abb9bca89d3a455580c7",
+        "items": [],
+        "deliveryMethod": null,
+        "shippingCost": 0,
+        "subtotal": 0,
+        "total": 0,
+        "created_at": "2025-09-14T18:07:47.516Z",
+        "updated_at": "2025-09-14T18:07:47.517Z",
+        "__v": 0
+      }
+    ]
+  }
+}

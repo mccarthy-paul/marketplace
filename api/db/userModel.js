@@ -25,6 +25,27 @@ const userSchema = new mongoose.Schema({
   juno_id: { type: String }, // Optional legacy field
   password: { type: String, select: false }, // Legacy admin password
   
+  // Seller statistics (computed/cached for performance)
+  sellerStats: {
+    totalSales: { type: Number, default: 0 },
+    averageRating: { type: Number, default: 0 },
+    totalReviews: { type: Number, default: 0 },
+    responseTime: { type: String }, // e.g., "Usually responds within 2 hours"
+    memberSince: { type: Date },
+    lastActive: { type: Date },
+    badges: [{ type: String }] // e.g., ["Trusted Seller", "Fast Shipper", "100+ Sales"]
+  },
+
+  // Seller profile
+  sellerProfile: {
+    bio: { type: String, maxLength: 500 },
+    specialties: [{ type: String }], // e.g., ["Rolex", "Vintage Watches", "Swiss Luxury"]
+    location: { type: String },
+    storeName: { type: String },
+    returnPolicy: { type: String, maxLength: 1000 },
+    shippingInfo: { type: String, maxLength: 1000 }
+  },
+
   // System fields
   is_admin: { type: Boolean, default: false },
   created_at: { type: Date, default: Date.now },

@@ -1,0 +1,141 @@
+Issue Type,Summary,Description,Story Points,Sprint,Epic Link,Acceptance Criteria,Priority,Labels,Components
+Story,Project Setup & Infrastructure,"As a developer, I want to set up the project foundation with React Vite Express and MongoDB, so that we have a solid base for development",5,Sprint 1,JUNO-1696,"- React 18 + Vite frontend configured
+- Express.js backend with proper middleware
+- MongoDB connection established
+- ESLint and Prettier configured
+- Git repository with .gitignore",High,setup infrastructure,Backend Frontend
+Story,OAuth 2.1 + PKCE Authentication,"As a user, I want to login using OAuth 2.1 with PKCE, so that I can securely access the platform",8,Sprint 1,JUNO-1696,"- OAuth provider integration
+- PKCE flow implementation
+- Session management
+- Logout functionality
+- Protected routes",Critical,authentication security,Authentication
+Story,User Database Schema,"As a system, I want to store user information securely, so that we can manage user accounts",3,Sprint 1,JUNO-1696,"- User model with OAuth fields
+- Admin role support
+- Profile information storage
+- Secure token storage",High,database,Database
+Story,Basic Navigation & Layout,"As a user, I want to navigate through the application, so that I can access different features",5,Sprint 1,JUNO-1696,"- Responsive navbar component
+- Footer component
+- Mobile menu support
+- Route configuration",Medium,ui navigation,Frontend
+Story,Watch Listing Management,"As a seller, I want to list my watches for sale, so that buyers can discover them",8,Sprint 2,JUNO-1696,"- Add watch form with validation
+- Multiple image upload
+- Watch details fields
+- Price setting
+- Save as draft/publish",High,watches seller,Backend Frontend
+Story,Watch Browse & Search,"As a buyer, I want to browse and search for watches, so that I can find watches I'm interested in",8,Sprint 2,JUNO-1696,"- Grid/list view toggle
+- Search by brand model reference
+- Price range filter
+- Condition filter
+- Sort options",High,search watches buyer,Frontend
+Story,Watch Detail Page,"As a buyer, I want to view detailed watch information, so that I can make informed decisions",5,Sprint 2,JUNO-1696,"- Image gallery with zoom
+- Complete specifications display
+- Seller information
+- Similar watches section
+- Share functionality",Medium,watches ui,Frontend
+Story,Image Management System,"As a system, I want to handle image uploads and storage, so that watches can have visual representation",5,Sprint 2,JUNO-1696,"- Multer configuration
+- Image compression
+- Multiple image support
+- Image deletion
+- CDN/storage strategy",High,images storage,Backend
+Story,Bidding Functionality,"As a buyer, I want to place bids on watches, so that I can negotiate prices",8,Sprint 3,JUNO-1696,"- Place bid with amount
+- Add comments to bids
+- View bid history
+- Bid status tracking
+- Real-time bid updates",Critical,bidding buyer,Backend Frontend
+Story,Bid Management for Sellers,"As a seller, I want to manage bids on my watches, so that I can accept or reject offers",8,Sprint 3,JUNO-1696,"- View all bids on watches
+- Accept/reject/counter bids
+- Communicate with bidders
+- Bid expiration handling
+- Email notifications",Critical,bidding seller,Backend Frontend
+Story,Counter-Offer System,"As a seller, I want to make counter-offers, so that I can negotiate better prices",5,Sprint 3,JUNO-1696,"- Create counter-offer
+- Counter-offer history
+- Automatic bid updates
+- Notification to bidder",High,bidding negotiation,Backend
+Story,Bid Notifications,"As a user, I want to receive notifications about bid activity, so that I can respond quickly",8,Sprint 3,JUNO-1696,"- In-app notifications
+- Email notifications
+- Notification preferences
+- Mark as read functionality",Medium,notifications bidding,Backend Frontend
+Story,Shopping Cart,"As a buyer, I want to add watches to my cart, so that I can purchase multiple items",5,Sprint 4,JUNO-1696,"- Add to cart functionality
+- Cart persistence
+- Update quantities
+- Remove items
+- Cart summary",High,cart shopping,Frontend
+Story,Checkout Process,"As a buyer, I want to complete my purchase, so that I can buy watches",8,Sprint 4,JUNO-1696,"- Shipping information form
+- Billing information
+- Order summary
+- Terms acceptance
+- Order confirmation",Critical,checkout payment,Frontend Backend
+Story,Payment Integration,"As a buyer, I want to pay for my purchases securely, so that I can complete transactions",13,Sprint 4,JUNO-1696,"- Payment gateway integration
+- Multiple payment methods
+- Transaction security
+- Payment confirmation
+- Refund support",Critical,payment integration,Payments
+Story,Order Processing,"As a seller, I want to process orders, so that I can fulfill purchases",8,Sprint 5,JUNO-1696,"- View incoming orders
+- Update order status
+- Print shipping labels
+- Mark as shipped
+- Add tracking information",High,orders seller,Backend
+Story,Order History,"As a buyer, I want to view my order history, so that I can track my purchases",5,Sprint 5,JUNO-1696,"- List of all orders
+- Order details view
+- Order status tracking
+- Download invoices
+- Reorder functionality",Medium,orders buyer,Frontend
+Story,Sales Dashboard,"As a seller, I want to view my sales analytics, so that I can track performance",8,Sprint 5,JUNO-1696,"- Sales overview
+- Revenue charts
+- Best selling items
+- Customer analytics
+- Export reports",Medium,analytics dashboard,Frontend Backend
+Story,Transaction Management,"As a system, I want to track all transactions, so that we maintain accurate records",3,Sprint 5,JUNO-1696,"- Transaction logging
+- Commission calculation
+- Payment disbursement
+- Transaction history",High,transactions,Backend
+Story,Admin Dashboard,"As an admin, I want to see platform overview, so that I can monitor the business",5,Sprint 6,JUNO-1696,"- User statistics
+- Watch inventory stats
+- Transaction volume
+- Revenue metrics
+- Quick actions panel",High,admin dashboard,Admin
+Story,User Management Admin,"As an admin, I want to manage platform users, so that I can maintain user quality",8,Sprint 6,JUNO-1696,"- View all users
+- Edit user details
+- Suspend/activate accounts
+- Reset passwords
+- Assign admin roles",High,admin users,Admin
+Story,Watch Moderation Admin,"As an admin, I want to moderate watch listings, so that I can ensure quality",8,Sprint 6,JUNO-1696,"- Review pending listings
+- Approve/reject watches
+- Edit watch details
+- Remove inappropriate content
+- Feature watches",High,admin moderation,Admin
+Story,Admin Reporting,"As an admin, I want to generate reports, so that I can analyze business metrics",5,Sprint 6,JUNO-1696,"- Sales reports
+- User activity reports
+- Commission reports
+- Export to CSV/PDF
+- Scheduled reports",Medium,admin reporting,Admin
+Story,AI Assistant Integration,"As a user, I want to get help from an AI assistant, so that I can get quick answers",13,Sprint 7,JUNO-1696,"- Chat interface
+- Context-aware responses
+- Watch recommendations
+- Voice input support
+- Chat history",Medium,ai assistant,Frontend Backend
+Story,Activity Analytics,"As a user, I want to see my activity analytics, so that I can track my marketplace usage",8,Sprint 7,JUNO-1696,"- Bid activity charts
+- Sales/purchase history
+- Performance metrics
+- Watchlist analytics
+- Export functionality",Low,analytics user,Frontend
+Story,Notification System,"As a user, I want to manage my notifications, so that I stay informed",8,Sprint 7,JUNO-1696,"- Notification center
+- Real-time updates
+- Email preferences
+- Push notifications
+- Notification history",Medium,notifications,Backend Frontend
+Story,Comprehensive Testing,"As a developer, I want to ensure code quality, so that the platform is reliable",8,Sprint 8,JUNO-1696,"- Unit tests >80% coverage
+- Integration tests
+- E2E tests with Playwright
+- Performance testing
+- Security testing",Critical,testing quality,Testing
+Story,Production Deployment,"As a business, I want to deploy the platform, so that users can access it",8,Sprint 8,JUNO-1696,"- Production environment setup
+- CI/CD pipeline
+- SSL certificates
+- Domain configuration
+- Monitoring setup",Critical,deployment devops,DevOps
+Story,Documentation,"As a developer, I want to complete documentation, so that the platform is maintainable",5,Sprint 8,JUNO-1696,"- API documentation
+- User guides
+- Admin manual
+- Deployment guide
+- Code documentation",High,documentation,Documentation

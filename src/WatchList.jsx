@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
+import { Star, ChevronRight } from 'lucide-react';
 import { formatPrice } from './utils/currency';
 
 const WatchList = () => {
@@ -342,10 +343,25 @@ const WatchList = () => {
                     )}
 
                     {watch.owner && (
-                      <>
-                        <p className="text-sm text-gray-700 mt-2">Owner: {watch.owner.name}</p>
-                        <p className="text-sm text-gray-700">Company: {watch.owner.company_name}</p>
-                      </>
+                      <div className="mt-2 pt-2 border-t">
+                        <Link
+                          to={`/seller/${watch.owner._id}`}
+                          className="inline-flex items-center text-sm text-[#0b3d2e] hover:text-[#164d3a] font-medium transition-colors"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <span className="mr-1">Sold by:</span>
+                          <span className="underline">{watch.owner.name || watch.owner.company_name}</span>
+                          <ChevronRight className="w-4 h-4 ml-1" />
+                        </Link>
+                        {watch.owner.sellerStats?.averageRating > 0 && (
+                          <div className="flex items-center mt-1">
+                            <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                            <span className="text-sm text-gray-600 ml-1">
+                              {watch.owner.sellerStats.averageRating.toFixed(1)} ({watch.owner.sellerStats.totalReviews} reviews)
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     )}
                   </div>
                 </Link>

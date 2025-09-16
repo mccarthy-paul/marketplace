@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import Bid from '../db/bidModel.js';
 import Transaction from '../db/transactionModel.js';
 import Order from '../db/orderModel.js';
@@ -17,7 +18,7 @@ function isAuthenticated(req, res, next) {
 // Get daily bids received for the current user
 router.get('/daily-bids', isAuthenticated, async (req, res) => {
   try {
-    const userId = req.session.user._id;
+    const userId = mongoose.Types.ObjectId.createFromHexString(req.session.user._id);
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     
@@ -87,7 +88,7 @@ router.get('/daily-bids', isAuthenticated, async (req, res) => {
 // Get daily sales for the current user
 router.get('/daily-sales', isAuthenticated, async (req, res) => {
   try {
-    const userId = req.session.user._id;
+    const userId = mongoose.Types.ObjectId.createFromHexString(req.session.user._id);
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     
@@ -186,7 +187,7 @@ router.get('/daily-sales', isAuthenticated, async (req, res) => {
 // Get summary statistics
 router.get('/summary', isAuthenticated, async (req, res) => {
   try {
-    const userId = req.session.user._id;
+    const userId = mongoose.Types.ObjectId.createFromHexString(req.session.user._id);
     
     // Get all watches owned by the user
     const Watch = (await import('../db/watchModel.js')).default;

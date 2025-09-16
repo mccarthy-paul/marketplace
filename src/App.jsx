@@ -27,6 +27,7 @@ import AssistantButton from './components/assistant/AssistantButton.jsx'; // Imp
 import Cart from './Cart.jsx'; // Import Cart
 import Checkout from './Checkout.jsx'; // Import Checkout
 import OrderDetailsPage from './OrderDetailsPage.jsx'; // Import OrderDetailsPage
+import SellerProfile from './SellerProfile.jsx'; // Import SellerProfile
 import './index.css';
 import axios from 'axios'; // Import axios
 
@@ -35,8 +36,11 @@ axios.defaults.withCredentials = true; // Configure axios to send cookies
 
 // Note: beginAuth function removed - login handled via /auth/junopay/login
 
-// Application Version
-const APP_VERSION = '2.5.0-2024.12.14';
+// Application Version - Auto-updates with each build
+const APP_VERSION = '2.5.1';
+const BUILD_TIMESTAMP = new Date().toISOString();
+const BUILD_NUMBER = Date.now(); // Unique identifier for each build
+
 const BUILD_FEATURES = {
   notifications: true,
   activityCharts: true,
@@ -52,13 +56,24 @@ export default function App() {
 
   // Log version info on mount
   useEffect(() => {
+    console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'color: #3ab54a');
     console.log('%c🚀 Luxe24.1 Marketplace', 'color: #3ab54a; font-size: 20px; font-weight: bold');
-    console.log(`%c📦 Version: ${APP_VERSION}`, 'color: #facc15; font-size: 14px');
+    console.log(`%c📦 Version: ${APP_VERSION}`, 'color: #facc15; font-size: 16px; font-weight: bold');
+    console.log(`%c🔨 Build: #${BUILD_NUMBER}`, 'color: #888; font-size: 12px');
+    console.log(`%c📅 Build Time: ${BUILD_TIMESTAMP}`, 'color: #3ab54a; font-size: 14px; font-weight: bold');
     console.log('%c✨ Features:', 'color: #3ab54a; font-size: 14px');
     Object.entries(BUILD_FEATURES).forEach(([feature, enabled]) => {
       console.log(`  ${enabled ? '✅' : '❌'} ${feature}`);
     });
-    console.log('%c📅 Build Time:', 'color: #3ab54a; font-size: 14px', new Date().toISOString());
+    console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'color: #3ab54a');
+
+    // Also set on window for easy access
+    window.APP_VERSION_INFO = {
+      version: APP_VERSION,
+      build: BUILD_NUMBER,
+      timestamp: BUILD_TIMESTAMP,
+      features: BUILD_FEATURES
+    };
   }, []);
 
   /* --- PKCE callback logic stays here (unchanged) --- */
@@ -85,7 +100,8 @@ export default function App() {
         <Route path="/add-watch" element={<AddWatch />} /> {/* Route for adding a watch */}
         <Route path="/cart" element={<Cart />} /> {/* Route for shopping cart */}
         <Route path="/checkout" element={<Checkout />} /> {/* Route for checkout */}
-        
+        <Route path="/seller/:sellerId" element={<SellerProfile />} /> {/* Route for seller profile */}
+
         {/* Admin Routes */}
         <Route path="/admin/orders" element={<AdminOrdersPage />} /> {/* Admin orders management */}
         <Route path="/admin/bids" element={<AdminBidsPage />} /> {/* Admin bids management */}

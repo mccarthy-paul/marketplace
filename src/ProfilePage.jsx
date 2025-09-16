@@ -5,6 +5,7 @@ import { apiGet } from './utils/api.js';
 import { formatPrice } from './utils/currency';
 import SalesHistory from './SalesHistory.jsx';
 import ActivityTab from './ActivityTab.jsx';
+import EditWatch from './EditWatch.jsx';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -22,6 +23,8 @@ export default function ProfilePage() {
   const [newOfferBidId, setNewOfferBidId] = useState(null);
   const [newOfferAmount, setNewOfferAmount] = useState('');
   const [newOfferMessage, setNewOfferMessage] = useState('');
+  const [editingWatch, setEditingWatch] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -473,7 +476,10 @@ export default function ProfilePage() {
                     </div>
                     
                     <button
-                      onClick={() => window.location.href = `/admin/edit-watch/${watch._id}`}
+                      onClick={() => {
+                        setEditingWatch(watch);
+                        setShowEditModal(true);
+                      }}
                       className="flex items-center gap-1 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full hover:bg-blue-200 transition-colors"
                       title="Edit listing"
                     >
@@ -1318,6 +1324,29 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Edit Watch Modal */}
+      {showEditModal && editingWatch && (
+        <EditWatch
+          watch={editingWatch}
+          onClose={() => {
+            setShowEditModal(false);
+            setEditingWatch(null);
+          }}
+          onSave={(updatedWatch) => {
+            // Update the watch in the listings
+            setMyListings(prevListings =>
+              prevListings.map(w =>
+                w._id === updatedWatch._id ? updatedWatch : w
+              )
+            );
+            setShowEditModal(false);
+            setEditingWatch(null);
+            // Optionally show success message
+            alert('Watch updated successfully!');
+          }}
+        />
+      )}
     </div>
   );
 }
