@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getApiUrl, apiRequest } from './utils/api.js';
 
 const AddWatch = () => {
   const navigate = useNavigate();
@@ -35,14 +36,14 @@ const AddWatch = () => {
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
     
-    // Limit to 5 images
-    if (files.length + imageFiles.length > 5) {
-      alert('You can upload a maximum of 5 images');
+    // Limit to 10 images
+    if (files.length + imageFiles.length > 10) {
+      alert('You can upload a maximum of 10 images');
       return;
     }
-    
+
     // Add new files to existing ones
-    const newImageFiles = [...imageFiles, ...files].slice(0, 5);
+    const newImageFiles = [...imageFiles, ...files].slice(0, 10);
     setImageFiles(newImageFiles);
     
     // Generate previews
@@ -88,24 +89,31 @@ const AddWatch = () => {
       });
 
       // Submit to user watches endpoint
-      const response = await fetch('/api/watches/user', {
+      // For FormData uploads, we need to use the correct API URL but let browser set Content-Type
+      const apiUrl = getApiUrl('/api/watches/user');
+      const response = await fetch(apiUrl, {
         method: 'POST',
         body: data,
-        credentials: 'include'
+        credentials: 'include',
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+          // Don't set Content-Type - let browser handle it for FormData
+        }
       });
 
+      const responseData = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
         
         // Check if it's a JunoPay configuration error
-        if (response.status === 400 && errorData.message?.includes('JunoPay')) {
+        if (response.status === 400 && responseData.message?.includes('JunoPay')) {
           // Show more user-friendly error and redirect to login
-          alert(errorData.message + '\n\nYou will be redirected to log in with JunoPay.');
-          window.location.href = '/auth/junopay/login';
+          alert(responseData.message + '\n\nYou will be redirected to log in with JunoPay.');
+          window.location.href = 'https://api-53189232060.us-central1.run.app/auth/junopay/login';
           return;
         }
-        
-        throw new Error(errorData.message || 'Failed to add watch');
+
+        throw new Error(responseData.message || 'Failed to add watch');
       }
 
       // Navigate back to profile with My Listings tab active

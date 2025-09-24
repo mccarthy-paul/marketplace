@@ -210,7 +210,7 @@ export default function HomePage() {
             {!currentUser ? (
               <>
                 <a
-                  href={getApiUrl('auth/junopay/login')}
+                  href="https://api-53189232060.us-central1.run.app/auth/junopay/login"
                   className={`group relative px-8 py-4 font-semibold rounded-none overflow-hidden transition-all ${
                     theme === 'dark'
                       ? 'bg-gold text-luxury-dark hover:text-white'
@@ -554,7 +554,7 @@ export default function HomePage() {
           </p>
           {!currentUser ? (
             <a
-              href={getApiUrl('auth/junopay/login')}
+              href="https://api-53189232060.us-central1.run.app/auth/junopay/login"
               className={`inline-block px-10 py-4 font-semibold text-lg transition-all ${
                 theme === 'dark'
                   ? 'bg-gold text-luxury-dark hover:bg-gold-dark hover:text-white'

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Package, Truck, CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { getApiUrl } from './utils/api.js';
 
 const OrderDetailsPage = () => {
   const { transactionId } = useParams();
@@ -61,7 +62,7 @@ const OrderDetailsPage = () => {
       if (!response.ok) {
         if (data.reauth) {
           alert('Your JunoPay session has expired. Please log in again.');
-          window.location.href = '/auth/junopay/login';
+          window.location.href = 'https://api-53189232060.us-central1.run.app/auth/junopay/login';
           return;
         }
         throw new Error(data.error || 'Failed to confirm delivery');

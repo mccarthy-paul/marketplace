@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, ChevronRight, X, AlertCircle, HelpCircle } from 'lucide-react';
+import { getApiUrl } from './utils/api.js';
 
 const OrderList = () => {
   const navigate = useNavigate();
@@ -67,7 +68,7 @@ const OrderList = () => {
       if (!response.ok) {
         if (data.reauth) {
           alert('Your JunoPay session has expired. Please log in again.');
-          window.location.href = '/auth/junopay/login';
+          window.location.href = 'https://api-53189232060.us-central1.run.app/auth/junopay/login';
           return;
         }
         throw new Error(data.error || 'Failed to confirm delivery');
@@ -133,7 +134,7 @@ const OrderList = () => {
       if (!response.ok) {
         if (data.reauth) {
           alert('Your JunoPay session has expired. Please log in again.');
-          window.location.href = '/auth/junopay/login';
+          window.location.href = 'https://api-53189232060.us-central1.run.app/auth/junopay/login';
           return;
         }
         throw new Error(data.error || `Failed to ${selectedAction} order`);
