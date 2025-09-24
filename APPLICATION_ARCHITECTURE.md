@@ -9,16 +9,29 @@ The Juno Marketplace is a luxury watch marketplace with two main applications:
 1. **Main Marketplace App** - Customer-facing application for buying/selling watches
 2. **Admin App** - Administrative interface for managing orders, bids, watches, and users
 
-## 📡 Services & Ports
+## 📡 Services & Deployment
 
+### Local Development Ports
 | Service | Port | URL | Purpose |
 |---------|------|-----|---------|
 | **Main API** | 8001 | http://localhost:8001 | Backend API for marketplace |
 | **Main Frontend** | 5173 | http://localhost:5173 | Customer marketplace interface |
-| **Admin API** | 8002 | http://localhost:8002 | Admin backend with proxy routes |
 | **Admin Frontend** | 5174 | http://localhost:5174 | Admin interface (dev) |
-| **Ngrok Main** | - | https://a2842d04cca8.ngrok-free.app | Public access to main app |
-| **Ngrok Admin** | - | https://admin.a2842d04cca8.ngrok-free.app | Public access to admin app |
+
+### Production Deployment
+| Service | Platform | URL | Status |
+|---------|----------|-----|--------|
+| **Database** | MongoDB Atlas | `mongodb+srv://...@junomarketplace.ci9sfz3.mongodb.net` | ✅ Live |
+| **Main API** | Google Cloud Run | https://api-53189232060.us-central1.run.app | ✅ Live |
+| **Main Frontend** | Netlify | https://juno-marketplace.netlify.app | ✅ Live |
+| **Admin Frontend** | Netlify | https://juno-marketplace-admin.netlify.app | ✅ Live |
+| **Image Storage** | Google Cloud Storage | `juno-marketplace-watches` bucket | ✅ Live |
+
+### Deployment Strategy
+- **Backend**: Google Cloud Run (containerized deployment via `./deploy.sh`)
+- **Frontend**: Netlify (automatic deployment via Git integration)
+- **Admin App**: Netlify (separate site, automatic deployment via Git)
+- **Images**: Google Cloud Storage (integrated with backend API)
 
 ## 🗂️ Directory Structure
 
@@ -43,25 +56,20 @@ juno-marketplace/
 │   ├── .env                         # Environment variables
 │   └── index.js                     # Main API server
 │
-├── 📁 admin-app/                    # Admin Application (Port 8002)
+├── 📁 admin-app/                    # Admin Application (Port 5174)
 │   ├── 📁 src/
 │   │   ├── 📁 components/           # React components
-│   │   │   ├── AdminDashboard.jsx   # 🆕 Enhanced with orders/bids stats
+│   │   │   ├── AdminDashboard.jsx   # Enhanced with orders/bids stats
 │   │   │   ├── AdminLogin.jsx       # Admin authentication
-│   │   │   ├── BidAdminList.jsx     # 🆕 Bids management interface
-│   │   │   ├── OrderAdminList.jsx   # 🆕 Orders management interface
+│   │   │   ├── BidAdminList.jsx     # Bids management interface
+│   │   │   ├── OrderAdminList.jsx   # Orders management interface
 │   │   │   ├── UserAdminList.jsx    # User management interface
 │   │   │   └── WatchAdminList.jsx   # Watch management interface
 │   │   ├── 📁 utils/
-│   │   │   └── api.js               # 🆕 API configuration
-│   │   └── App.jsx                  # 🆕 Updated with new routes
-│   ├── 📁 routes/                   # Admin API routes
-│   │   ├── adminAuth.js             # Admin authentication
-│   │   ├── adminProxy.js            # 🆕 Proxy routes for orders/bids
-│   │   ├── adminUsers.js            # User management API
-│   │   └── adminWatches.js          # Watch management API
+│   │   │   └── api.js               # API configuration with backend URL
+│   │   └── App.jsx                  # Admin app routing
 │   ├── .env                         # Admin environment variables
-│   └── server.js                    # 🆕 Updated admin server
+│   └── vite.config.js               # Vite configuration for admin app
 │
 ├── 📁 src/                          # Main Frontend (Port 5173)
 │   ├── 📁 components/               # React components
@@ -196,14 +204,40 @@ juno-marketplace/
 ### Local Development
 1. **Start Main API**: `cd api && pnpm dev` (Port 8001)
 2. **Start Main Frontend**: `pnpm dev` (Port 5173)
-3. **Start Admin Server**: `cd admin-app && pnpm start` (Port 8002)
+3. **Start Admin Frontend**: `cd admin-app && pnpm dev` (Port 5174)
 
 ### Production Access
-- **Main App**: https://a2842d04cca8.ngrok-free.app
-- **Admin App**: https://admin.a2842d04cca8.ngrok-free.app
+- **Main App**: https://juno-marketplace.netlify.app
+- **Admin App**: https://juno-marketplace-admin.netlify.app
+- **API Endpoint**: https://api-53189232060.us-central1.run.app
+- **Image Storage**: https://storage.googleapis.com/juno-marketplace-watches/
+
+### Production Architecture
+```
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
+│                 │     │                  │     │                 │
+│ Main Frontend   │────▶│  API Backend     │────▶│  MongoDB Atlas  │
+│ (Netlify)       │     │  (Cloud Run)     │     │  (Cloud DB)     │
+│                 │     │                  │     │                 │
+└─────────────────┘     └──────────────────┘     └─────────────────┘
+                               │                          │
+┌─────────────────┐             │                          │
+│                 │             │                          │
+│ Admin Frontend  │─────────────┘                          │
+│ (Netlify)       │                                        │
+│                 │     ┌──────────────────┐               │
+└─────────────────┘     │                  │               │
+                        │ Google Cloud     │───────────────┘
+                        │ Storage          │
+                        │ (Images)         │
+                        └──────────────────┘
+
+React Apps              Express API + Storage        Database Cloud
+Netlify Sites          Cloud Run + GCS Bucket      MongoDB Cluster
+```
 
 ### Admin Access
-1. Navigate to admin login: `https://admin.a2842d04cca8.ngrok-free.app/login`
+1. Navigate to admin login (local): `http://localhost:5174/login`
 2. Login with: `admin@luxe24.com` / `admin123`
 3. Access dashboard and management interfaces
 
@@ -213,8 +247,18 @@ juno-marketplace/
 1. **Admin Orders Management**: Complete CRUD interface for viewing and managing orders
 2. **Admin Bids Management**: Complete interface for viewing and managing bids
 3. **Enhanced Dashboard**: Added statistics for orders and bids
-4. **Proxy API System**: Admin app can securely access data without cross-service authentication
-5. **Authentication Integration**: Proper admin authentication for all admin features
+4. **Google Cloud Storage Integration**: Reliable image storage with public URLs
+5. **Delete Watch Functionality**: Users can delete their own watch listings
+6. **Image Display Fix**: Consistent image URLs across all components
+7. **Netlify Deployment**: Both frontend and admin apps deployed to separate Netlify sites
+8. **Authentication Integration**: Proper admin authentication for all admin features
+
+### 🆕 Latest Updates (2025-09-24)
+1. **Fixed Image Storage**: All watch images now consistently use Google Cloud Storage
+2. **User Delete API**: New `DELETE /api/watches/user/:id` endpoint with security checks
+3. **Enhanced ProfilePage**: Added delete buttons with confirmation dialogs
+4. **Active Bid Protection**: Prevents deletion of watches with active bids
+5. **Updated Documentation**: Reflects current deployment architecture
 
 ### 🔄 Architecture Decisions
 1. **Separate Admin App**: Isolated admin functionality for security and maintenance
@@ -238,20 +282,28 @@ juno-marketplace/
 
 ## 📝 Environment Variables
 
-### Main API (.env)
+### Production API (.env.production)
 ```
-MONGODB_URI=mongodb://localhost:27017/junoauth
+MONGODB_URI=mongodb+srv://paulmccarthy_db_user:***@junomarketplace.ci9sfz3.mongodb.net?retryWrites=true&w=majority
 JUNO_APPLICATION_ID=PaulsMarketplace-cafd2e7e
 JUNO_SECRET_KEY=fd4b6008-f8c5-4c76-beae-8279bac9a91c
-JUNO_REDIRECT_URI=https://4c153d847f98.ngrok-free.app/auth/junopay/callback
+JUNO_REDIRECT_URI=https://api-53189232060.us-central1.run.app/auth/junopay/callback
 JUNOPAY_AUTHORIZE_URL=https://stg.junomoney.org/oauth/authorize
 JUNOPAY_TOKEN_URL=https://stg.junomoney.org/oauth/token
 JUNOPAY_API_BASE_URL=https://stg.junomoney.org/restapi
+SESSION_SECRET=***
+NODE_ENV=production
+```
+
+### Frontend Build Variables
+```
+VITE_API_URL=https://api-53189232060.us-central1.run.app
 ```
 
 ### Admin App (.env)
 ```
-MONGODB_URI=mongodb://localhost:27017/junoauth
+MONGODB_URI=mongodb+srv://paulmccarthy_db_user:***@junomarketplace.ci9sfz3.mongodb.net?retryWrites=true&w=majority
+VITE_API_URL=https://api-53189232060.us-central1.run.app
 ```
 
 This architecture provides a scalable, maintainable solution for both customer-facing marketplace functionality and comprehensive administrative management.

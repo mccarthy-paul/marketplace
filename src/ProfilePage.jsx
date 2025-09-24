@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Wallet, Settings, Activity, CreditCard, Gavel, Receipt, ShoppingBag, Watch, Plus, Edit3, TrendingUp } from 'lucide-react';
-import { apiGet } from './utils/api.js';
+import { User, Wallet, Settings, Activity, CreditCard, Gavel, Receipt, ShoppingBag, Watch, Plus, Edit3, TrendingUp, Trash2 } from 'lucide-react';
+import { apiGet, getImageUrl, apiDelete } from './utils/api.js';
 import { formatPrice } from './utils/currency';
 import SalesHistory from './SalesHistory.jsx';
 import ActivityTab from './ActivityTab.jsx';
@@ -29,14 +29,8 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await apiGet('/api/me');
-        if (response.ok) {
-          const data = await response.json();
-          setCurrentUser(data.user);
-        } else {
-          // Redirect to home if not authenticated
-          window.location.replace('/');
-        }
+        const data = await apiGet('/api/me');
+        setCurrentUser(data.user);
       } catch (error) {
         console.error('Error fetching user profile:', error);
         window.location.replace('/');
@@ -52,30 +46,15 @@ export default function ProfilePage() {
     try {
       console.log('Fetching real Juno wallet balances for user:', currentUser?.junopay_client_id);
       
-      const response = await apiGet('/api/junopay/balance');
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Juno balance response:', data);
-        
-        if (data.success && data.balance) {
-          // Transform Juno balance data to our format
-          const balances = transformJunoBalanceData(data.balance);
-          setWalletBalances(balances);
-        } else {
-          console.error('Invalid balance response:', data);
-          setWalletBalances([]);
-        }
-      } else if (response.status === 401) {
-        // Handle re-authentication required
-        const errorData = await response.json();
-        if (errorData.reauth) {
-          console.log('Re-authentication required for Juno API');
-          // Could redirect to login or show message
-          setWalletBalances([]);
-        }
+      const data = await apiGet('/api/junopay/balance');
+      console.log('Juno balance response:', data);
+
+      if (data.success && data.balance) {
+        // Transform Juno balance data to our format
+        const balances = transformJunoBalanceData(data.balance);
+        setWalletBalances(balances);
       } else {
-        console.error('Failed to fetch balances:', response.status);
+        console.error('Invalid balance response:', data);
         setWalletBalances([]);
       }
     } catch (error) {
@@ -134,16 +113,9 @@ export default function ProfilePage() {
     try {
       console.log('Fetching bids placed by user:', currentUser?._id);
       
-      const response = await apiGet('/api/bids/user/placed');
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Bids placed response:', data);
-        setBidsPlaced(data);
-      } else {
-        console.error('Failed to fetch bids placed:', response.status);
-        setBidsPlaced([]);
-      }
+      const data = await apiGet('/api/bids/user/placed');
+      console.log('Bids placed response:', data);
+      setBidsPlaced(data);
     } catch (error) {
       console.error('Error fetching bids placed:', error);
       setBidsPlaced([]);
@@ -154,16 +126,9 @@ export default function ProfilePage() {
     try {
       console.log('Fetching bids received by user:', currentUser?._id);
       
-      const response = await apiGet('/api/bids/user/received');
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Bids received response:', data);
-        setBidsReceived(data);
-      } else {
-        console.error('Failed to fetch bids received:', response.status);
-        setBidsReceived([]);
-      }
+      const data = await apiGet('/api/bids/user/received');
+      console.log('Bids received response:', data);
+      setBidsReceived(data);
     } catch (error) {
       console.error('Error fetching bids received:', error);
       setBidsReceived([]);
@@ -174,24 +139,17 @@ export default function ProfilePage() {
     try {
       console.log('Fetching my listings for user:', currentUser?._id);
       
-      const response = await apiGet('/api/watches');
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('All watches response:', data);
-        
-        // Filter watches by current user ID (check seller and owner fields)
-        const userWatches = data.filter(watch => 
-          watch.seller === currentUser._id || 
-          watch.owner === currentUser._id
-        );
-        
-        console.log('User watches filtered:', userWatches);
-        setMyListings(userWatches);
-      } else {
-        console.error('Failed to fetch watches:', response.status);
-        setMyListings([]);
-      }
+      const data = await apiGet('/api/watches');
+      console.log('All watches response:', data);
+
+      // Filter watches by current user ID (check seller and owner fields)
+      const userWatches = data.filter(watch =>
+        watch.seller === currentUser._id ||
+        watch.owner === currentUser._id
+      );
+
+      console.log('User watches filtered:', userWatches);
+      setMyListings(userWatches);
     } catch (error) {
       console.error('Error fetching my listings:', error);
       setMyListings([]);
@@ -202,31 +160,42 @@ export default function ProfilePage() {
     try {
       console.log('Fetching order history for user:', currentUser?._id);
       
-      const response = await apiGet('/api/junopay/orders');
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Order history response:', data);
-        
-        if (data.success) {
-          setOrderHistory(data.orders);
-        } else {
-          console.error('Order history fetch failed:', data.error);
-          setOrderHistory([]);
-        }
-      } else if (response.status === 401) {
-        const errorData = await response.json();
-        if (errorData.reauth) {
-          console.log('Re-authentication required for order history');
-          setOrderHistory([]);
-        }
+      const data = await apiGet('/api/junopay/orders');
+      console.log('Order history response:', data);
+
+      if (data.success) {
+        setOrderHistory(data.orders);
       } else {
-        console.error('Failed to fetch order history:', response.status);
+        console.error('Order history fetch failed:', data.error);
         setOrderHistory([]);
       }
     } catch (error) {
       console.error('Error fetching order history:', error);
       setOrderHistory([]);
+    }
+  };
+
+  const handleDeleteWatch = async (watchId, watchTitle) => {
+    const confirmMessage = `Are you sure you want to delete "${watchTitle}"? This action cannot be undone.`;
+
+    if (!window.confirm(confirmMessage)) {
+      return;
+    }
+
+    try {
+      await apiDelete(`/api/watches/user/${watchId}`);
+
+      // Remove the watch from the local state
+      setMyListings(prevListings =>
+        prevListings.filter(watch => watch._id !== watchId)
+      );
+
+      // Show success message
+      alert('Watch deleted successfully');
+
+    } catch (error) {
+      console.error('Error deleting watch:', error);
+      alert(error.message || 'Failed to delete watch. Please try again.');
     }
   };
 
@@ -278,10 +247,10 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-luxury-dark">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#3ab54a] mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading profile...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gold mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading profile...</p>
         </div>
       </div>
     );
@@ -289,9 +258,9 @@ export default function ProfilePage() {
 
   if (!currentUser) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="min-h-screen flex items-center justify-center bg-neutral-50 dark:bg-luxury-dark">
         <div className="text-center">
-          <p className="text-gray-600">Please log in to view your profile.</p>
+          <p className="text-gray-600 dark:text-gray-400">Please log in to view your profile.</p>
         </div>
       </div>
     );
@@ -299,25 +268,25 @@ export default function ProfilePage() {
 
   const renderWalletContent = () => (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-[#3ab54a] to-[#32a042] rounded-xl p-6 text-white">
+      <div className="bg-gradient-to-r from-gold to-gold-dark rounded-xl p-6 text-white shadow-luxury">
         <div className="flex items-center gap-3 mb-4">
           <Wallet className="w-8 h-8" />
-          <h2 className="text-2xl font-bold">Juno Wallet</h2>
+          <h2 className="text-2xl font-bold font-display tracking-wider">JUNO WALLET</h2>
         </div>
-        <p className="text-white/80">Connected Account: {currentUser.email}</p>
-        <p className="text-white/80">Client ID: {currentUser.junopay_client_id}</p>
+        <p className="text-white/90">Connected Account: {currentUser.email}</p>
+        <p className="text-white/90">Client ID: {currentUser.junopay_client_id}</p>
       </div>
 
       <div className="grid gap-4">
-        <h3 className="text-xl font-semibold text-gray-800">Balances</h3>
+        <h3 className="text-xl font-semibold text-gray-800 dark:text-white font-display tracking-wider">BALANCES</h3>
         {walletBalances.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {walletBalances.map((balance) => (
-              <div key={balance.currency} className="bg-white rounded-lg p-6 shadow-md border">
+              <div key={balance.currency} className="bg-white dark:bg-luxury-charcoal rounded-lg p-6 shadow-luxury border border-gray-200 dark:border-luxury-gray">
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <div className="flex items-center gap-2">
-                      <p className="text-sm text-gray-600">{balance.currency}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{balance.currency}</p>
                       {balance.currencyType && (
                         <span className="text-xs bg-gray-100 px-2 py-1 rounded">
                           {balance.currencyType}
@@ -329,7 +298,7 @@ export default function ProfilePage() {
                         </span>
                       )}
                     </div>
-                    <p className="text-2xl font-bold text-gray-800">
+                    <p className="text-2xl font-bold text-gray-800 dark:text-white">
                       {balance.symbol}{balance.balance.toLocaleString()}
                     </p>
                     {balance.pendingAmount > 0 && (
@@ -338,7 +307,7 @@ export default function ProfilePage() {
                       </p>
                     )}
                   </div>
-                  <CreditCard className="w-8 h-8 text-gray-400" />
+                  <CreditCard className="w-8 h-8 text-gray-400 dark:text-luxury-gray" />
                 </div>
                 {balance.lastUpdated && (
                   <div className="text-xs text-gray-500">
@@ -349,12 +318,12 @@ export default function ProfilePage() {
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-lg p-8 text-center shadow-md border">
-            <Wallet className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600">Loading wallet balances...</p>
-            <button 
+          <div className="bg-white dark:bg-luxury-charcoal rounded-lg p-8 text-center shadow-luxury border border-gray-200 dark:border-luxury-gray">
+            <Wallet className="w-12 h-12 text-gray-400 dark:text-luxury-gray mx-auto mb-4" />
+            <p className="text-gray-600 dark:text-gray-400">Loading wallet balances...</p>
+            <button
               onClick={fetchWalletBalances}
-              className="mt-4 px-4 py-2 bg-[#3ab54a] text-white rounded-lg hover:bg-[#32a042]"
+              className="mt-4 px-4 py-2 bg-gold text-white rounded-lg hover:bg-gold-dark transition-colors font-medium"
             >
               Refresh Balances
             </button>
@@ -366,30 +335,30 @@ export default function ProfilePage() {
 
   const renderProfileContent = () => (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl p-6 shadow-md border">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Profile Information</h2>
+      <div className="bg-white dark:bg-luxury-charcoal rounded-xl p-6 shadow-luxury border border-gray-200 dark:border-luxury-gray">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6 font-display tracking-wider">PROFILE INFORMATION</h2>
         <div className="grid gap-4">
           <div>
-            <label className="text-sm text-gray-600">Name</label>
-            <p className="text-lg font-medium text-gray-800">{currentUser.name}</p>
+            <label className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wider">Name</label>
+            <p className="text-lg font-medium text-gray-800 dark:text-white">{currentUser.name}</p>
           </div>
           <div>
-            <label className="text-sm text-gray-600">Email</label>
-            <p className="text-lg font-medium text-gray-800">{currentUser.email}</p>
+            <label className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wider">Email</label>
+            <p className="text-lg font-medium text-gray-800 dark:text-white">{currentUser.email}</p>
           </div>
           <div>
-            <label className="text-sm text-gray-600">Company</label>
-            <p className="text-lg font-medium text-gray-800">{currentUser.company_name || 'Not specified'}</p>
+            <label className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wider">Company</label>
+            <p className="text-lg font-medium text-gray-800 dark:text-white">{currentUser.company_name || 'Not specified'}</p>
           </div>
           <div>
-            <label className="text-sm text-gray-600">Account Type</label>
-            <p className="text-lg font-medium text-gray-800">
+            <label className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wider">Account Type</label>
+            <p className="text-lg font-medium text-gray-800 dark:text-white">
               {currentUser.is_admin ? 'Administrator' : 'Standard User'}
             </p>
           </div>
           <div>
-            <label className="text-sm text-gray-600">Buyer Fee</label>
-            <p className="text-lg font-medium text-gray-800">
+            <label className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wider">Buyer Fee</label>
+            <p className="text-lg font-medium text-gray-800 dark:text-white">
               {currentUser.buyer_fee ? `${currentUser.buyer_fee}%` : 'Not specified'}
             </p>
           </div>
@@ -400,31 +369,42 @@ export default function ProfilePage() {
 
   const renderMyListingsContent = () => (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl p-6 shadow-md border">
+      <div className="bg-white dark:bg-luxury-charcoal rounded-xl p-6 shadow-luxury border border-gray-200 dark:border-luxury-gray">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
-            <h2 className="text-2xl font-bold text-gray-800">My Listings</h2>
-            <span className="bg-[#3ab54a] text-white px-3 py-1 rounded-full text-sm font-medium">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white font-display tracking-wider">MY LISTINGS</h2>
+            <span className="bg-gold text-white px-3 py-1 rounded-full text-sm font-medium">
               {myListings.length} {myListings.length === 1 ? 'Watch' : 'Watches'}
             </span>
           </div>
-          <button
-            onClick={() => navigate('/add-watch')}
-            className="flex items-center gap-2 bg-[#3ab54a] text-white px-4 py-2 rounded-lg hover:bg-[#32a042] transition-colors font-medium"
-          >
-            <Plus className="w-5 h-5" />
-            Add Watch
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => navigate('/add-watch')}
+              className="flex items-center gap-2 bg-gold text-white px-4 py-2 rounded-lg hover:bg-gold-dark transition-colors font-medium"
+            >
+              <Plus className="w-5 h-5" />
+              Add Watch
+            </button>
+            <button
+              onClick={() => navigate('/bulk-upload')}
+              className="flex items-center gap-2 bg-luxe-bronze text-white px-4 py-2 rounded-lg hover:bg-luxe-bronze/90 transition-colors font-medium"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+              Bulk Upload
+            </button>
+          </div>
         </div>
         
         {myListings.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {myListings.map((watch) => (
-              <div key={watch._id} className="bg-gray-50 rounded-lg p-4 border hover:shadow-md transition-shadow">
+              <div key={watch._id} className="bg-gray-50 dark:bg-luxury-dark rounded-lg p-4 border border-gray-200 dark:border-luxury-gray hover:shadow-luxury transition-all duration-300 hover:scale-[1.02]">
                 <div className="aspect-square mb-4 bg-gray-200 rounded-lg overflow-hidden">
-                  {watch.imageUrl ? (
-                    <img 
-                      src={watch.imageUrl} 
+                  {watch.imageUrl || (watch.images && watch.images.length > 0) ? (
+                    <img
+                      src={getImageUrl(watch.images?.[0] || watch.imageUrl)}
                       alt={`${watch.brand} ${watch.model}`}
                       className="w-full h-full object-cover"
                     />
@@ -436,24 +416,24 @@ export default function ProfilePage() {
                 </div>
                 
                 <div className="space-y-2">
-                  <h3 className="font-semibold text-gray-900">
+                  <h3 className="font-semibold text-gray-900 dark:text-white font-display tracking-wide">
                     {watch.brand} {watch.model}
                   </h3>
                   
                   {watch.reference_number && (
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       Ref: {watch.reference_number}
                     </p>
                   )}
                   
                   {watch.condition && (
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       Condition: {watch.condition}
                     </p>
                   )}
                   
                   {watch.price && (
-                    <p className="text-lg font-bold text-[#3ab54a]">
+                    <p className="text-lg font-bold text-gold">
                       {formatPrice(watch.price, watch.currency)}
                     </p>
                   )}
@@ -475,17 +455,28 @@ export default function ProfilePage() {
                       )}
                     </div>
                     
-                    <button
-                      onClick={() => {
-                        setEditingWatch(watch);
-                        setShowEditModal(true);
-                      }}
-                      className="flex items-center gap-1 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full hover:bg-blue-200 transition-colors"
-                      title="Edit listing"
-                    >
-                      <Edit3 className="w-3 h-3" />
-                      Edit
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => {
+                          setEditingWatch(watch);
+                          setShowEditModal(true);
+                        }}
+                        className="flex items-center gap-1 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full hover:bg-blue-200 transition-colors"
+                        title="Edit listing"
+                      >
+                        <Edit3 className="w-3 h-3" />
+                        Edit
+                      </button>
+
+                      <button
+                        onClick={() => handleDeleteWatch(watch._id, `${watch.brand} ${watch.model}`)}
+                        className="flex items-center gap-1 text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full hover:bg-red-200 transition-colors"
+                        title="Delete listing"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -494,12 +485,12 @@ export default function ProfilePage() {
         ) : (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
-              <Watch className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 mb-2">No listings yet</p>
-              <p className="text-sm text-gray-500 mb-6">Your uploaded watches will appear here</p>
+              <Watch className="w-12 h-12 text-gray-400 dark:text-luxury-gray mx-auto mb-4" />
+              <p className="text-gray-600 dark:text-gray-400 mb-2">No listings yet</p>
+              <p className="text-sm text-gray-500 dark:text-gray-500 mb-6">Your uploaded watches will appear here</p>
               <button
                 onClick={() => window.location.href = '/admin/add-watch'}
-                className="flex items-center gap-2 bg-[#3ab54a] text-white px-6 py-3 rounded-lg hover:bg-[#32a042] transition-colors font-medium mx-auto"
+                className="flex items-center gap-2 bg-gold text-white px-6 py-3 rounded-lg hover:bg-gold-dark transition-colors font-medium mx-auto"
               >
                 <Plus className="w-5 h-5" />
                 Add Your First Watch
@@ -624,10 +615,10 @@ export default function ProfilePage() {
 
     return (
       <div className="space-y-6">
-        <div className="bg-white rounded-xl p-6 shadow-md border">
+        <div className="bg-white dark:bg-luxury-charcoal rounded-xl p-6 shadow-luxury border border-gray-200 dark:border-luxury-gray">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Bids Placed</h2>
-            <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white font-display tracking-wider">BIDS PLACED</h2>
+            <span className="bg-gold text-white px-3 py-1 rounded-full text-sm font-medium">
               {bidsPlaced.length} {bidsPlaced.length === 1 ? 'Bid' : 'Bids'}
             </span>
           </div>
@@ -635,14 +626,14 @@ export default function ProfilePage() {
           {bidsPlaced.length > 0 ? (
             <div className="space-y-4">
               {bidsPlaced.map((bid) => (
-                <div key={bid._id} className="bg-gray-50 rounded-lg p-4 border hover:shadow-sm transition-shadow">
+                <div key={bid._id} className="bg-gray-50 dark:bg-luxury-dark rounded-lg p-4 border border-gray-200 dark:border-luxury-gray hover:shadow-luxury transition-all duration-300">
                   <div className="flex items-start gap-4">
                     {/* Watch Image */}
                     <div className="flex-shrink-0">
                       <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
-                        {bid.watch?.imageUrl ? (
-                          <img 
-                            src={bid.watch.imageUrl} 
+                        {bid.watch?.imageUrl || (bid.watch?.images && bid.watch.images.length > 0) ? (
+                          <img
+                            src={getImageUrl(bid.watch.images?.[0] || bid.watch.imageUrl)}
                             alt={`${bid.watch.brand} ${bid.watch.model}`}
                             className="w-full h-full object-cover"
                           />
@@ -658,17 +649,17 @@ export default function ProfilePage() {
                     <div className="flex-grow">
                       <div className="flex items-start justify-between">
                         <div>
-                          <h3 className="font-semibold text-gray-900">
+                          <h3 className="font-semibold text-gray-900 dark:text-white font-display tracking-wide">
                             {bid.watch?.brand} {bid.watch?.model}
                           </h3>
                           {bid.watch?.reference_number && (
-                            <p className="text-sm text-gray-600">Ref: {bid.watch.reference_number}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Ref: {bid.watch.reference_number}</p>
                           )}
-                          <p className="text-lg font-bold text-blue-600 mt-1">
+                          <p className="text-lg font-bold text-gold mt-1">
                             Current Offer: {formatPrice(bid.amount, bid.watch?.currency)}
                           </p>
                           {bid.watch?.price && (
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
                               List Price: {formatPrice(bid.watch.price, bid.watch.currency)}
                             </p>
                           )}
@@ -825,9 +816,9 @@ export default function ProfilePage() {
           ) : (
             <div className="flex items-center justify-center py-12">
               <div className="text-center">
-                <Gavel className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600 mb-2">No bids placed yet</p>
-                <p className="text-sm text-gray-500">Your bid history will appear here</p>
+                <Gavel className="w-12 h-12 text-gray-400 dark:text-luxury-gray mx-auto mb-4" />
+                <p className="text-gray-600 dark:text-gray-400 mb-2">No bids placed yet</p>
+                <p className="text-sm text-gray-500 dark:text-gray-500">Your bid history will appear here</p>
               </div>
             </div>
           )}
@@ -837,14 +828,14 @@ export default function ProfilePage() {
   };
 
   const renderBidsReceivedContent = () => {
-    
+
     const handleAcceptBid = async (bidId) => {
       try {
         const response = await fetch(`/api/bids/${bidId}/accept`, {
           method: 'POST',
           credentials: 'include',
         });
-        
+
         if (response.ok) {
           alert('Bid accepted successfully!');
           // Refresh bids
@@ -864,7 +855,7 @@ export default function ProfilePage() {
           method: 'POST',
           credentials: 'include',
         });
-        
+
         if (response.ok) {
           alert('Bid rejected');
           // Refresh bids
@@ -896,7 +887,7 @@ export default function ProfilePage() {
             message: counterOfferMessage || 'Counter offer'
           })
         });
-        
+
         if (response.ok) {
           alert('Counter offer sent successfully!');
           setCounterOfferBidId(null);
@@ -915,10 +906,10 @@ export default function ProfilePage() {
 
     return (
       <div className="space-y-6">
-        <div className="bg-white rounded-xl p-6 shadow-md border">
+        <div className="bg-white dark:bg-luxury-charcoal rounded-xl p-6 shadow-luxury border border-gray-200 dark:border-luxury-gray">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Bids Received</h2>
-            <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white font-display tracking-wider">BIDS RECEIVED</h2>
+            <span className="bg-gold text-white px-3 py-1 rounded-full text-sm font-medium">
               {bidsReceived.length} {bidsReceived.length === 1 ? 'Bid' : 'Bids'}
             </span>
           </div>
@@ -926,14 +917,14 @@ export default function ProfilePage() {
           {bidsReceived.length > 0 ? (
             <div className="space-y-4">
               {bidsReceived.map((bid) => (
-                <div key={bid._id} className="bg-gray-50 rounded-lg p-4 border hover:shadow-sm transition-shadow">
+                <div key={bid._id} className="bg-gray-50 dark:bg-luxury-dark rounded-lg p-4 border border-gray-200 dark:border-luxury-gray hover:shadow-luxury transition-all duration-300">
                   <div className="flex items-start gap-4">
                     {/* Watch Image */}
                     <div className="flex-shrink-0">
                       <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
-                        {bid.watch?.imageUrl ? (
-                          <img 
-                            src={bid.watch.imageUrl} 
+                        {bid.watch?.imageUrl || (bid.watch?.images && bid.watch.images.length > 0) ? (
+                          <img
+                            src={getImageUrl(bid.watch.images?.[0] || bid.watch.imageUrl)}
                             alt={`${bid.watch.brand} ${bid.watch.model}`}
                             className="w-full h-full object-cover"
                           />
@@ -949,22 +940,22 @@ export default function ProfilePage() {
                     <div className="flex-grow">
                       <div className="flex items-start justify-between">
                         <div>
-                          <h3 className="font-semibold text-gray-900">
+                          <h3 className="font-semibold text-gray-900 dark:text-white font-display tracking-wide">
                             {bid.watch?.brand} {bid.watch?.model}
                           </h3>
                           {bid.watch?.reference_number && (
-                            <p className="text-sm text-gray-600">Ref: {bid.watch.reference_number}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Ref: {bid.watch.reference_number}</p>
                           )}
-                          <p className="text-lg font-bold text-green-600 mt-1">
+                          <p className="text-lg font-bold text-gold mt-1">
                             Current Offer: {formatPrice(bid.amount, bid.watch?.currency)}
                           </p>
                           {bid.watch?.price && (
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
                               Your List Price: {formatPrice(bid.watch.price, bid.watch.currency)}
                             </p>
                           )}
                           {bid.bidder && (
-                            <p className="text-sm text-gray-700 mt-1">
+                            <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
                               Bidder: {bid.bidder.name} ({bid.bidder.email})
                             </p>
                           )}
@@ -1094,9 +1085,9 @@ export default function ProfilePage() {
           ) : (
             <div className="flex items-center justify-center py-12">
               <div className="text-center">
-                <Receipt className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600 mb-2">No bids received yet</p>
-                <p className="text-sm text-gray-500">Bids on your watches will appear here</p>
+                <Receipt className="w-12 h-12 text-gray-400 dark:text-luxury-gray mx-auto mb-4" />
+                <p className="text-gray-600 dark:text-gray-400 mb-2">No bids received yet</p>
+                <p className="text-sm text-gray-500 dark:text-gray-500">Bids on your watches will appear here</p>
               </div>
             </div>
           )}
@@ -1107,10 +1098,10 @@ export default function ProfilePage() {
 
   const renderOrderHistoryContent = () => (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl p-6 shadow-md border">
+      <div className="bg-white dark:bg-luxury-charcoal rounded-xl p-6 shadow-luxury border border-gray-200 dark:border-luxury-gray">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Order History</h2>
-          <span className="bg-[#3ab54a] text-white px-3 py-1 rounded-full text-sm font-medium">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white font-display tracking-wider">ORDER HISTORY</h2>
+          <span className="bg-gold text-white px-3 py-1 rounded-full text-sm font-medium">
             {orderHistory.length} {orderHistory.length === 1 ? 'Order' : 'Orders'}
           </span>
         </div>
@@ -1118,16 +1109,16 @@ export default function ProfilePage() {
         {orderHistory.length > 0 ? (
           <div className="space-y-6">
             {orderHistory.map((order) => (
-              <div key={order._id} className="bg-gray-50 rounded-lg p-6 border hover:shadow-sm transition-shadow">
+              <div key={order._id} className="bg-gray-50 dark:bg-luxury-dark rounded-lg p-6 border border-gray-200 dark:border-luxury-gray hover:shadow-luxury transition-all duration-300">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 className="text-xl font-semibold text-gray-800">
+                    <h3 className="text-xl font-semibold text-gray-800 dark:text-white font-display tracking-wide">
                       {order.watch ? `${order.watch.brand} ${order.watch.model}` : order.productName}
                     </h3>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       Transaction ID: {order.applicationTransactionId}
                     </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       Reference: {order.watch?.reference_number || order.productCode}
                     </p>
                   </div>
@@ -1147,10 +1138,10 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  {order.watch?.imageUrl && (
+                  {(order.watch?.imageUrl || (order.watch?.images && order.watch.images.length > 0)) && (
                     <div className="md:order-1">
-                      <img 
-                        src={order.watch.imageUrl} 
+                      <img
+                        src={getImageUrl(order.watch.images?.[0] || order.watch.imageUrl)}
                         alt={`${order.watch.brand} ${order.watch.model}`}
                         className="w-full h-48 object-cover rounded-md"
                       />
@@ -1160,29 +1151,29 @@ export default function ProfilePage() {
                   <div className="space-y-3 md:order-2">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Purchase Price:</span>
-                        <span className="font-semibold">{formatPrice(parseFloat(order.purchasePrice), order.watch?.currency)}</span>
+                        <span className="text-gray-600 dark:text-gray-400">Purchase Price:</span>
+                        <span className="font-semibold text-gray-800 dark:text-white">{formatPrice(parseFloat(order.purchasePrice), order.watch?.currency)}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Shipping:</span>
-                        <span className="font-semibold">{formatPrice(parseFloat(order.shippingPrice), order.watch?.currency)}</span>
+                        <span className="text-gray-600 dark:text-gray-400">Shipping:</span>
+                        <span className="font-semibold text-gray-800 dark:text-white">{formatPrice(parseFloat(order.shippingPrice), order.watch?.currency)}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Buyer Fee:</span>
-                        <span className="font-semibold">{formatPrice(parseFloat(order.buyerFee || 0), order.watch?.currency)}</span>
+                        <span className="text-gray-600 dark:text-gray-400">Buyer Fee:</span>
+                        <span className="font-semibold text-gray-800 dark:text-white">{formatPrice(parseFloat(order.buyerFee || 0), order.watch?.currency)}</span>
                       </div>
-                      <div className="flex justify-between border-t pt-2">
-                        <span className="text-gray-800 font-medium">Total:</span>
-                        <span className="font-bold text-lg text-[#3ab54a]">{formatPrice(parseFloat(order.totalPrice), order.watch?.currency)}</span>
+                      <div className="flex justify-between border-t border-gray-200 dark:border-luxury-gray pt-2">
+                        <span className="text-gray-800 dark:text-white font-medium">Total:</span>
+                        <span className="font-bold text-lg text-gold">{formatPrice(parseFloat(order.totalPrice), order.watch?.currency)}</span>
                       </div>
                     </div>
                     
                     <div className="pt-2 border-t">
-                      <p className="text-sm text-gray-600 mb-2">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                         <strong>Purchase Date:</strong> {new Date(order.created_at).toLocaleDateString()}
                       </p>
                       {order.seller && (
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
                           <strong>Seller:</strong> {order.seller.name} ({order.seller.company_name})
                         </p>
                       )}
@@ -1191,8 +1182,8 @@ export default function ProfilePage() {
                 </div>
 
                 {order.buyerNote && (
-                  <div className="bg-gray-100 rounded-md p-3 mt-4">
-                    <p className="text-sm text-gray-700">
+                  <div className="bg-gray-100 dark:bg-luxury-gray rounded-md p-3 mt-4">
+                    <p className="text-sm text-gray-700 dark:text-gray-300">
                       <strong>Note:</strong> {order.buyerNote}
                     </p>
                   </div>
@@ -1229,12 +1220,12 @@ export default function ProfilePage() {
         ) : (
           <div className="flex items-center justify-center py-12">
             <div className="text-center">
-              <ShoppingBag className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600 mb-2">No orders yet</p>
-              <p className="text-sm text-gray-500 mb-6">Your purchase history will appear here</p>
-              <a 
-                href="/watches" 
-                className="inline-block bg-[#3ab54a] text-white px-6 py-3 rounded-lg hover:bg-[#32a042] transition-colors font-medium"
+              <ShoppingBag className="w-12 h-12 text-gray-400 dark:text-luxury-gray mx-auto mb-4" />
+              <p className="text-gray-600 dark:text-gray-400 mb-2">No orders yet</p>
+              <p className="text-sm text-gray-500 dark:text-gray-500 mb-6">Your purchase history will appear here</p>
+              <a
+                href="/watches"
+                className="inline-block bg-gold text-white px-6 py-3 rounded-lg hover:bg-gold-dark transition-colors font-medium"
               >
                 Browse Watches
               </a>
@@ -1249,9 +1240,9 @@ export default function ProfilePage() {
 
   const renderSettingsContent = () => (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl p-6 shadow-md border">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Account Settings</h2>
-        <p className="text-gray-600">Settings panel coming soon...</p>
+      <div className="bg-white dark:bg-luxury-charcoal rounded-xl p-6 shadow-luxury border border-gray-200 dark:border-luxury-gray">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6 font-display tracking-wider">ACCOUNT SETTINGS</h2>
+        <p className="text-gray-600 dark:text-gray-400">Settings panel coming soon...</p>
       </div>
     </div>
   );
@@ -1282,20 +1273,20 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-neutral-50 dark:bg-luxury-dark">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Welcome, {currentUser.name}
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white font-display tracking-wider">
+            WELCOME, {currentUser.name.toUpperCase()}
           </h1>
-          <p className="text-gray-600 mt-2">Manage your account and wallet</p>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">Manage your account and wallet</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar Menu */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-md border overflow-hidden">
+            <div className="bg-white dark:bg-luxury-charcoal rounded-xl shadow-luxury border border-gray-200 dark:border-luxury-gray overflow-hidden">
               <nav className="space-y-1 p-4">
                 {menuItems.map((item) => {
                   const Icon = item.icon;
@@ -1303,10 +1294,10 @@ export default function ProfilePage() {
                     <button
                       key={item.id}
                       onClick={() => setActiveTab(item.id)}
-                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors font-medium ${
                         activeTab === item.id
-                          ? 'bg-[#3ab54a] text-white'
-                          : 'text-gray-600 hover:bg-gray-100'
+                          ? 'bg-gradient-gold text-white shadow-gold'
+                          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-luxury-gray'
                       }`}
                     >
                       <Icon className="w-5 h-5" />

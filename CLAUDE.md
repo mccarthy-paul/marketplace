@@ -67,21 +67,65 @@ pnpm start        # Start production server
 - MongoDB connection configured via `MONGODB_URI` environment variable
 - Separate database files for models and connection logic in `api/db/`
 
-## Development Notes
+## Deployment Architecture
+
+### Production Environment
+- **Backend API**: Google Cloud Run - `https://api-53189232060.us-central1.run.app`
+- **Main Frontend**: Netlify - `https://juno-marketplace.netlify.app`
+- **Admin Frontend**: Netlify - `https://juno-marketplace-admin.netlify.app`
+- **Database**: MongoDB Atlas - `mongodb+srv://...@junomarketplace.ci9sfz3.mongodb.net`
+- **Image Storage**: Google Cloud Storage - `juno-marketplace-watches` bucket
+
+### Development Environment
 - Frontend runs on port 5173, backend on port 8001
+- Admin app runs on port 5174 (separate Vite server)
 - Vite proxy configuration handles API calls to backend
-- File uploads stored in `public/uploads/watches/`
+- Both frontend and backend need to be running for full functionality
+
+### File Storage System
+- **Production**: Google Cloud Storage with public URLs
+- **Image URLs**: `https://storage.googleapis.com/juno-marketplace-watches/watchImages-{timestamp}.{ext}`
+- **Upload Process**: Memory storage → Google Cloud Storage → Public URL in database
+
+## Deployment Commands
+
+### Deploy to Google Cloud Run (Backend only)
+```bash
+./deploy.sh  # Deploys API, Frontend, and Admin to Google Cloud Run
+```
+
+### Deploy to Netlify (Current setup)
+```bash
+# Frontend deployment (automatic via Git)
+git push origin main
+
+# Admin app deployment (automatic via Git)
+cd admin-app && git push origin main
+```
+
+### Environment Variables
+- **Production API**: Uses `.env.production` with Cloud Run environment variables
+- **Netlify Frontend**: Uses build-time `VITE_API_URL` environment variable
+- **Admin App**: Separate Netlify site with own environment configuration
+
+## Development Notes
 - Admin functionality requires `is_admin` flag in user session
 - Watch bidding system supports multiple bids per watch with comment threads
+- Image display uses `getImageUrl()` helper to convert paths to full URLs
+- Delete functionality allows users to delete their own watch listings
+- Active bid protection prevents deletion of watches with pending bids
 
 ## Environment Setup
-- Copy `.env.example` to `.env.local` and configure Juno client credentials
-- Ensure MongoDB is running and accessible
-- Both frontend and backend need to be running for full functionality
+- **Local Development**: Copy `.env.example` to `.env.local`
+- **Production**: Environment variables set in Google Cloud Run and Netlify
+- **MongoDB**: Shared MongoDB Atlas cluster for all environments
+- **CORS**: Configured to allow requests from both Netlify domains
 
 ## Key Features
 - Watch marketplace with bidding system
-- Admin dashboard for watch and user management
+- Admin dashboard for watch and user management (separate app)
 - Juno OAuth integration for secure authentication
-- Image upload for watch listings
+- Google Cloud Storage for reliable image hosting
+- Delete functionality for user-owned watches
 - Responsive design with Tailwind CSS
+- Separate admin interface with enhanced management tools
