@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { getImageUrl } from '../utils/api.js';
 
 const WatchAdminList = () => {
   const [watches, setWatches] = useState([]);
@@ -33,6 +34,24 @@ const WatchAdminList = () => {
     } catch (err) {
       console.error('Error deleting watch:', err);
       alert('Error deleting watch. Please try again.');
+    }
+  };
+
+  const toggleFeatured = async (watch) => {
+    try {
+      const response = await axios.put(
+        `/api/admin/watches/${watch._id}`,
+        { featured: !watch.featured },
+        { withCredentials: true }
+      );
+
+      // Update the local state with the updated watch
+      setWatches(watches.map(w =>
+        w._id === watch._id ? response.data : w
+      ));
+    } catch (err) {
+      console.error('Error updating featured status:', err);
+      alert('Error updating featured status. Please try again.');
     }
   };
 
@@ -97,6 +116,9 @@ const WatchAdminList = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Featured
+                  </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
@@ -111,7 +133,7 @@ const WatchAdminList = () => {
                           {(watch.imageUrl || watch.images?.[0]) ? (
                             <img
                               className="h-12 w-12 rounded-md object-cover"
-                              src={watch.imageUrl || watch.images[0]}
+                              src={getImageUrl(watch.images?.[0] || watch.imageUrl)}
                               alt={`${watch.brand} ${watch.model}`}
                               onError={(e) => {
                                 e.target.onerror = null;
@@ -188,6 +210,24 @@ const WatchAdminList = () => {
                       }`}>
                         {watch.status || 'active'}
                       </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button
+                        onClick={() => toggleFeatured(watch)}
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold transition-colors ${
+                          watch.featured
+                            ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                      >
+                        <svg
+                          className={`w-4 h-4 mr-1 ${watch.featured ? 'fill-yellow-500' : 'fill-gray-400'}`}
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        {watch.featured ? 'Featured' : 'Not Featured'}
+                      </button>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end space-x-2">

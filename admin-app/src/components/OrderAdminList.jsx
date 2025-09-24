@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { getImageUrl } from '../utils/api.js';
 
 const OrderAdminList = () => {
   const [orders, setOrders] = useState([]);
@@ -139,11 +140,11 @@ const OrderAdminList = () => {
                   <tr key={order._id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        {order.watch?.imageUrl && (
+                        {(order.watch?.imageUrl || order.watch?.images?.[0]) && (
                           <div className="flex-shrink-0 h-10 w-10">
                             <img
                               className="h-10 w-10 rounded-full object-cover"
-                              src={order.watch.imageUrl}
+                              src={getImageUrl(order.watch.images?.[0] || order.watch.imageUrl)}
                               alt=""
                             />
                           </div>
