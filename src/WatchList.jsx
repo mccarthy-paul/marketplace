@@ -498,13 +498,13 @@ const WatchList = () => {
                   }`}>
                     {watch.images?.[0] || watch.imageUrl ? (
                       <img
-                        src={getImageUrl(watch.images?.[0] || watch.imageUrl) || `/images/watches/watch${(watch._id.charCodeAt(0) % 8) + 1}.jpg`}
+                        src={getImageUrl(watch.images?.[0] || watch.imageUrl) || getImageUrl(`/images/watches/watch${(watch._id.charCodeAt(0) % 8) + 1}.jpg`)}
                         alt={`${watch.brand} ${watch.model}`}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />
                     ) : (
                       <img
-                        src={`/images/watches/watch${(watch._id.charCodeAt(0) % 8) + 1}.jpg`}
+                        src={getImageUrl(`/images/watches/watch${(watch._id.charCodeAt(0) % 8) + 1}.jpg`)}
                         alt={`${watch.brand} ${watch.model}`}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />

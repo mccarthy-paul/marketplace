@@ -129,7 +129,7 @@ const Checkout = () => {
         if (!response.ok) {
           if (data.reauth) {
             alert('Your JunoPay session has expired. Please log in again to continue.');
-            window.location.href = 'https://api-53189232060.us-central1.run.app/auth/junopay/login';
+            window.location.href = getApiUrl('auth/junopay/login');
             return;
           }
           throw new Error(data.error || 'Failed to initiate transaction');

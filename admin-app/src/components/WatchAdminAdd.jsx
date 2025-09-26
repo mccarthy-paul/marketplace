@@ -17,7 +17,8 @@ const WatchAdminAdd = () => {
     price: '',
     seller: '',
     owner: '',
-    status: 'active'
+    status: 'active',
+    classifications: []
   });
 
   const [imageFile, setImageFile] = useState(null);
@@ -29,6 +30,20 @@ const WatchAdminAdd = () => {
   // Condition options
   const conditionOptions = ['Mint', 'Excellent', 'Very Good', 'Good', 'Fair'];
   const statusOptions = ['active', 'sold', 'cancelled'];
+
+  // Classifications options (alphabetically sorted)
+  const classificationOptions = [
+    'Automatic',
+    'Dress',
+    'Gold',
+    "Men's",
+    'Moon Phase',
+    'Pocket',
+    'Pre-Owned',
+    'Skeleton',
+    'Sports',
+    "Women's"
+  ];
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -47,10 +62,17 @@ const WatchAdminAdd = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
-    setFormData({ 
-      ...formData, 
-      [name]: type === 'number' ? (value ? Number(value) : '') : value 
+    setFormData({
+      ...formData,
+      [name]: type === 'number' ? (value ? Number(value) : '') : value
     });
+  };
+
+  const handleClassificationChange = (classification) => {
+    const updatedClassifications = formData.classifications.includes(classification)
+      ? formData.classifications.filter(c => c !== classification)
+      : [...formData.classifications, classification];
+    setFormData({ ...formData, classifications: updatedClassifications });
   };
 
   const handleImageChange = (e) => {
@@ -74,7 +96,10 @@ const WatchAdminAdd = () => {
       
       // Add all form fields
       Object.keys(formData).forEach(key => {
-        if (formData[key] !== '') {
+        if (key === 'classifications') {
+          // Send classifications as JSON string
+          data.append('classifications', JSON.stringify(formData.classifications));
+        } else if (formData[key] !== '') {
           data.append(key, formData[key]);
         }
       });
@@ -228,6 +253,28 @@ const WatchAdminAdd = () => {
                     ))}
                   </select>
                 </div>
+              </div>
+            </div>
+
+            {/* Classifications */}
+            <div>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Classifications</h3>
+              <p className="text-sm text-gray-600 mb-3">Select all categories that apply to this watch:</p>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {classificationOptions.map(classification => (
+                  <label
+                    key={classification}
+                    className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={formData.classifications.includes(classification)}
+                      onChange={() => handleClassificationChange(classification)}
+                      className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                    />
+                    <span className="text-sm text-gray-700">{classification}</span>
+                  </label>
+                ))}
               </div>
             </div>
 

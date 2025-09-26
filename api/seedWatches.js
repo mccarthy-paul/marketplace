@@ -12,7 +12,7 @@ const sampleWatches = [
     description: "The iconic green Submariner, also known as the 'Hulk'. Features a green ceramic bezel and matching green dial. Excellent condition with box and papers.",
     year: 2020,
     condition: "Excellent",
-    imageUrl: "/images/watch1.jpg",
+    imageUrl: "/images/watches/watch1.jpg",
     currentBid: 15000,
     startingPrice: 12000
   },
@@ -23,7 +23,7 @@ const sampleWatches = [
     description: "The legendary stainless steel Nautilus with blue dial. One of the most sought-after luxury sports watches. Mint condition.",
     year: 2019,
     condition: "Mint",
-    imageUrl: "/images/watch2.jpg",
+    imageUrl: "/images/watches/watch2.jpg",
     currentBid: 85000,
     startingPrice: 75000
   },
@@ -34,7 +34,7 @@ const sampleWatches = [
     description: "The classic Royal Oak Jumbo in stainless steel. Ultra-thin automatic movement with the iconic octagonal bezel.",
     year: 2021,
     condition: "Like New",
-    imageUrl: "/images/watch3.jpg",
+    imageUrl: "/images/watches/watch3.jpg",
     currentBid: 45000,
     startingPrice: 40000
   },
@@ -45,7 +45,7 @@ const sampleWatches = [
     description: "The legendary Moonwatch. Manual-wound chronograph with hesalite crystal. The watch worn on the moon.",
     year: 2022,
     condition: "Excellent",
-    imageUrl: "/images/watch4.jpg",
+    imageUrl: "/images/watches/watch4.jpg",
     currentBid: 3500,
     startingPrice: 3200
   },
@@ -56,7 +56,7 @@ const sampleWatches = [
     description: "Large model in stainless steel with blue hands and Roman numerals. Classic dress watch excellence.",
     year: 2021,
     condition: "Very Good",
-    imageUrl: "/images/watch5.jpg",
+    imageUrl: "/images/watches/watch5.jpg",
     currentBid: 6800,
     startingPrice: 6000
   }

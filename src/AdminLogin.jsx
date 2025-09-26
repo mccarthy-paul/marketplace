@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { apiPost } from './utils/api.js';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('admin@luxe24.com');
@@ -14,18 +15,9 @@ const AdminLogin = () => {
     setError('');
 
     try {
-      const response = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ email, password }),
-      });
+      const data = await apiPost('/api/admin/login', { email, password });
 
-      const data = await response.json();
-
-      if (response.ok && data.success) {
+      if (data.success) {
         navigate('/dashboard');
       } else {
         setError(data.error || 'Login failed');

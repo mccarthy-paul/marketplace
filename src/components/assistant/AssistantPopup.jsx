@@ -4,11 +4,13 @@ import { XMarkIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import ChatInterface from './ChatInterface';
 import MessageInput from './MessageInput';
 import axios from 'axios';
+import { useTheme } from '../../contexts/ThemeContext';
 
 // Configure axios defaults for this component
 axios.defaults.withCredentials = true;
 
 const AssistantPopup = ({ isOpen, onClose }) => {
+  const { theme } = useTheme();
   const [sessionId, setSessionId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -231,11 +233,19 @@ const AssistantPopup = ({ isOpen, onClose }) => {
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.8, y: 20 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="fixed bottom-20 right-6 w-96 h-[600px] bg-white rounded-2xl shadow-2xl border border-gray-200 z-50 flex flex-col overflow-hidden"
+      className={`fixed bottom-20 right-6 w-96 h-[600px] rounded-2xl shadow-2xl border z-50 flex flex-col overflow-hidden ${
+        theme === 'dark'
+          ? 'bg-luxury-dark border-luxury-gray'
+          : 'bg-white border-gray-200'
+      }`}
       style={{ maxHeight: 'calc(100vh - 120px)' }}
     >
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#3ab54a] to-[#32a042] text-white p-4 flex items-center justify-between">
+      <div className={`p-4 flex items-center justify-between ${
+        theme === 'dark'
+          ? 'bg-gradient-to-r from-gold to-gold-dark text-luxury-dark'
+          : 'bg-gradient-to-r from-luxe-bronze to-luxe-bronze/90 text-white'
+      }`}>
         <div className="flex items-center space-x-2">
           <SparklesIcon className="h-5 w-5" />
           <h3 className="font-semibold">Luxe24 Assistant</h3>
@@ -244,7 +254,11 @@ const AssistantPopup = ({ isOpen, onClose }) => {
           {sessionId && (
             <button
               onClick={clearChat}
-              className="text-white/80 hover:text-white text-xs px-2 py-1 rounded hover:bg-white/10 transition-colors"
+              className={`text-xs px-2 py-1 rounded transition-colors ${
+                theme === 'dark'
+                  ? 'text-luxury-dark/80 hover:text-luxury-dark hover:bg-luxury-dark/10'
+                  : 'text-white/80 hover:text-white hover:bg-white/10'
+              }`}
               title="Clear chat"
             >
               Clear
@@ -252,7 +266,11 @@ const AssistantPopup = ({ isOpen, onClose }) => {
           )}
           <button
             onClick={onClose}
-            className="text-white/80 hover:text-white transition-colors"
+            className={`transition-colors ${
+              theme === 'dark'
+                ? 'text-luxury-dark/80 hover:text-luxury-dark'
+                : 'text-white/80 hover:text-white'
+            }`}
             aria-label="Close assistant"
           >
             <XMarkIcon className="h-5 w-5" />
@@ -293,8 +311,14 @@ const AssistantPopup = ({ isOpen, onClose }) => {
       </div>
 
       {/* Status indicator */}
-      <div className="px-4 py-2 bg-gray-50 border-t border-gray-200">
-        <div className="flex items-center justify-between text-xs text-gray-500">
+      <div className={`px-4 py-2 border-t ${
+        theme === 'dark'
+          ? 'bg-luxury-charcoal border-luxury-gray'
+          : 'bg-gray-50 border-gray-200'
+      }`}>
+        <div className={`flex items-center justify-between text-xs ${
+          theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+        }`}>
           <span>
             {sessionId ? (
               <span className="flex items-center">

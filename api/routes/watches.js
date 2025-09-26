@@ -4,26 +4,29 @@ import mongoose from 'mongoose';
 import Watch from '../db/watchModel.js';
 import multer from 'multer';
 import path from 'path';
+import { Storage } from '@google-cloud/storage';
 
 const router = express.Router();
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/uploads/watches'); // Uploads will be stored in public/uploads/watches (relative to api directory)
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
-  },
+// Initialize Google Cloud Storage
+const storage = new Storage({
+  projectId: 'juno-marketplace',
+  // In production, use Application Default Credentials (ADC)
+  // which are automatically available in Cloud Run
 });
+
+const bucket = storage.bucket('juno-marketplace-watches');
+
+// Configure multer for Google Cloud Storage
+const multerStorage = multer.memoryStorage();
 
 // File filter to accept specific image formats including WebP
 const fileFilter = (req, file, cb) => {
   const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
   const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
-  
+
   const fileExtension = path.extname(file.originalname).toLowerCase();
-  
+
   if (allowedMimeTypes.includes(file.mimetype) && allowedExtensions.includes(fileExtension)) {
     cb(null, true);
   } else {
@@ -31,14 +34,41 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const upload = multer({ 
-  storage,
+const upload = multer({
+  storage: multerStorage,
   fileFilter,
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB max file size
     files: 5 // Maximum 5 files
   }
 });
+
+// Helper function to upload to GCS
+const uploadToGCS = async (file) => {
+  const filename = `watchImages-${Date.now()}${path.extname(file.originalname)}`;
+  const blob = bucket.file(filename);
+
+  const stream = blob.createWriteStream({
+    resumable: false,
+    metadata: {
+      contentType: file.mimetype,
+    },
+  });
+
+  return new Promise((resolve, reject) => {
+    stream.on('error', reject);
+    stream.on('finish', async () => {
+      try {
+        await blob.makePublic();
+        const publicUrl = `https://storage.googleapis.com/juno-marketplace-watches/${filename}`;
+        resolve(publicUrl);
+      } catch (error) {
+        reject(error);
+      }
+    });
+    stream.end(file.buffer);
+  });
+};
 
 console.log('Reached watchesRouter');
 
@@ -51,25 +81,52 @@ function isAuthenticated(req, res, next) {
   }
 }
 
+// Get featured watches
+router.get('/featured', async (req, res) => {
+  try {
+    const featuredWatches = await Watch.find({
+      featured: true,
+      status: 'active'
+    })
+    .populate('owner', 'name email company_name junopay_client_id')
+    .sort({ featuredOrder: 1, created_at: -1 });
+
+    res.json({ watches: featuredWatches });
+  } catch (err) {
+    console.error('Error fetching featured watches:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Get all watches with filtering support
 router.get('/', async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://a2842d04cca8.ngrok-free.app'); // Manually add CORS header
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // Add allowed methods
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Add allowed headers
-  res.setHeader('Access-Control-Allow-Credentials', 'true'); // Allow credentials
+  // CORS headers are now handled by the cors middleware at the app level
 
   console.log('Inside api get all watches...');
   console.log('Query params:', req.query);
-  
+
   try {
+    // Debug MongoDB connection
+    console.log('MongoDB connection state:', mongoose.connection.readyState);
+    console.log('Connected database name:', mongoose.connection.db?.databaseName);
+    console.log('Watch collection name:', Watch.collection.name);
+
+    // First, let's test a simple count query to see if there's any data at all
+    const totalCount = await Watch.countDocuments();
+    console.log('Total watch count in database:', totalCount);
+
+    // Also test a simple find query without filters
+    const sampleWatches = await Watch.find({}).limit(2);
+    console.log('Sample watches (first 2):', sampleWatches.map(w => ({ _id: w._id, brand: w.brand, model: w.model })));
+
     // Build filter object from query parameters
     const filter = {};
-    
+
     // Filter by brand (make)
     if (req.query.brand) {
       filter.brand = { $regex: new RegExp(req.query.brand, 'i') };
     }
-    
+
     // Filter by model
     if (req.query.model) {
       filter.model = { $regex: new RegExp(req.query.model, 'i') };
@@ -124,13 +181,19 @@ router.get('/', async (req, res) => {
       const matchingUsers = await User.find({
         company_name: { $regex: new RegExp(req.query.broker, 'i') }
       }).select('_id');
-      
+
       if (matchingUsers.length > 0) {
         filter.owner = { $in: matchingUsers.map(u => u._id) };
       } else {
         // If no users match, return empty result
         return res.json([]);
       }
+    }
+
+    // Filter by classifications
+    if (req.query.classifications) {
+      const requestedClassifications = req.query.classifications.split(',').map(c => c.trim());
+      filter.classifications = { $in: requestedClassifications };
     }
     
     console.log('Applied filters:', filter);
@@ -190,7 +253,7 @@ router.post('/:id/buy', isAuthenticated, async (req, res) => {
 
 
 // Create a new watch (Admin only) - now supports multiple images
-router.post('/', isAuthenticated, upload.array('watchImages', 5), async (req, res) => {
+router.post('/', isAuthenticated, upload.array('watchImages', 10), async (req, res) => {
   if (!req.session.user.is_admin) {
     return res.status(403).json({ message: 'Forbidden' });
   }
@@ -213,8 +276,18 @@ router.post('/', isAuthenticated, upload.array('watchImages', 5), async (req, re
       });
     }
     
-    // Handle multiple images
-    const images = req.files ? req.files.map(file => `/public/uploads/watches/${file.filename}`) : [];
+    // Handle multiple images - upload to Google Cloud Storage
+    const images = [];
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        try {
+          const publicUrl = await uploadToGCS(file);
+          images.push(publicUrl);
+        } catch (error) {
+          console.error('Error uploading image to GCS:', error);
+        }
+      }
+    }
     const imageUrl = images.length > 0 ? images[0] : null; // First image as primary
 
     const newWatch = new Watch({ 
@@ -257,7 +330,13 @@ router.put('/:id', isAuthenticated, upload.single('watchImage'), async (req, res
     const updateData = { brand, model, reference_number, description, year, condition, seller, owner, price, currentBid, currency, updated_at: new Date() };
 
     if (req.file) {
-      updateData.imageUrl = `/uploads/watches/${req.file.filename}`; // Update image path if a new image is uploaded
+      // Upload new image to Google Cloud Storage
+      try {
+        const publicUrl = await uploadToGCS(req.file);
+        updateData.imageUrl = publicUrl;
+      } catch (error) {
+        console.error('Error uploading image to GCS:', error);
+      }
     }
 
     const updatedWatch = await Watch.findByIdAndUpdate(watchId, updateData, { new: true });
@@ -293,7 +372,7 @@ router.delete('/:id', isAuthenticated, async (req, res) => {
 });
 
 // Update a watch (Regular users - can only update their own watches)
-router.put('/user/:id', isAuthenticated, upload.array('watchImages', 5), async (req, res) => {
+router.put('/user/:id', isAuthenticated, upload.array('watchImages', 10), async (req, res) => {
   try {
     const watchId = req.params.id;
     const userId = req.session.user._id;
@@ -310,7 +389,19 @@ router.put('/user/:id', isAuthenticated, upload.array('watchImages', 5), async (
       return res.status(403).json({ message: 'You can only edit your own watches' });
     }
 
-    const { brand, model, reference_number, description, year, condition, price, currentBid, currency, status, existingImages } = req.body;
+    const { brand, model, reference_number, description, year, condition, price, currentBid, currency, status, existingImages, primaryImageIndex, classifications } = req.body;
+
+    // Parse classifications if provided
+    let parsedClassifications = [];
+    if (classifications) {
+      try {
+        parsedClassifications = typeof classifications === 'string'
+          ? JSON.parse(classifications)
+          : classifications;
+      } catch (e) {
+        console.error('Error parsing classifications:', e);
+      }
+    }
 
     // Build update object
     const updateData = {
@@ -324,6 +415,7 @@ router.put('/user/:id', isAuthenticated, upload.array('watchImages', 5), async (
       currentBid: currentBid || 0,
       currency: currency || 'USD',
       status: status || 'active',
+      classifications: parsedClassifications,
       updated_at: new Date()
     };
 
@@ -340,16 +432,32 @@ router.put('/user/:id', isAuthenticated, upload.array('watchImages', 5), async (
       }
     }
 
-    // Add new uploaded images
+    // Add new uploaded images - upload to Google Cloud Storage
     if (req.files && req.files.length > 0) {
-      const newImages = req.files.map(file => `/public/uploads/watches/${file.filename}`);
-      finalImages = [...finalImages, ...newImages];
+      for (const file of req.files) {
+        try {
+          const publicUrl = await uploadToGCS(file);
+          finalImages.push(publicUrl);
+        } catch (error) {
+          console.error('Error uploading image to GCS:', error);
+        }
+      }
     }
 
-    // Update images array
+    // Handle primary image reordering
     if (finalImages.length > 0) {
+      const primaryIdx = parseInt(primaryImageIndex) || 0;
+
+      // If a specific image should be primary and it's not already first
+      if (primaryIdx > 0 && primaryIdx < finalImages.length) {
+        // Move the selected primary image to the front
+        const primaryImage = finalImages[primaryIdx];
+        finalImages.splice(primaryIdx, 1); // Remove from current position
+        finalImages.unshift(primaryImage); // Add to beginning
+      }
+
       updateData.images = finalImages;
-      updateData.imageUrl = finalImages[0]; // Keep first image as primary for backward compatibility
+      updateData.imageUrl = finalImages[0]; // First image is now the primary
     }
 
     const updatedWatch = await Watch.findByIdAndUpdate(watchId, updateData, { new: true })
@@ -364,10 +472,10 @@ router.put('/user/:id', isAuthenticated, upload.array('watchImages', 5), async (
 });
 
 // Create a new watch (Regular users) - now supports multiple images
-router.post('/user', isAuthenticated, upload.array('watchImages', 5), async (req, res) => {
+router.post('/user', isAuthenticated, upload.array('watchImages', 10), async (req, res) => {
   try {
     console.log('Creating watch with request body:', req.body);
-    const { brand, model, reference_number, description, year, condition, startingPrice, price, status, currency } = req.body;
+    const { brand, model, reference_number, description, year, condition, startingPrice, price, status, currency, classifications } = req.body;
     console.log('Extracted currency:', currency);
     const userId = req.session.user._id;
     
@@ -381,26 +489,49 @@ router.post('/user', isAuthenticated, upload.array('watchImages', 5), async (req
       });
     }
     
-    // Handle multiple images
-    const images = req.files ? req.files.map(file => `/public/uploads/watches/${file.filename}`) : [];
+    // Parse classifications if provided
+    let parsedClassifications = [];
+    if (classifications) {
+      try {
+        parsedClassifications = typeof classifications === 'string'
+          ? JSON.parse(classifications)
+          : classifications;
+      } catch (e) {
+        console.error('Error parsing classifications:', e);
+      }
+    }
+
+    // Handle multiple images - upload to Google Cloud Storage
+    const images = [];
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        try {
+          const publicUrl = await uploadToGCS(file);
+          images.push(publicUrl);
+        } catch (error) {
+          console.error('Error uploading image to GCS:', error);
+        }
+      }
+    }
     const imageUrl = images.length > 0 ? images[0] : null; // First image as primary for backward compatibility
 
     // Create watch with current user as both seller and owner
-    const newWatch = new Watch({ 
-      brand, 
-      model, 
-      reference_number, 
-      description, 
-      year, 
-      condition, 
-      imageUrl, 
+    const newWatch = new Watch({
+      brand,
+      model,
+      reference_number,
+      description,
+      year,
+      condition,
+      imageUrl,
       images, // Store all images
-      seller: userId, 
+      seller: userId,
       owner: userId,
       currentBid: startingPrice || 0,
       price: price || null,
       currency: currency || 'USD', // Include currency
-      status: status || 'active'
+      status: status || 'active',
+      classifications: parsedClassifications
     });
     
     console.log('Creating new watch with currency:', newWatch.currency);
@@ -413,6 +544,58 @@ router.post('/user', isAuthenticated, upload.array('watchImages', 5), async (req
     res.status(201).json(populatedWatch);
   } catch (err) {
     console.error('Error creating watch:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Delete a watch (Regular users - can only delete their own watches)
+router.delete('/user/:id', isAuthenticated, async (req, res) => {
+  try {
+    const watchId = req.params.id;
+    const userId = req.session.user._id;
+
+    // First check if the watch exists and belongs to the user
+    const existingWatch = await Watch.findById(watchId);
+
+    if (!existingWatch) {
+      return res.status(404).json({ message: 'Watch not found' });
+    }
+
+    // Check if the watch belongs to the user (owner or seller)
+    if (existingWatch.owner.toString() !== userId && existingWatch.seller.toString() !== userId) {
+      return res.status(403).json({ message: 'You can only delete your own watches' });
+    }
+
+    // Check if there are any active bids on this watch
+    const Bid = mongoose.model('Bid');
+    const activeBids = await Bid.find({
+      watch: watchId,
+      status: { $in: ['offered', 'negotiating', 'counter_offer'] }
+    });
+
+    if (activeBids.length > 0) {
+      return res.status(400).json({
+        message: 'Cannot delete watch with active bids. Please resolve all bids first.'
+      });
+    }
+
+    // TODO: Delete associated images from Google Cloud Storage
+    // if (existingWatch.images && existingWatch.images.length > 0) {
+    //   for (const imageUrl of existingWatch.images) {
+    //     try {
+    //       await deleteFromGCS(imageUrl);
+    //     } catch (error) {
+    //       console.error('Error deleting image from GCS:', error);
+    //     }
+    //   }
+    // }
+
+    // Delete the watch
+    await Watch.findByIdAndDelete(watchId);
+
+    res.json({ message: 'Watch deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting watch:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });

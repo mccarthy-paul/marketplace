@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  PaperAirplaneIcon, 
-  PhotoIcon, 
+import {
+  PaperAirplaneIcon,
+  PhotoIcon,
   MicrophoneIcon,
   XMarkIcon
 } from '@heroicons/react/24/outline';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const MessageInput = ({ onSendMessage, isLoading, disabled }) => {
+  const { theme } = useTheme();
   const [message, setMessage] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -202,7 +204,11 @@ const MessageInput = ({ onSendMessage, isLoading, disabled }) => {
   };
 
   return (
-    <div className="border-t border-gray-200 bg-white p-4">
+    <div className={`border-t p-4 ${
+      theme === 'dark'
+        ? 'border-luxury-gray bg-luxury-charcoal'
+        : 'border-gray-200 bg-white'
+    }`}>
       {/* Image Preview */}
       <AnimatePresence>
         {imagePreview && (
@@ -213,10 +219,12 @@ const MessageInput = ({ onSendMessage, isLoading, disabled }) => {
             className="mb-3 relative"
           >
             <div className="relative inline-block">
-              <img 
-                src={imagePreview} 
-                alt="Selected watch" 
-                className="max-w-32 max-h-32 rounded-lg border border-gray-200"
+              <img
+                src={imagePreview}
+                alt="Selected watch"
+                className={`max-w-32 max-h-32 rounded-lg border ${
+                  theme === 'dark' ? 'border-luxury-gray' : 'border-gray-200'
+                }`}
               />
               <button
                 onClick={clearImageSelection}
@@ -225,7 +233,9 @@ const MessageInput = ({ onSendMessage, isLoading, disabled }) => {
                 <XMarkIcon className="w-3 h-3" />
               </button>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className={`text-xs mt-1 ${
+              theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+            }`}>
               Image selected for analysis
             </p>
           </motion.div>

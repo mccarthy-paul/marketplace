@@ -9,6 +9,11 @@ const router = express.Router();
 // JunoPay OAuth login - redirect to JunoPay authorization
 router.get('/login', (req, res) => {
   console.log('🚀 JunoPay OAuth flow initiated');
+  console.log('📊 Request details:');
+  console.log('  - Method:', req.method);
+  console.log('  - URL:', req.url);
+  console.log('  - Original URL:', req.originalUrl);
+  console.log('  - Headers:', JSON.stringify(req.headers, null, 2));
   
   // Generate state for CSRF protection
   const state = crypto.randomBytes(12).toString('hex');
@@ -41,12 +46,12 @@ router.get('/callback', async (req, res) => {
     
     if (error) {
       console.error('OAuth error:', error);
-      return res.redirect(`https://a2842d04cca8.ngrok-free.app/?error=${encodeURIComponent(error)}`);
+      return res.redirect(`https://frontend-xio7lz2d5a-uc.a.run.app/?error=${encodeURIComponent(error)}`);
     }
 
     if (!code) {
       console.error('No authorization code received');
-      return res.redirect('https://a2842d04cca8.ngrok-free.app/?error=no_code');
+      return res.redirect('https://frontend-xio7lz2d5a-uc.a.run.app/?error=no_code');
     }
 
     console.log('↪ Authorization code received:', code);
@@ -70,7 +75,7 @@ router.get('/callback', async (req, res) => {
 
     if (!tokenResponse.ok) {
       console.error('Token exchange failed:', tokenData);
-      return res.redirect('https://a2842d04cca8.ngrok-free.app/?error=token_exchange_failed');
+      return res.redirect('https://frontend-xio7lz2d5a-uc.a.run.app/?error=token_exchange_failed');
     }
 
     const { access_token, refresh_token } = tokenData;
@@ -90,7 +95,7 @@ router.get('/callback', async (req, res) => {
 
     if (!userInfoResponse.ok) {
       console.error('Failed to get user info:', userInfo);
-      return res.redirect('https://a2842d04cca8.ngrok-free.app/?error=user_info_failed');
+      return res.redirect('https://frontend-xio7lz2d5a-uc.a.run.app/?error=user_info_failed');
     }
 
     const { clientId, email, name, buyerFee } = userInfo;
@@ -151,12 +156,16 @@ router.get('/callback', async (req, res) => {
     console.log('↪ Final user object stored in session:', JSON.stringify(req.session.user, null, 2));
     
     // Redirect to logged-in page
-    console.log('↪ Redirecting to: https://a2842d04cca8.ngrok-free.app/loggedin');
-    res.redirect('https://a2842d04cca8.ngrok-free.app/loggedin');
+    console.log('🔍 DEBUG: process.env.FRONTEND_URL =', process.env.FRONTEND_URL);
+    const frontendUrl = process.env.FRONTEND_URL || 'https://frontend-xio7lz2d5a-uc.a.run.app';
+    console.log('🔍 DEBUG: final frontendUrl =', frontendUrl);
+    const redirectUrl = `${frontendUrl}/loggedin`;
+    console.log('↪ Redirecting to:', redirectUrl);
+    res.redirect(redirectUrl);
 
   } catch (error) {
     console.error('JunoPay callback error:', error);
-    res.redirect('https://a2842d04cca8.ngrok-free.app/?error=callback_error');
+    res.redirect('https://frontend-xio7lz2d5a-uc.a.run.app/?error=callback_error');
   }
 });
 
@@ -304,5 +313,20 @@ router.post('/logout', async (req, res) => {
     });
   });
 });
+
+// Temporarily disable catch-all route to isolate the issue
+// router.get('*', (req, res) => {
+//   console.log('❌ UNKNOWN JUNOPAY AUTH ROUTE:');
+//   console.log('  - Method:', req.method);
+//   console.log('  - URL:', req.url);
+//   console.log('  - Original URL:', req.originalUrl);
+//   console.log('  - Params:', req.params);
+//   res.status(404).json({
+//     error: 'Route not found',
+//     path: req.url,
+//     originalUrl: req.originalUrl,
+//     availableRoutes: ['/login', '/callback', '/logout', '/logout-token', '/application-logout-proxy']
+//   });
+// });
 
 export default router;

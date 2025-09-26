@@ -15,44 +15,54 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-import authCallbackRouter from './routes/authCallback.js';
-import watchesRouter from './routes/watches.js';
-import listingsRouter from './routes/listings.js';
-import ordersRouter from './routes/orders.js';
-import usersRouter from './routes/users.js';
-import bidsRouter from './routes/bids.js';
-import chatRouter from './routes/chat.js'; // Import chat router
+// Essential import for JunoPay authentication
 import junopayAuthRouter from './routes/junopayAuth.js'; // Import JunoPay auth router
-import junopayRouter from './routes/junopay.js'; // Import JunoPay API router
-import adminRouter from './routes/admin.js'; // Import admin router
-import cartRouter from './routes/cart.js'; // Import cart router
-import dataSpecialistRouter from './routes/dataSpecialist.js'; // Import data specialist router
-import notificationsRouter from './routes/notifications.js'; // Import notifications router
-import analyticsRouter from './routes/analytics.js'; // Import analytics router
-import sellersRouter from './routes/sellers.js'; // Import sellers router
+
+// Re-enable essential imports
+import watchesRouter from './routes/watches.js';
+import junopayRouter from './routes/junopay.js';
+import usersRouter from './routes/users.js';
+
+// Keep these commented out for now
+// import authCallbackRouter from './routes/authCallback.js';
+// import listingsRouter from './routes/listings.js';
+// import ordersRouter from './routes/orders.js';
+// import bidsRouter from './routes/bids.js';
+// import chatRouter from './routes/chat.js';
+// import adminRouter from './routes/admin.js';
+// import cartRouter from './routes/cart.js';
+// import dataSpecialistRouter from './routes/dataSpecialist.js';
+// import notificationsRouter from './routes/notifications.js';
+// import analyticsRouter from './routes/analytics.js';
+// import sellersRouter from './routes/sellers.js';
+// import bulkUploadRouter from './routes/bulkUpload.js';
+// import searchRouter from './routes/search.js';
 import cors from 'cors';
 
 
 const app = express();
 
-// Add CORS middleware
-app.use(cors({
-  origin: [
-    'https://a2842d04cca8.ngrok-free.app',
-    'https://admin.a2842d04cca8.ngrok-free.app',
-    'https://a2842d04cca8.ngrok-free.app',
+// Add CORS middleware with dynamic configuration
+const corsOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(',').map(origin => origin.trim())
+  : [
+    'https://frontend-xio7lz2d5a-uc.a.run.app',
+    'https://juno-marketplace-admin.netlify.app',
+    'https://frabjous-muffin-21b429.netlify.app',
     'http://localhost:8002',
     'http://localhost:5174',
     'http://localhost:5173'
-  ],
+  ];
+
+app.use(cors({
+  origin: corsOrigins,
   credentials: true // Allow cookies to be sent
 }));
 
 // Middleware to parse JSON bodies
 app.use(express.json());
 
-// PMC TESTING REMOVE
-// Trust proxy for ngrok/production environments
+// Trust proxy for production environments
 app.set('trust proxy', 1);
 
 app.use(session({
@@ -60,34 +70,41 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    sameSite: 'none', // Allow cross-site cookies for ngrok
+    sameSite: 'none', // Allow cross-site cookies for production
     secure: true, // Required for sameSite: 'none'
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
   },
 }));
 
-app.use('/auth/juno', authCallbackRouter);
-app.use('/api/watches', watchesRouter);
-app.use('/api/listings', listingsRouter);
-app.use('/api/orders', ordersRouter);
-app.use('/api/users', usersRouter);
-app.use('/api/bids', bidsRouter);
-app.use('/api/chat', chatRouter); // Mount chat router
+// Essential routes for JunoPay authentication
 app.use('/auth/junopay', junopayAuthRouter); // Mount JunoPay auth router
-app.use('/api/junopay', junopayRouter); // Mount JunoPay API router
-app.use('/api/admin', adminRouter); // Mount admin router
-app.use('/api/cart', cartRouter); // Mount cart router
-app.use('/api/data', dataSpecialistRouter); // Mount data specialist router
-app.use('/api/notifications', notificationsRouter); // Mount notifications router
-app.use('/api/analytics', analyticsRouter); // Mount analytics router
-app.use('/api/sellers', sellersRouter); // Mount sellers router
+
+// Re-enable essential routes
+app.use('/api/watches', watchesRouter);
+app.use('/api/junopay', junopayRouter);
+app.use('/api/users', usersRouter);
+
+// Keep these commented out for now
+// app.use('/auth/juno', authCallbackRouter);
+// app.use('/api/listings', listingsRouter);
+// app.use('/api/orders', ordersRouter);
+// app.use('/api/bids', bidsRouter);
+// app.use('/api/chat', chatRouter);
+// app.use('/api/admin', adminRouter);
+// app.use('/api/cart', cartRouter);
+// app.use('/api/data', dataSpecialistRouter);
+// app.use('/api/notifications', notificationsRouter);
+// app.use('/api/analytics', analyticsRouter);
+// app.use('/api/sellers', sellersRouter);
+// app.use('/api/bulk-upload', bulkUploadRouter);
+// app.use('/api/search', searchRouter);
 
 // Serve static files from the frontend build
 app.use(express.static(path.join(__dirname, '..', 'dist')));
 
-// Serve images from the images directory
-app.use('/images', express.static(path.join(__dirname, '..', 'images')));
+// Serve images from the public/images directory (now inside api/)
+app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
 
 // Serve uploaded files from the public directory
 app.use('/public', express.static(path.join(__dirname, 'public')));
@@ -115,7 +132,7 @@ app.get('/auth/juno/callback', async (req, res) => {
 
   const tokenSet = await tokenRes.json();
   req.session.accessToken = tokenSet.access_token;
-  res.redirect('https://a2842d04cca8.ngrok-free.app/dashboard'); // or wherever
+  res.redirect('https://frontend-xio7lz2d5a-uc.a.run.app/dashboard'); // or wherever
 });
 
 app.get('/api/me', isAuthenticated, (req, res) => {
@@ -215,6 +232,18 @@ app.get('/admin/login', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'dist', 'index.html'));
 });
 
-connectDB().then(() => {
-  app.listen(8001, '0.0.0.0', () => console.log('API listening on 0.0.0.0:8001'));
+const PORT = process.env.PORT || 8001;
+
+// Start server immediately
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`API listening on 0.0.0.0:${PORT}`);
+
+  // Connect to database after server starts
+  connectDB().then((connected) => {
+    if (connected) {
+      console.log('API server started with database connection');
+    } else {
+      console.log('API server started without database connection (will retry automatically)');
+    }
+  });
 });

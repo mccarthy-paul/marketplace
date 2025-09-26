@@ -21,7 +21,7 @@ const app = express();
 
 // CORS configuration for admin app
 app.use(cors({
-  origin: ['http://localhost:5174', 'https://admin.a2842d04cca8.ngrok-free.app'],
+  origin: ['http://localhost:5174', 'https://admin.65378701c270.ngrok.app'],
   credentials: true
 }));
 
@@ -93,8 +93,9 @@ app.get('/api/admin/status', requireAdmin, (req, res) => {
 
 // Start server
 connectDB().then(() => {
-  app.listen(8002, '0.0.0.0', () => {
-    console.log('🔐 Admin server listening on 0.0.0.0:8002');
+  const PORT = process.env.PORT || 8002;
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🔐 Admin server listening on 0.0.0.0:${PORT}`);
     console.log('💻 Admin interface: http://localhost:5174 (dev) or http://localhost:8002 (production)');
   });
 });

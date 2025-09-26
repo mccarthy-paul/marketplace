@@ -1,0 +1,4 @@
+SKU,Brand,Model,Reference_Number,Year,Condition,Description,Price,Starting_Bid,Currency,Classifications,Case_Size,Case_Material,Dial_Color,Movement,Bracelet_Material,Box_Papers,Image_1,Image_2,Image_3,Image_4,Image_5
+EXAMPLE001,Rolex,Submariner,116610LN,2020,Excellent,Complete set with box and papers,12500,10000,USD,"Sport,Diving",40mm,Stainless Steel,Black,Automatic,Stainless Steel,Both,EXAMPLE001_1.jpg,EXAMPLE001_2.jpg,EXAMPLE001_3.jpg,,
+EXAMPLE002,Patek Philippe,Nautilus,5711/1A,2019,Very Good,Blue dial with original box,85000,75000,USD,"Sport,Luxury",40mm,Stainless Steel,Blue,Automatic,Stainless Steel,Box Only,EXAMPLE002_1.jpg,EXAMPLE002_2.jpg,,,
+EXAMPLE003,Audemars Piguet,Royal Oak,15400ST,2018,Good,Black dial with leather strap,28000,25000,USD,"Sport,Luxury",41mm,Stainless Steel,Black,Automatic,Leather,Papers Only,EXAMPLE003_1.jpg,,,,

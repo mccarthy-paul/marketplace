@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Assuming react-router-dom is used for navigation
+import { useNavigate } from 'react-router-dom';
+import { apiPost } from '../utils/api.js';
 
 const AdminLogin = () => {
   const [credentials, setCredentials] = useState({
@@ -22,16 +22,11 @@ const AdminLogin = () => {
     setError(null);
 
     try {
-      // TODO: Implement backend admin login endpoint
-      const response = await axios.post('/api/admin/login', credentials);
-      // Assuming the backend returns a success status and potentially user info
-      if (response.status === 200) {
-        // TODO: Handle successful login (e.g., store token/session info, redirect)
-        console.log('Admin login successful:', response.data);
-        navigate('/dashboard'); // Redirect to admin dashboard on success
-      }
+      const data = await apiPost('/api/admin/login', credentials);
+      console.log('Admin login successful:', data);
+      navigate('/dashboard'); // Redirect to admin dashboard on success
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(err.message || 'Login failed');
       console.error('Admin login error:', err);
     } finally {
       setLoading(false);

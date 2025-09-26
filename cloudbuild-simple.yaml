@@ -1,0 +1,22 @@
+# Simple Cloud Build for API only
+steps:
+  # Build API Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'Dockerfile.api', '-t', 'us-central1-docker.pkg.dev/juno-marketplace/juno-marketplace/api:latest', '.']
+
+  # Push image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-central1-docker.pkg.dev/juno-marketplace/juno-marketplace/api:latest']
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'api'
+      - '--image=us-central1-docker.pkg.dev/juno-marketplace/juno-marketplace/api:latest'
+      - '--region=us-central1'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+
+timeout: '1200s'

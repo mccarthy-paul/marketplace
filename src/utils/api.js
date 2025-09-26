@@ -6,17 +6,28 @@ export const API_URL = API_BASE_URL;
 
 // Helper to build full API URL
 export const getApiUrl = (path) => {
+  // Add debug logging
+  console.log('🔍 getApiUrl DEBUG:');
+  console.log('  - Input path:', path);
+  console.log('  - API_BASE_URL:', API_BASE_URL);
+  console.log('  - VITE_API_URL env:', import.meta.env.VITE_API_URL);
+
   // Remove leading slash from path if present
   const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+  console.log('  - Clean path:', cleanPath);
 
   // In production, use the full URL from environment variable
   // In development, relative URLs work due to Vite proxy
-  if (API_BASE_URL) {
-    return `${API_BASE_URL}/${cleanPath}`;
+  if (API_BASE_URL && API_BASE_URL.trim() !== '') {
+    const fullUrl = `${API_BASE_URL}/${cleanPath}`;
+    console.log('  - Using full URL:', fullUrl);
+    return fullUrl;
   }
 
-  // For local development, return relative path
-  return `/${cleanPath}`;
+  // For local development or when VITE_API_URL is not set, return relative path
+  const relativeUrl = `/${cleanPath}`;
+  console.log('  - Using relative URL:', relativeUrl);
+  return relativeUrl;
 };
 
 // Utility function for API requests that includes ngrok-skip-browser-warning header

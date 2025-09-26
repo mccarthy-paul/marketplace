@@ -1,0 +1,49 @@
+# API-specific .gcloudignore - excludes everything except api/ directory
+
+# Exclude large unnecessary directories for API deployment
+node_modules/
+admin-app/
+test-automation/
+# dist/ - commented out to allow frontend deployment
+
+# Exclude frontend source files (not needed for API)
+src/
+# Keep public/ for images - include it for API deployment
+# public/
+
+# Exclude development and build artifacts
+.git/
+.vscode/
+*.log
+*.tmp
+.DS_Store
+
+# Exclude environment files with secrets
+.env
+.env.local
+.env.production
+
+# Exclude documentation and reports that aren't needed for runtime
+*.md
+reports/
+scripts/
+# images/ - commented out to allow public/images/
+
+# Exclude Docker files (we're using buildpacks)
+Dockerfile.*
+docker-compose.*
+
+# Exclude other build configs not needed for this deployment
+cloudbuild*.yaml
+*.yaml
+deploy.sh
+monitor-deployment.sh
+setup-opensearch.sh
+
+# Exclude test files
+test-image.html
+cookies.txt
+jira_import_*.csv
+
+# Exclude workspace files
+*.code-workspace

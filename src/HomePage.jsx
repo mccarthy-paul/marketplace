@@ -17,34 +17,34 @@ export default function HomePage() {
     '/images/luxe24/homepage-frame-2.jpg',
     '/images/luxe24/hero02.png',
     '/images/luxe24/hero03.png'
-  ];
+  ].map(getImageUrl);
 
   const brandLogos = [
-    { name: 'Rolex', logo: '/images/luxe24/rolex-logo.png' },
-    { name: 'Patek Philippe', logo: '/images/luxe24/patek-philippe-logo.png' },
-    { name: 'Richard Mille', logo: '/images/luxe24/richard-mille-logo.png' },
-    { name: 'Breitling', logo: '/images/luxe24/breitling-logo.png' },
-    { name: 'Tudor', logo: '/images/luxe24/tudor-logo.svg' },
-    { name: 'Panerai', logo: '/images/luxe24/panerai-logo.svg' },
-    { name: 'Audemars Piguet', logo: '/images/luxe24/audemars-piguet.png' },
-    { name: 'Bulgari', logo: '/images/luxe24/bulgari-logo.png' },
-    { name: 'Breguet', logo: '/images/luxe24/breguet-watch-logo_1.png' }
+    { name: 'Rolex', logo: getImageUrl('/images/luxe24/rolex-logo.png') },
+    { name: 'Patek Philippe', logo: getImageUrl('/images/luxe24/patek-philippe-logo.png') },
+    { name: 'Richard Mille', logo: getImageUrl('/images/luxe24/richard-mille-logo.png') },
+    { name: 'Breitling', logo: getImageUrl('/images/luxe24/breitling-logo.png') },
+    { name: 'Tudor', logo: getImageUrl('/images/luxe24/tudor-logo.svg') },
+    { name: 'Panerai', logo: getImageUrl('/images/luxe24/panerai-logo.svg') },
+    { name: 'Audemars Piguet', logo: getImageUrl('/images/luxe24/audemars-piguet.png') },
+    { name: 'Bulgari', logo: getImageUrl('/images/luxe24/bulgari-logo.png') },
+    { name: 'Breguet', logo: getImageUrl('/images/luxe24/breguet-watch-logo_1.png') }
   ];
 
   const categories = [
     {
       title: 'Sport Watches',
-      image: '/images/luxe24/cat01.png',
+      image: getImageUrl('/images/luxe24/cat01.png'),
       description: 'Built for adventure and precision'
     },
     {
       title: 'Dress Watches',
-      image: '/images/luxe24/cat02.png',
+      image: getImageUrl('/images/luxe24/cat02.png'),
       description: 'Elegant timepieces for special occasions'
     },
     {
       title: 'Vintage Collection',
-      image: '/images/luxe24/cat03.png',
+      image: getImageUrl('/images/luxe24/cat03.png'),
       description: 'Classic watches with timeless appeal'
     }
   ];
@@ -210,7 +210,11 @@ export default function HomePage() {
             {!currentUser ? (
               <>
                 <a
-                  href="https://api-53189232060.us-central1.run.app/auth/junopay/login"
+                  href={(() => {
+                    const loginUrl = getApiUrl('auth/junopay/login');
+                    console.log('🔗 HomePage Login URL generated:', loginUrl);
+                    return loginUrl;
+                  })()}
                   className={`group relative px-8 py-4 font-semibold rounded-none overflow-hidden transition-all ${
                     theme === 'dark'
                       ? 'bg-gold text-luxury-dark hover:text-white'
@@ -451,7 +455,7 @@ export default function HomePage() {
                 >
                   <div className="aspect-square overflow-hidden">
                     <img
-                      src={getImageUrl((watch.images && watch.images.length > 0) ? watch.images[0] : watch.imageUrl) || `/images/watches/watch${(watch._id.charCodeAt(0) % 8) + 1}.jpg`}
+                      src={getImageUrl((watch.images && watch.images.length > 0) ? watch.images[0] : watch.imageUrl) || getImageUrl(`/images/watches/watch${(watch._id.charCodeAt(0) % 8) + 1}.jpg`)}
                       alt={`${watch.brand} ${watch.model}`}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
@@ -535,7 +539,7 @@ export default function HomePage() {
         {theme === 'dark' && (
           <div className="absolute inset-0 opacity-10">
             <img
-              src="/images/watches/watch6.jpg"
+              src={getImageUrl("/images/watches/watch6.jpg")}
               alt="Background"
               className="w-full h-full object-cover"
             />
@@ -554,7 +558,11 @@ export default function HomePage() {
           </p>
           {!currentUser ? (
             <a
-              href="https://api-53189232060.us-central1.run.app/auth/junopay/login"
+              href={(() => {
+                const loginUrl = getApiUrl('auth/junopay/login');
+                console.log('🔗 HomePage CTA Login URL generated:', loginUrl);
+                return loginUrl;
+              })()}
               className={`inline-block px-10 py-4 font-semibold text-lg transition-all ${
                 theme === 'dark'
                   ? 'bg-gold text-luxury-dark hover:bg-gold-dark hover:text-white'

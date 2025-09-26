@@ -1,11 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { Menu, X, User, ShoppingCart, Bell } from 'lucide-react';
+import { Menu, X, User, ShoppingCart, Bell, Watch, LogOut, Sun, Moon, Search } from 'lucide-react';
 import { apiGet, apiPost, apiPut } from './utils/api.js';
+import { useTheme } from './contexts/ThemeContext.jsx';
+import Luxe24Logo from './components/Luxe24Logo.jsx';
 
 export default function NavBar({ navOpen, setNavOpen }) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
   const [currentUser, setCurrentUser] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -18,12 +21,9 @@ export default function NavBar({ navOpen, setNavOpen }) {
     if (!currentUser) return;
     
     try {
-      const response = await apiGet('/api/notifications/recent?limit=5');
-      if (response.ok) {
-        const data = await response.json();
-        setNotifications(data.notifications);
-        setUnreadCount(data.unreadCount);
-      }
+      const data = await apiGet('/api/notifications/recent?limit=5');
+      setNotifications(data.notifications);
+      setUnreadCount(data.unreadCount);
     } catch (err) {
       console.error('Error fetching notifications:', err);
     }
@@ -70,15 +70,10 @@ export default function NavBar({ navOpen, setNavOpen }) {
     
     const fetchCurrentUser = async () => {
       try {
-        const response = await apiGet('/api/me');
-        
+        const data = await apiGet('/api/me');
+
         if (mounted) {
-          if (response.ok) {
-            const data = await response.json();
-            setCurrentUser(data.user);
-          } else {
-            setCurrentUser(null);
-          }
+          setCurrentUser(data.user);
           setAuthChecked(true);
         }
       } catch (err) {
@@ -110,11 +105,11 @@ export default function NavBar({ navOpen, setNavOpen }) {
   }, [currentUser]);
 
   const menuItems = [
-    { label: 'Marketplace', href: '/watches' },
-    { label: 'Watch Brands', href: '#' },
-    { label: 'Sell a Watch', href: '#' },
-    { label: 'Magazine', href: '#' },
-    { label: 'Watch Collection', href: '/watches' }
+    { label: 'COLLECTION', href: '/watches' },
+    { label: 'SELL', href: '/add-watch' },
+    { label: 'MY WATCHES', href: '/profile' },
+    { label: 'ABOUT', href: '/about' },
+    { label: 'LUXEPAY', href: '/luxepay' }
   ];
 
   const handleSignOut = async () => {
@@ -302,35 +297,101 @@ export default function NavBar({ navOpen, setNavOpen }) {
   };
 
   return (
-    <header className="bg-[#2a2a29] text-white sticky top-0 z-50 shadow-md">
+    <header className={`sticky top-0 z-50 backdrop-blur-sm bg-opacity-95 dark:bg-opacity-95 ${
+      theme === 'dark'
+        ? 'bg-luxury-dark border-b border-luxury-gray'
+        : 'bg-white border-b border-gray-200 shadow-sm'
+    }`}>
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-        <Link to="/" className="text-2xl font-bold tracking-tight">Luxe24.1 Marketplace</Link>
+        <Link to="/" className="flex items-center group">
+          <Luxe24Logo
+            className="h-8 w-auto transition-transform group-hover:scale-105"
+            fill={theme === 'dark' ? '#BA997D' : '#BA997D'}
+          />
+        </Link>
+
+        {/* Search Bar - Light Theme Only */}
+        {theme === 'light' && pathname !== '/admin/login' && (
+          <div className="hidden md:flex items-center flex-1 max-w-md mx-8">
+            <div className="relative w-full">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <input
+                type="text"
+                placeholder="Search luxury watches..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-luxe-bronze focus:border-transparent"
+              />
+            </div>
+          </div>
+        )}
 
         {/* desktop menu */}
         {pathname !== '/admin/login' && (
-          <nav className="hidden md:flex items-center gap-6 text-sm lg:text-base">
+          <nav className="hidden md:flex items-center gap-8">
             {menuItems.map(item => (
-              <Link key={item.label} to={item.href} className="hover:text-[#3ab54a] transition-colors">
+              <Link
+                key={item.label}
+                to={item.href}
+                className={`text-sm font-medium tracking-wider transition-all duration-300 relative group ${
+                  theme === 'dark'
+                    ? 'text-gray-300 hover:text-gold'
+                    : 'text-gray-700 hover:text-luxe-bronze'
+                }`}
+              >
                 {item.label}
+                <span className={`absolute -bottom-1 left-0 w-0 h-0.5 transition-all duration-300 group-hover:w-full ${
+                  theme === 'dark' ? 'bg-gold' : 'bg-luxe-bronze'
+                }`} />
               </Link>
             ))}
           </nav>
         )}
 
         {/* actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          {/* Theme Toggle Button */}
+          <button
+            onClick={toggleTheme}
+            className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${
+              theme === 'dark'
+                ? 'hover:bg-luxury-gray'
+                : 'hover:bg-gray-100'
+            }`}
+            title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+          >
+            {theme === 'light' ? (
+              <Moon className={`w-5 h-5 transition-colors ${
+                theme === 'dark' ? 'text-gray-300 hover:text-gold' : 'text-gray-600 hover:text-luxe-bronze'
+              }`} />
+            ) : (
+              <Sun className={`w-5 h-5 transition-colors ${
+                theme === 'dark' ? 'text-gray-300 hover:text-gold' : 'text-gray-600 hover:text-luxe-bronze'
+              }`} />
+            )}
+          </button>
           {authChecked && currentUser && (
             <>
               {/* Notifications Icon - Desktop */}
               <div ref={notificationRef} className="relative hidden md:block">
                 <button
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className="relative flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white/10 transition-colors"
+                  className={`relative flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${
+                    theme === 'dark'
+                      ? 'hover:bg-luxury-gray'
+                      : 'hover:bg-gray-100'
+                  }`}
                   title="Notifications"
                 >
-                  <Bell className="w-6 h-6 text-white" />
+                  <Bell className={`w-5 h-5 transition-colors ${
+                    theme === 'dark'
+                      ? 'text-gray-300 hover:text-gold'
+                      : 'text-gray-600 hover:text-luxe-bronze'
+                  }`} />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    <span className={`absolute -top-1 -right-1 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center ${
+                      theme === 'dark'
+                        ? 'bg-gold text-luxury-dark'
+                        : 'bg-luxe-bronze text-white'
+                    }`}>
                       {unreadCount > 9 ? '9+' : unreadCount}
                     </span>
                   )}
@@ -338,36 +399,56 @@ export default function NavBar({ navOpen, setNavOpen }) {
 
                 {/* Notifications Dropdown */}
                 {showNotifications && (
-                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
-                    <div className="p-4 border-b border-gray-200">
-                      <h3 className="font-semibold text-gray-900">Notifications</h3>
+                  <div className={`absolute right-0 mt-2 w-80 border rounded-lg shadow-2xl z-50 max-h-96 overflow-y-auto ${
+                    theme === 'dark'
+                      ? 'bg-luxury-charcoal border-luxury-gray'
+                      : 'bg-white border-gray-200'
+                  }`}>
+                    <div className={`p-4 border-b ${
+                      theme === 'dark' ? 'border-luxury-gray' : 'border-gray-200'
+                    }`}>
+                      <h3 className={`font-display text-lg tracking-wider ${
+                        theme === 'dark' ? 'text-white' : 'text-gray-900'
+                      }`}>NOTIFICATIONS</h3>
                       {unreadCount > 0 && (
-                        <p className="text-sm text-gray-500">{unreadCount} unread</p>
+                        <p className={`text-xs uppercase tracking-wider mt-1 ${
+                          theme === 'dark' ? 'text-gold' : 'text-luxe-bronze'
+                        }`}>{unreadCount} unread</p>
                       )}
                     </div>
                     
                     {notifications.length > 0 ? (
-                      <div className="divide-y divide-gray-100">
+                      <div className={`divide-y ${
+                        theme === 'dark' ? 'divide-luxury-gray' : 'divide-gray-200'
+                      }`}>
                         {notifications.map((notification) => (
                           <div
                             key={notification._id}
                             onClick={() => handleNotificationClick(notification)}
-                            className={`p-4 hover:bg-gray-50 cursor-pointer ${
-                              !notification.read ? 'bg-blue-50' : ''
+                            className={`p-4 cursor-pointer transition-colors ${
+                              theme === 'dark'
+                                ? `hover:bg-luxury-gray ${!notification.read ? 'bg-luxury-gray/50' : ''}`
+                                : `hover:bg-gray-50 ${!notification.read ? 'bg-gray-50' : ''}`
                             }`}
                           >
                             <div className="flex items-start gap-3">
                               <div className={`mt-1 w-2 h-2 rounded-full ${
-                                !notification.read ? 'bg-blue-500' : 'bg-transparent'
+                                !notification.read
+                                  ? theme === 'dark' ? 'bg-gold' : 'bg-luxe-bronze'
+                                  : 'bg-transparent'
                               }`} />
                               <div className="flex-1">
-                                <p className="font-medium text-sm text-gray-900">
+                                <p className={`font-medium text-sm ${
+                                  theme === 'dark' ? 'text-white' : 'text-gray-900'
+                                }`}>
                                   {notification.title}
                                 </p>
-                                <p className="text-sm text-gray-600 mt-1">
+                                <p className={`text-sm mt-1 ${
+                                  theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                                }`}>
                                   {notification.message}
                                 </p>
-                                <p className="text-xs text-gray-400 mt-1">
+                                <p className="text-xs text-gray-500 mt-1">
                                   {new Date(notification.createdAt).toLocaleString()}
                                 </p>
                               </div>
@@ -376,18 +457,28 @@ export default function NavBar({ navOpen, setNavOpen }) {
                         ))}
                       </div>
                     ) : (
-                      <div className="p-8 text-center text-gray-500">
-                        <Bell className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                        <p>No notifications</p>
+                      <div className="p-8 text-center">
+                        <Bell className={`w-12 h-12 mx-auto mb-3 ${
+                          theme === 'dark' ? 'text-luxury-gray' : 'text-gray-400'
+                        }`} />
+                        <p className={`${
+                          theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                        }`}>No notifications</p>
                       </div>
                     )}
-                    
+
                     {notifications.length > 0 && (
-                      <div className="p-3 border-t border-gray-200">
+                      <div className={`p-3 border-t ${
+                        theme === 'dark' ? 'border-luxury-gray' : 'border-gray-200'
+                      }`}>
                         <Link
                           to="/profile?tab=notifications"
                           onClick={() => setShowNotifications(false)}
-                          className="block text-center text-sm text-[#3ab54a] hover:text-[#32a042]"
+                          className={`block text-center text-xs uppercase tracking-wider transition-colors ${
+                            theme === 'dark'
+                              ? 'text-gold hover:text-gold-light'
+                              : 'text-luxe-bronze hover:text-luxe-bronze/80'
+                          }`}
                         >
                           View all notifications
                         </Link>
@@ -400,29 +491,54 @@ export default function NavBar({ navOpen, setNavOpen }) {
               {/* Cart Icon - Desktop */}
               <Link
                 to="/cart"
-                className="hidden md:flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white/10 transition-colors"
+                className={`hidden md:flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${
+                  theme === 'dark'
+                    ? 'hover:bg-luxury-gray'
+                    : 'hover:bg-gray-100'
+                }`}
                 title="Shopping Cart"
               >
-                <ShoppingCart className="w-6 h-6 text-white" />
+                <ShoppingCart className={`w-5 h-5 transition-colors ${
+                  theme === 'dark'
+                    ? 'text-gray-300 hover:text-gold'
+                    : 'text-gray-600 hover:text-luxe-bronze'
+                }`} />
               </Link>
 
               {/* Profile Avatar - Desktop */}
               <Link
                 to="/profile"
-                className="hidden md:flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 transition-colors"
+                className={`hidden md:flex items-center gap-3 px-3 py-2 rounded-lg transition-colors group ${
+                  theme === 'dark'
+                    ? 'hover:bg-luxury-gray'
+                    : 'hover:bg-gray-100'
+                }`}
                 title={`Profile - ${currentUser.name}`}
               >
-                <div className="w-8 h-8 bg-[#3ab54a] rounded-full flex items-center justify-center">
-                  <User className="w-5 h-5 text-white" />
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform ${
+                  theme === 'dark' ? 'bg-gold' : 'bg-luxe-bronze'
+                }`}>
+                  <User className={`w-5 h-5 ${
+                    theme === 'dark' ? 'text-luxury-dark' : 'text-white'
+                  }`} />
                 </div>
-                <span className="text-sm font-medium">{currentUser.name}</span>
+                <span className={`text-sm transition-colors ${
+                  theme === 'dark'
+                    ? 'text-gray-300 group-hover:text-gold'
+                    : 'text-gray-600 group-hover:text-luxe-bronze'
+                }`}>{currentUser.name}</span>
               </Link>
 
               {/* Sign out button */}
               <button
-                className="hidden md:inline-flex items-center rounded-xl border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-800"
+                className={`hidden md:inline-flex items-center gap-2 px-4 py-2 text-xs uppercase tracking-wider border transition-all duration-300 ${
+                  theme === 'dark'
+                    ? 'border-luxury-gray text-gray-300 hover:text-gold hover:border-gold'
+                    : 'border-gray-300 text-gray-600 hover:text-luxe-bronze hover:border-luxe-bronze'
+                }`}
                 onClick={handleSignOut}
               >
+                <LogOut className="w-4 h-4" />
                 Sign out
               </button>
             </>
@@ -430,30 +546,46 @@ export default function NavBar({ navOpen, setNavOpen }) {
 
           {/* mobile menu button */}
           <button
-            className="md:hidden p-2 rounded-lg hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white"
+            className={`md:hidden p-2 rounded-lg transition-colors ${
+              theme === 'dark'
+                ? 'hover:bg-luxury-gray'
+                : 'hover:bg-gray-100'
+            }`}
             onClick={() => setNavOpen(o => !o)}
           >
-            {navOpen ? <X size={24} /> : <Menu size={24} />}
+            {navOpen ? (
+              <X className={`w-6 h-6 ${
+                theme === 'dark' ? 'text-gold' : 'text-luxe-bronze'
+              }`} />
+            ) : (
+              <Menu className={`w-6 h-6 ${
+                theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
+              }`} />
+            )}
           </button>
         </div>
       </div>
 
       {/* mobile menu */}
       {navOpen && pathname !== '/admin/login' && (
-        <nav className="md:hidden bg-[#2a2a29] border-t border-white/10 px-6 pb-4 space-y-2">
+        <nav className={`md:hidden px-6 pb-4 space-y-2 border-t ${
+          theme === 'dark'
+            ? 'bg-luxury-charcoal border-luxury-gray'
+            : 'bg-gray-50 border-gray-200'
+        }`}>
           {/* User Profile Section - Mobile */}
           {authChecked && currentUser && (
             <Link
               to="/profile"
               onClick={() => setNavOpen(false)}
-              className="flex items-center gap-3 py-3 border-b border-white/10 mb-2"
+              className="flex items-center gap-3 py-3 border-b border-luxury-gray mb-2"
             >
-              <div className="w-10 h-10 bg-[#3ab54a] rounded-full flex items-center justify-center">
-                <User className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 bg-gold rounded-full flex items-center justify-center">
+                <User className="w-6 h-6 text-luxury-dark" />
               </div>
               <div>
-                <p className="text-white font-medium">{currentUser.name}</p>
-                <p className="text-white/60 text-sm">View Profile</p>
+                <p className="text-gray-900 dark:text-white font-display">{currentUser.name}</p>
+                <p className="text-gold text-xs uppercase tracking-wider">View Profile</p>
               </div>
             </Link>
           )}
@@ -462,7 +594,11 @@ export default function NavBar({ navOpen, setNavOpen }) {
             <Link
               key={item.label}
               to={item.href}
-              className="block py-2 text-sm text-white/90 hover:text-[#3ab54a]"
+              className={`block py-3 text-sm uppercase tracking-wider transition-colors ${
+                theme === 'dark'
+                  ? 'text-gray-300 hover:text-gold'
+                  : 'text-gray-600 hover:text-luxe-bronze'
+              }`}
               onClick={() => setNavOpen(false)}
             >
               {item.label}
@@ -472,7 +608,11 @@ export default function NavBar({ navOpen, setNavOpen }) {
           {authChecked && currentUser && (
             <Link
               to="/cart"
-              className="block py-2 text-sm text-white/90 hover:text-[#3ab54a] flex items-center gap-2"
+              className={`block py-3 text-sm uppercase tracking-wider flex items-center gap-2 transition-colors ${
+                theme === 'dark'
+                  ? 'text-gray-300 hover:text-gold'
+                  : 'text-gray-600 hover:text-luxe-bronze'
+              }`}
               onClick={() => setNavOpen(false)}
             >
               <ShoppingCart className="w-4 h-4" />
@@ -481,23 +621,36 @@ export default function NavBar({ navOpen, setNavOpen }) {
           )}
           {authChecked && currentUser ? (
             <button
-              className="w-full mt-2 inline-flex items-center rounded-xl border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-800"
+              className={`w-full mt-4 inline-flex items-center justify-center gap-2 border px-4 py-3 text-xs uppercase tracking-wider transition-all duration-300 ${
+                theme === 'dark'
+                  ? 'border-luxury-gray text-gray-300 hover:text-gold hover:border-gold'
+                  : 'border-gray-300 text-gray-600 hover:text-luxe-bronze hover:border-luxe-bronze'
+              }`}
               onClick={() => {
                 setNavOpen(false);
                 handleSignOut();
               }}
             >
+              <LogOut className="w-4 h-4" />
               Sign out
             </button>
           ) : (
             pathname !== '/admin/login' && (
-              <Link
-                to="/"
+              <a
+                href={(() => {
+                  const loginUrl = getApiUrl('auth/junopay/login');
+                  console.log('🔗 NavBar Login URL generated:', loginUrl);
+                  return loginUrl;
+                })()}
                 onClick={() => setNavOpen(false)}
-                className="w-full mt-2 bg-[#3ab54a] hover:bg-[#32a042] text-white font-semibold py-2 rounded-xl shadow-lg flex items-center justify-center"
+                className={`w-full mt-4 font-bold py-3 uppercase tracking-wider text-sm flex items-center justify-center transition-all duration-300 ${
+                  theme === 'dark'
+                    ? 'bg-gold hover:bg-gold-dark text-luxury-dark'
+                    : 'bg-luxe-bronze hover:bg-luxe-bronze/90 text-white'
+                }`}
               >
                 Login with Juno
-              </Link>
+              </a>
             )
           )}
         </nav>

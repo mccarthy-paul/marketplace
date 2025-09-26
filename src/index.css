@@ -1,3 +1,43 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import './styles/animations.css';
+
+/* Luxe 24 Custom Styles */
+@layer base {
+  :root {
+    --luxe-bronze: #BA997D;
+    --luxe-bronze-dark: #9A7A5D;
+    --luxe-blue: #1C24A1;
+    --luxe-dark: #1a1a1a;
+    --luxe-gray: #f5f5f5;
+  }
+
+  /* Override default gold color to match Luxe 24 bronze */
+  .text-gold {
+    color: var(--luxe-bronze) !important;
+  }
+
+  .bg-gold {
+    background-color: var(--luxe-bronze) !important;
+  }
+
+  .border-gold {
+    border-color: var(--luxe-bronze) !important;
+  }
+
+  .hover\:text-gold-dark:hover {
+    color: var(--luxe-bronze-dark) !important;
+  }
+
+  .hover\:bg-gold-dark:hover {
+    background-color: var(--luxe-bronze-dark) !important;
+  }
+
+  /* Dark mode background adjustments */
+  .dark {
+    --tw-bg-opacity: 1;
+    background-color: #0f0f0f;
+  }
+}

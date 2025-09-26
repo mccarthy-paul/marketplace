@@ -1,0 +1,71 @@
+# Cloud Build configuration for automated deployment
+# Usage: gcloud builds submit --config=cloudbuild.yaml --substitutions=_REGION=us-central1
+
+steps:
+  # Build API Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'Dockerfile.api', '-t', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/juno-marketplace/api:latest', '.']
+
+  # Build Frontend Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'Dockerfile.frontend', '-t', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/juno-marketplace/frontend:latest', '.']
+
+  # Build Admin Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'Dockerfile.admin', '-t', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/juno-marketplace/admin:latest', '.']
+
+  # Push images to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/juno-marketplace/api:latest']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/juno-marketplace/frontend:latest']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/juno-marketplace/admin:latest']
+
+  # Deploy API to Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'api'
+      - '--image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/juno-marketplace/api:latest'
+      - '--platform=managed'
+      - '--region=${_REGION}'
+      - '--allow-unauthenticated'
+      - '--memory=512Mi'
+      - '--set-env-vars'
+      - 'MONGODB_URI=mongodb+srv://paulmccarthy_db_user:DXWMTEVQUrL5gad3@junomarketplace.ci9sfz3.mongodb.net?retryWrites=true&w=majority,JUNO_APPLICATION_ID=PaulsMarketplace-cafd2e7e,JUNO_SECRET_KEY=fd4b6008-f8c5-4c76-beae-8279bac9a91c,SESSION_SECRET=DfkdSLDQRvk9vHdJFiEyGLNGSSD7x+6OkzcB4PQZNYU=,NODE_ENV=production'
+
+  # Deploy Frontend to Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'frontend'
+      - '--image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/juno-marketplace/frontend:latest'
+      - '--platform=managed'
+      - '--region=${_REGION}'
+      - '--allow-unauthenticated'
+      - '--memory=256Mi'
+
+  # Deploy Admin to Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'admin'
+      - '--image=${_REGION}-docker.pkg.dev/${PROJECT_ID}/juno-marketplace/admin:latest'
+      - '--platform=managed'
+      - '--region=${_REGION}'
+      - '--allow-unauthenticated'
+      - '--memory=256Mi'
+      - '--set-env-vars'
+      - 'MONGODB_URI=mongodb+srv://paulmccarthy_db_user:DXWMTEVQUrL5gad3@junomarketplace.ci9sfz3.mongodb.net?retryWrites=true&w=majority,SESSION_SECRET=DfkdSLDQRvk9vHdJFiEyGLNGSSD7x+6OkzcB4PQZNYU=,NODE_ENV=production'
+
+substitutions:
+  _REGION: us-central1
+
+options:
+  logging: CLOUD_LOGGING_ONLY

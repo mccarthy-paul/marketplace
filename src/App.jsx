@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ThemeProvider } from './contexts/ThemeContext.jsx';
 import LoggedInPage from './LoggedInPage.jsx';
 import HomePage from './HomePage.jsx'; // ⬅ create from the hero JSX
 import NavBar from './NavBar.jsx'; // ⬅ extract the header
@@ -28,6 +29,9 @@ import Cart from './Cart.jsx'; // Import Cart
 import Checkout from './Checkout.jsx'; // Import Checkout
 import OrderDetailsPage from './OrderDetailsPage.jsx'; // Import OrderDetailsPage
 import SellerProfile from './SellerProfile.jsx'; // Import SellerProfile
+import AboutPage from './AboutPage.jsx'; // Import AboutPage
+import LuxePayPage from './LuxePayPage.jsx'; // Import LuxePayPage
+import BulkUploadPage from './BulkUploadPage.jsx'; // Import BulkUploadPage
 import './index.css';
 import axios from 'axios'; // Import axios
 
@@ -79,11 +83,14 @@ export default function App() {
   /* --- PKCE callback logic stays here (unchanged) --- */
 
   return (
-    <BrowserRouter>
-      <NavigationHandler navOpen={navOpen} setNavOpen={setNavOpen} />
+    <ThemeProvider>
+      <BrowserRouter>
+        <NavigationHandler navOpen={navOpen} setNavOpen={setNavOpen} />
 
-      <Routes>
+        <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/luxepay" element={<LuxePayPage />} />
         <Route path="/loggedin" element={<LoggedInPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/watches" element={<WatchList />} />
@@ -98,6 +105,7 @@ export default function App() {
         <Route path="/bids/:bidId" element={<BidDetailsPage />} /> {/* Route for bid details */}
         <Route path="/profile" element={<ProfilePage />} /> {/* Route for user profile */}
         <Route path="/add-watch" element={<AddWatch />} /> {/* Route for adding a watch */}
+        <Route path="/bulk-upload" element={<BulkUploadPage />} /> {/* Route for bulk upload */}
         <Route path="/cart" element={<Cart />} /> {/* Route for shopping cart */}
         <Route path="/checkout" element={<Checkout />} /> {/* Route for checkout */}
         <Route path="/seller/:sellerId" element={<SellerProfile />} /> {/* Route for seller profile */}
@@ -112,10 +120,11 @@ export default function App() {
         {/* add more routes here */}
       </Routes>
 
-      <Footer />
-      
-      {/* AI Assistant - Available on all pages */}
-      <AssistantButton />
-    </BrowserRouter>
+        <Footer />
+
+        {/* AI Assistant - Available on all pages */}
+        <AssistantButton />
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }

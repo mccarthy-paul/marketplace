@@ -1,0 +1,23 @@
+# Dockerfile for API Server
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY api/package.json api/pnpm-lock.yaml ./
+
+# Install pnpm and dependencies
+RUN npm install -g pnpm
+RUN pnpm install
+
+# Copy API source code
+COPY api/ ./
+
+# Create public upload directories
+RUN mkdir -p public/uploads/watches
+
+# Expose port (Cloud Run will override this)
+EXPOSE 8001
+
+# Start the API server
+CMD ["node", "index.js"]

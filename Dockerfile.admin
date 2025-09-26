@@ -1,0 +1,46 @@
+# Dockerfile for Admin Application
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copy admin app package files
+COPY admin-app/package.json admin-app/pnpm-lock.yaml ./
+
+# Install pnpm and dependencies
+RUN npm install -g pnpm
+RUN pnpm install
+
+# Copy admin app source
+COPY admin-app/ ./
+
+# Build the admin app
+RUN pnpm build
+
+# Production stage - serve both built files and API
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy built files from builder
+COPY --from=builder /app/dist ./dist
+
+# Copy server files
+COPY admin-app/server.js ./
+COPY admin-app/package.json admin-app/pnpm-lock.yaml ./
+COPY admin-app/routes ./routes
+
+# Copy necessary files from API
+RUN mkdir -p api/db api/routes api/services
+COPY api/db ./api/db
+COPY api/routes ./api/routes
+COPY api/services ./api/services
+
+# Install production dependencies for server
+RUN npm install -g pnpm
+RUN pnpm install
+
+# Expose port
+EXPOSE 8002
+
+# Start the admin server
+CMD ["node", "server.js"]

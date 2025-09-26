@@ -1,0 +1,12 @@
+steps:
+  # Deploy frontend from dist directory using source
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'frontend'
+      - '--source=dist'
+      - '--region=us-central1'
+      - '--allow-unauthenticated'
+
+timeout: '900s'

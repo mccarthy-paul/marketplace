@@ -75,6 +75,16 @@ router.post('/', requireAdmin, upload.single('watchImage'), async (req, res) => 
       });
     }
 
+    // Parse classifications if provided
+    let classifications = [];
+    if (req.body.classifications) {
+      try {
+        classifications = JSON.parse(req.body.classifications);
+      } catch (e) {
+        console.error('Error parsing classifications:', e);
+      }
+    }
+
     // Create watch object
     const watchData = {
       brand,
@@ -89,6 +99,7 @@ router.post('/', requireAdmin, upload.single('watchImage'), async (req, res) => 
       seller,
       owner,
       status: status || 'active',
+      classifications,
       created_at: new Date(),
       updated_at: new Date()
     };
@@ -155,20 +166,59 @@ router.get('/:id', requireAdmin, async (req, res) => {
   }
 });
 
-// Update watch (admin)
-router.put('/:id', requireAdmin, async (req, res) => {
+// Update watch (admin) - now supports multiple images
+router.put('/:id', requireAdmin, upload.array('watchImages', 10), async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
-    
+
+    // Parse classifications if provided
+    if (updateData.classifications && typeof updateData.classifications === 'string') {
+      try {
+        updateData.classifications = JSON.parse(updateData.classifications);
+      } catch (e) {
+        console.error('Error parsing classifications:', e);
+        updateData.classifications = [];
+      }
+    }
+
+    // Parse existing images if provided
+    if (updateData.existingImages) {
+      try {
+        const existingImages = JSON.parse(updateData.existingImages);
+        updateData.images = existingImages;
+        // Update primary image (for backward compatibility)
+        if (existingImages.length > 0) {
+          updateData.imageUrl = existingImages[0];
+        }
+      } catch (e) {
+        console.error('Error parsing existing images:', e);
+      }
+      delete updateData.existingImages; // Remove from update data
+    }
+
+    // Add new uploaded images
+    if (req.files && req.files.length > 0) {
+      const newImages = req.files.map(file => `/images/${file.filename}`);
+      updateData.images = [...(updateData.images || []), ...newImages];
+
+      // Update primary image if it's the first image
+      if (!updateData.imageUrl && updateData.images.length > 0) {
+        updateData.imageUrl = updateData.images[0];
+      }
+    }
+
+    // Add updated_at timestamp
+    updateData.updated_at = new Date();
+
     const watch = await Watch.findByIdAndUpdate(id, updateData, { new: true })
       .populate('seller', 'name email company_name')
       .populate('owner', 'name email company_name');
-    
+
     if (!watch) {
       return res.status(404).json({ message: 'Watch not found' });
     }
-    
+
     console.log('Watch updated by admin:', watch._id);
     res.json(watch);
   } catch (error) {

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Test</title>
+</head>
+<body>
+    <h1>Testing Image Loading</h1>
+    <p>Direct image path test:</p>
+    <img src="/images/watches/watch1.jpg" alt="Test Image" style="width: 200px; height: 200px; border: 1px solid red;">
+
+    <p>Full URL test:</p>
+    <img src="https://65378701c270.ngrok.app/images/watches/watch1.jpg" alt="Test Image 2" style="width: 200px; height: 200px; border: 1px solid blue;">
+
+    <script>
+        // Test if images load
+        const img1 = new Image();
+        img1.onload = () => console.log('Image 1 loaded successfully');
+        img1.onerror = (e) => console.error('Image 1 failed to load:', e);
+        img1.src = '/images/watches/watch1.jpg';
+
+        const img2 = new Image();
+        img2.onload = () => console.log('Image 2 loaded successfully');
+        img2.onerror = (e) => console.error('Image 2 failed to load:', e);
+        img2.src = 'https://65378701c270.ngrok.app/images/watches/watch1.jpg';
+    </script>
+</body>
+</html>

@@ -23,15 +23,58 @@ The Juno Marketplace is a luxury watch marketplace with two main applications:
 |---------|----------|-----|--------|
 | **Database** | MongoDB Atlas | `mongodb+srv://...@junomarketplace.ci9sfz3.mongodb.net` | ✅ Live |
 | **Main API** | Google Cloud Run | https://api-53189232060.us-central1.run.app | ✅ Live |
-| **Main Frontend** | Netlify | https://juno-marketplace.netlify.app | ✅ Live |
+| **Main Frontend** | Google Cloud Run | https://frontend-53189232060.us-central1.run.app | ✅ Live |
 | **Admin Frontend** | Netlify | https://juno-marketplace-admin.netlify.app | ✅ Live |
 | **Image Storage** | Google Cloud Storage | `juno-marketplace-watches` bucket | ✅ Live |
 
 ### Deployment Strategy
 - **Backend**: Google Cloud Run (containerized deployment via `./deploy.sh`)
-- **Frontend**: Netlify (automatic deployment via Git integration)
-- **Admin App**: Netlify (separate site, automatic deployment via Git)
+- **Frontend**: Google Cloud Run (containerized deployment via Cloud Build)
+- **Admin App**: Netlify (separate site, Netlify CLI deployment - build locally then deploy)
 - **Images**: Google Cloud Storage (integrated with backend API)
+
+### Critical Deployment Instructions
+**⚠️ IMPORTANT: Always use Netlify CLI deployment, NEVER Git-based deployment**
+
+#### Backend Deployment (Google Cloud Run)
+```bash
+# From project root
+./deploy.sh
+```
+
+#### Frontend Deployment (Google Cloud Run - PRIMARY)
+```bash
+# Option 1: Automated Cloud Build (Recommended)
+gcloud builds submit --config cloudbuild-frontend.yaml .
+
+# Option 2: Manual Docker Build and Deploy
+docker build -f Dockerfile.frontend -t us-central1-docker.pkg.dev/juno-marketplace/juno-marketplace/frontend:latest .
+docker push us-central1-docker.pkg.dev/juno-marketplace/juno-marketplace/frontend:latest
+gcloud run deploy frontend \
+  --image us-central1-docker.pkg.dev/juno-marketplace/juno-marketplace/frontend:latest \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --port 8080 \
+  --memory 256Mi \
+  --max-instances 10
+```
+**Result**: https://frontend-53189232060.us-central1.run.app
+
+#### Admin App Deployment (Netlify - FALLBACK)
+```bash
+# Admin App (still uses Netlify)
+cd admin-app
+VITE_API_URL=https://api-53189232060.us-central1.run.app pnpm build
+netlify deploy --prod --dir=dist --site=b29d6f3c-4054-48b5-87ae-a08ba0b400ea
+```
+
+#### Deployment Process Rules
+1. **Frontend**: Use Google Cloud Run (containerized, auto-scaling, reliable)
+2. **Admin App**: Continue using Netlify CLI (simpler for admin interface)
+3. **Environment Variables**: Built into Docker image during build process
+4. **Port Configuration**: Always use port 8080 for Cloud Run containers
+5. **Never use Git push** for deployments - use proper CLI tools
 
 ## 🗂️ Directory Structure
 

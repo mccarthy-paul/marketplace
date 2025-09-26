@@ -109,7 +109,7 @@ const AddWatch = () => {
         if (response.status === 400 && responseData.message?.includes('JunoPay')) {
           // Show more user-friendly error and redirect to login
           alert(responseData.message + '\n\nYou will be redirected to log in with JunoPay.');
-          window.location.href = 'https://api-53189232060.us-central1.run.app/auth/junopay/login';
+          window.location.href = getApiUrl('auth/junopay/login');
           return;
         }
 

@@ -22,7 +22,8 @@ const WatchAdminEdit = () => {
     currentBid: '',
     owner: '',
     images: [],
-    imageUrl: '' // For backwards compatibility
+    imageUrl: '', // For backwards compatibility
+    classifications: [] // Add classifications
   });
 
   const [newImages, setNewImages] = useState([]);
@@ -45,6 +46,20 @@ const WatchAdminEdit = () => {
     { code: 'AUD', symbol: 'AUD', name: 'Australian Dollar' },
     { code: 'SGD', symbol: 'SGD', name: 'Singapore Dollar' },
     { code: 'HKD', symbol: 'HKD', name: 'Hong Kong Dollar' }
+  ];
+
+  // Classifications options (alphabetically sorted)
+  const classificationOptions = [
+    'Automatic',
+    'Dress',
+    'Gold',
+    "Men's",
+    'Moon Phase',
+    'Pocket',
+    'Pre-Owned',
+    'Skeleton',
+    'Sports',
+    "Women's"
   ];
 
   useEffect(() => {
@@ -79,7 +94,8 @@ const WatchAdminEdit = () => {
           currentBid: watchData.currentBid || '',
           owner: watchData.owner ? watchData.owner._id : '',
           images: watchData.images || [],
-          imageUrl: watchData.imageUrl || ''
+          imageUrl: watchData.imageUrl || '',
+          classifications: watchData.classifications || []
         });
         setLoading(false);
       } catch (err) {
@@ -93,6 +109,13 @@ const WatchAdminEdit = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleClassificationChange = (classification) => {
+    const updatedClassifications = formData.classifications.includes(classification)
+      ? formData.classifications.filter(c => c !== classification)
+      : [...formData.classifications, classification];
+    setFormData({ ...formData, classifications: updatedClassifications });
   };
 
   const handleImageChange = (e) => {
@@ -150,6 +173,9 @@ const WatchAdminEdit = () => {
       if (key === 'images') {
         // Send existing images as JSON string
         data.append('existingImages', JSON.stringify(formData.images));
+      } else if (key === 'classifications') {
+        // Send classifications as JSON string
+        data.append('classifications', JSON.stringify(formData.classifications));
       } else if (key === 'owner' && formData[key] === '') {
         continue;
       } else if (formData[key] !== null && formData[key] !== undefined) {
@@ -328,6 +354,30 @@ const WatchAdminEdit = () => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter watch description..."
               />
+            </div>
+          </div>
+        </div>
+
+        {/* Classifications */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">Classifications</h2>
+          <div className="space-y-2">
+            <p className="text-sm text-gray-600 mb-4">Select all categories that apply to this watch:</p>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              {classificationOptions.map(classification => (
+                <label
+                  key={classification}
+                  className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors"
+                >
+                  <input
+                    type="checkbox"
+                    checked={formData.classifications.includes(classification)}
+                    onChange={() => handleClassificationChange(classification)}
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-700">{classification}</span>
+                </label>
+              ))}
             </div>
           </div>
         </div>

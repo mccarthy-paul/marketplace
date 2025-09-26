@@ -41,6 +41,29 @@ const watchSchema = new mongoose.Schema({
     enum: ['USD', 'EUR', 'GBP', 'CHF', 'JPY', 'CAD', 'AUD', 'SGD', 'HKD'],
     default: 'USD',
   },
+  featured: {
+    type: Boolean,
+    default: false,
+  },
+  featuredOrder: {
+    type: Number,
+    default: 0,
+  },
+  classifications: [{
+    type: String,
+    enum: ['Automatic', 'Dress', 'Gold', 'Men\'s', 'Moon Phase', 'Pocket', 'Pre-Owned', 'Skeleton', 'Sports', 'Women\'s'],
+  }],
+  metadata: {
+    sku: { type: String, index: true },
+    case_size: { type: String },
+    case_material: { type: String },
+    dial_color: { type: String },
+    movement: { type: String },
+    bracelet_material: { type: String },
+    box_papers: { type: String },
+    imported_via: { type: String },
+    imported_at: { type: Date }
+  },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
 });

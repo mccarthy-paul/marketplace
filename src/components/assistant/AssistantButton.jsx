@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
 import { motion, AnimatePresence } from 'framer-motion';
 import AssistantPopup from './AssistantPopup';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const AssistantButton = () => {
+  const { theme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleAssistant = () => {
@@ -21,7 +23,11 @@ const AssistantButton = () => {
       >
         <motion.button
           onClick={toggleAssistant}
-          className="bg-[#3ab54a] hover:bg-[#32a042] text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-300 group"
+          className={`rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-300 group ${
+            theme === 'dark'
+              ? 'bg-gold hover:bg-gold-dark text-luxury-dark'
+              : 'bg-luxe-bronze hover:bg-luxe-bronze/90 text-white'
+          }`}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
           aria-label="Open AI Assistant"
@@ -36,7 +42,9 @@ const AssistantButton = () => {
           {/* Pulse animation when closed */}
           {!isOpen && (
             <motion.div
-              className="absolute inset-0 bg-[#3ab54a] rounded-full"
+              className={`absolute inset-0 rounded-full ${
+                theme === 'dark' ? 'bg-gold' : 'bg-luxe-bronze'
+              }`}
               animate={{
                 scale: [1, 1.2, 1],
                 opacity: [0.7, 0, 0.7],
@@ -57,7 +65,11 @@ const AssistantButton = () => {
               initial={{ opacity: 0, x: 10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 10 }}
-              className="absolute right-full mr-3 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white text-sm px-3 py-2 rounded-lg whitespace-nowrap pointer-events-none"
+              className={`absolute right-full mr-3 top-1/2 transform -translate-y-1/2 text-sm px-3 py-2 rounded-lg whitespace-nowrap pointer-events-none ${
+                theme === 'dark'
+                  ? 'bg-luxury-charcoal text-white border border-luxury-gray'
+                  : 'bg-gray-800 text-white'
+              }`}
             >
               Need help? Ask our AI assistant!
               <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-l-gray-800"></div>

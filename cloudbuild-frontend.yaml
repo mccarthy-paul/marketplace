@@ -1,0 +1,40 @@
+steps:
+  # Build the frontend Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '--no-cache'
+      - '-f'
+      - 'Dockerfile.frontend'
+      - '-t'
+      - 'us-central1-docker.pkg.dev/juno-marketplace/juno-marketplace/frontend:v4'
+      - '.'
+    env:
+      - 'VITE_API_URL=https://api-xio7lz2d5a-uc.a.run.app'
+
+  # Push the image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/juno-marketplace/juno-marketplace/frontend:v4'
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'frontend'
+      - '--image'
+      - 'us-central1-docker.pkg.dev/juno-marketplace/juno-marketplace/frontend:v4'
+      - '--platform'
+      - 'managed'
+      - '--region'
+      - 'us-central1'
+      - '--allow-unauthenticated'
+      - '--memory'
+      - '256Mi'
+      - '--max-instances'
+      - '10'
+
+images:
+  - 'us-central1-docker.pkg.dev/juno-marketplace/juno-marketplace/frontend:latest'

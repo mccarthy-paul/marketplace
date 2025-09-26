@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Package, ChevronRight, DollarSign, Calendar, User } from 'lucide-react';
+import { apiGet } from './utils/api.js';
 
 const SalesHistory = () => {
   const navigate = useNavigate();
@@ -12,29 +13,20 @@ const SalesHistory = () => {
     fetchSales();
   }, []);
 
-  const fetchSales = () => {
-    fetch('/api/junopay/sales', {
-      credentials: 'include'
-    })
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then(data => {
-        if (data.success) {
-          setSales(data.sales);
-        } else {
-          setError(data.error || 'Failed to load sales history');
-        }
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Sales fetch error:', err);
-        setError(err.message);
-        setLoading(false);
-      });
+  const fetchSales = async () => {
+    try {
+      const data = await apiGet('/api/junopay/sales');
+      if (data.success) {
+        setSales(data.sales);
+      } else {
+        setError(data.error || 'Failed to load sales history');
+      }
+      setLoading(false);
+    } catch (err) {
+      console.error('Sales fetch error:', err);
+      setError('Error loading sales: ' + err.message);
+      setLoading(false);
+    }
   };
 
   const getStatusColor = (status) => {

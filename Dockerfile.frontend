@@ -1,0 +1,51 @@
+# Dockerfile for Main Marketplace Frontend
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json pnpm-lock.yaml ./
+
+# Install pnpm and dependencies
+RUN npm install -g pnpm
+RUN pnpm install
+
+# Copy source code
+COPY . .
+
+# Remove admin-app and api folders
+RUN rm -rf admin-app api
+
+# Set environment variable for build
+ENV VITE_API_URL=https://api-xio7lz2d5a-uc.a.run.app
+
+# Build the frontend
+RUN pnpm build
+
+# Production stage
+FROM nginx:alpine
+
+# Copy built files
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Install envsubst
+RUN apk add --no-cache gettext
+
+# Create nginx template that uses PORT environment variable
+RUN mkdir -p /etc/nginx/templates && \
+    echo 'server { \
+    listen $PORT; \
+    location / { \
+        root /usr/share/nginx/html; \
+        try_files $uri $uri/ /index.html; \
+    } \
+    location /api { \
+        return 404; \
+    } \
+}' > /etc/nginx/templates/default.conf.template
+
+# Create startup script that substitutes environment variables
+RUN echo '#!/bin/sh\nPORT=${PORT:-8080}\nenvsubst "\$PORT" < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf\nexec nginx -g "daemon off;"' > /start.sh && chmod +x /start.sh
+
+# Start with our custom script
+CMD ["/start.sh"]

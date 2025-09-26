@@ -12,12 +12,16 @@ const EditWatch = ({ watch, onClose, onSave }) => {
     price: '',
     currentBid: '',
     currency: 'USD',
-    status: 'active'
+    status: 'active',
+    classifications: []
   });
 
   const [imageFiles, setImageFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
+  const [primaryImageIndex, setPrimaryImageIndex] = useState(0); // Track which image is primary
+  const [draggedIndex, setDraggedIndex] = useState(null);
+  const [dragOverIndex, setDragOverIndex] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
@@ -25,6 +29,20 @@ const EditWatch = ({ watch, onClose, onSave }) => {
   const conditionOptions = ['Mint', 'Excellent', 'Very Good', 'Good', 'Fair'];
   const currencyOptions = ['USD', 'EUR', 'GBP', 'JPY', 'CHF'];
   const statusOptions = ['active', 'inactive', 'sold', 'pending'];
+
+  // Classifications options (alphabetically sorted)
+  const classificationOptions = [
+    'Automatic',
+    'Dress',
+    'Gold',
+    "Men's",
+    'Moon Phase',
+    'Pocket',
+    'Pre-Owned',
+    'Skeleton',
+    'Sports',
+    "Women's"
+  ];
 
   useEffect(() => {
     if (watch) {
@@ -38,7 +56,8 @@ const EditWatch = ({ watch, onClose, onSave }) => {
         price: watch.price || '',
         currentBid: watch.currentBid || '',
         currency: watch.currency || 'USD',
-        status: watch.status || 'active'
+        status: watch.status || 'active',
+        classifications: watch.classifications || []
       });
 
       // Set existing images
@@ -58,13 +77,20 @@ const EditWatch = ({ watch, onClose, onSave }) => {
     });
   };
 
+  const handleClassificationChange = (classification) => {
+    const updatedClassifications = formData.classifications.includes(classification)
+      ? formData.classifications.filter(c => c !== classification)
+      : [...formData.classifications, classification];
+    setFormData({ ...formData, classifications: updatedClassifications });
+  };
+
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
 
-    // Limit total images (existing + new) to 5
+    // Limit total images (existing + new) to 10
     const totalImages = existingImages.length + imageFiles.length + files.length;
-    if (totalImages > 5) {
-      alert(`You can have a maximum of 5 images. You currently have ${existingImages.length + imageFiles.length} images.`);
+    if (totalImages > 10) {
+      alert(`You can have a maximum of 10 images. You currently have ${existingImages.length + imageFiles.length} images.`);
       return;
     }
 
@@ -89,6 +115,99 @@ const EditWatch = ({ watch, onClose, onSave }) => {
   const removeExistingImage = (index) => {
     const newExistingImages = existingImages.filter((_, i) => i !== index);
     setExistingImages(newExistingImages);
+
+    // Adjust primary image index if needed
+    if (primaryImageIndex === index) {
+      setPrimaryImageIndex(0);
+    } else if (primaryImageIndex > index) {
+      setPrimaryImageIndex(primaryImageIndex - 1);
+    }
+  };
+
+  const setPrimaryImage = (index) => {
+    setPrimaryImageIndex(index);
+  };
+
+  const moveImageUp = (index) => {
+    if (index === 0) return;
+
+    const newImages = [...existingImages];
+    [newImages[index - 1], newImages[index]] = [newImages[index], newImages[index - 1]];
+    setExistingImages(newImages);
+
+    // Update primary index if it was moved
+    if (primaryImageIndex === index) {
+      setPrimaryImageIndex(index - 1);
+    } else if (primaryImageIndex === index - 1) {
+      setPrimaryImageIndex(index);
+    }
+  };
+
+  const moveImageDown = (index) => {
+    if (index === existingImages.length - 1) return;
+
+    const newImages = [...existingImages];
+    [newImages[index], newImages[index + 1]] = [newImages[index + 1], newImages[index]];
+    setExistingImages(newImages);
+
+    // Update primary index if it was moved
+    if (primaryImageIndex === index) {
+      setPrimaryImageIndex(index + 1);
+    } else if (primaryImageIndex === index + 1) {
+      setPrimaryImageIndex(index);
+    }
+  };
+
+  // Drag and drop handlers
+  const handleDragStart = (e, index) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverIndex(index);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverIndex(null);
+  };
+
+  const handleDrop = (e, dropIndex) => {
+    e.preventDefault();
+    setDragOverIndex(null);
+
+    if (draggedIndex === null || draggedIndex === dropIndex) {
+      return;
+    }
+
+    const newImages = [...existingImages];
+    const draggedImage = newImages[draggedIndex];
+
+    // Remove dragged image from old position
+    newImages.splice(draggedIndex, 1);
+    // Insert at new position
+    newImages.splice(dropIndex, 0, draggedImage);
+
+    // Update primary index if needed
+    let newPrimaryIndex = primaryImageIndex;
+    if (primaryImageIndex === draggedIndex) {
+      newPrimaryIndex = dropIndex;
+    } else if (draggedIndex < primaryImageIndex && dropIndex >= primaryImageIndex) {
+      newPrimaryIndex = primaryImageIndex - 1;
+    } else if (draggedIndex > primaryImageIndex && dropIndex <= primaryImageIndex) {
+      newPrimaryIndex = primaryImageIndex + 1;
+    }
+
+    setExistingImages(newImages);
+    setPrimaryImageIndex(newPrimaryIndex);
+    setDraggedIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
   };
 
   const removeNewImage = (index) => {
@@ -109,13 +228,17 @@ const EditWatch = ({ watch, onClose, onSave }) => {
 
       // Add all form fields
       Object.keys(formData).forEach(key => {
-        if (formData[key] !== '') {
+        if (key === 'classifications') {
+          // Send classifications as JSON string
+          data.append('classifications', JSON.stringify(formData.classifications));
+        } else if (formData[key] !== '') {
           data.append(key, formData[key]);
         }
       });
 
-      // Add existing images to keep
+      // Add existing images to keep with primary image index
       data.append('existingImages', JSON.stringify(existingImages));
+      data.append('primaryImageIndex', primaryImageIndex);
 
       // Add new images if selected
       imageFiles.forEach(file => {
@@ -279,6 +402,28 @@ const EditWatch = ({ watch, onClose, onSave }) => {
             </div>
           </div>
 
+          {/* Classifications */}
+          <div>
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Classifications</h3>
+            <p className="text-sm text-gray-600 mb-3">Select all categories that apply to this watch:</p>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {classificationOptions.map(classification => (
+                <label
+                  key={classification}
+                  className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors"
+                >
+                  <input
+                    type="checkbox"
+                    checked={formData.classifications.includes(classification)}
+                    onChange={() => handleClassificationChange(classification)}
+                    className="w-4 h-4 text-[#3ab54a] border-gray-300 rounded focus:ring-[#3ab54a]"
+                  />
+                  <span className="text-sm text-gray-700">{classification}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
           {/* Description */}
           <div>
             <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
@@ -360,15 +505,69 @@ const EditWatch = ({ watch, onClose, onSave }) => {
             {/* Existing Images */}
             {existingImages.length > 0 && (
               <div className="mb-4">
-                <p className="text-sm text-gray-600 mb-2">Current Images</p>
+                <p className="text-sm text-gray-600 mb-2">Current Images (Drag to reorder, click star to set primary)</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {existingImages.map((image, index) => (
-                    <div key={index} className="relative">
+                    <div
+                      key={index}
+                      className={`relative group cursor-move ${
+                        dragOverIndex === index ? 'opacity-50' : ''
+                      } ${draggedIndex === index ? 'opacity-25' : ''}`}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, index)}
+                      onDragOver={(e) => handleDragOver(e, index)}
+                      onDragLeave={handleDragLeave}
+                      onDrop={(e) => handleDrop(e, index)}
+                      onDragEnd={handleDragEnd}
+                    >
                       <img
                         src={image}
                         alt={`Watch ${index + 1}`}
-                        className="w-full h-32 object-cover rounded-lg"
+                        className={`w-full h-32 object-cover rounded-lg ${index === primaryImageIndex ? 'ring-2 ring-green-500' : ''}`}
                       />
+                      {/* Primary indicator */}
+                      <button
+                        type="button"
+                        onClick={() => setPrimaryImage(index)}
+                        className={`absolute top-2 left-2 rounded-full p-1 transition-colors ${
+                          index === primaryImageIndex
+                            ? 'bg-green-500 text-white'
+                            : 'bg-gray-700 bg-opacity-50 text-gray-300 hover:text-yellow-400'
+                        }`}
+                        title={index === primaryImageIndex ? 'Primary image' : 'Set as primary'}
+                      >
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      </button>
+                      {/* Reorder buttons */}
+                      <div className="absolute bottom-2 left-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        {index > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => moveImageUp(index)}
+                            className="bg-gray-700 bg-opacity-75 text-white rounded p-1 hover:bg-opacity-100"
+                            title="Move left"
+                          >
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                            </svg>
+                          </button>
+                        )}
+                        {index < existingImages.length - 1 && (
+                          <button
+                            type="button"
+                            onClick={() => moveImageDown(index)}
+                            className="bg-gray-700 bg-opacity-75 text-white rounded p-1 hover:bg-opacity-100"
+                            title="Move right"
+                          >
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+                      {/* Remove button */}
                       <button
                         type="button"
                         onClick={() => removeExistingImage(index)}
@@ -376,6 +575,10 @@ const EditWatch = ({ watch, onClose, onSave }) => {
                       >
                         <X className="w-4 h-4" />
                       </button>
+                      {/* Order number */}
+                      <div className="absolute bottom-2 right-2 bg-gray-700 bg-opacity-75 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
+                        {index + 1}
+                      </div>
                     </div>
                   ))}
                 </div>
